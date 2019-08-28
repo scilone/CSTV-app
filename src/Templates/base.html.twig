@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    {% block head %}
+        <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+
+            <title>{% block title %}{% endblock %}</title>
+
+            {% block extraBCss %}{% endblock %}
+            {% block extraBJs %}{% endblock %}
+
+            {% block css %}
+            <link href="../css/bootstrap.css" rel="stylesheet">
+            <link href="../css/style.css" rel="stylesheet">
+            <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+                  rel="stylesheet"
+                  crossorigin="anonymous">
+            {% endblock %}
+
+            {% block extraACss %}{% endblock %}
+            {% block extraAJs %}{% endblock %}
+        </head>
+    {% endblock %}
+    </head>
+    <body>
+    {% block body %}
+
+    {% endblock %}
+    {% block bg %}
+    <img class="body-bg" src="../img/bg.jpg">
+    {% endblock %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"s
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    {% block js %}
+
+    {% endblock %}
+    </body>
+</html>

@@ -1,0 +1,92 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <style>
+        div.gallery {
+            border: 1px solid #ccc;
+        }
+
+        div.gallery:hover {
+            border: 1px solid #777;
+        }
+
+        div.gallery img {
+            width: 100%;
+            min-width: 150px;
+            min-height: 85px;
+        }
+
+        div.desc {
+            padding: 5px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: -1px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .responsive {
+            float: left;
+            width: 20%;
+            color: white;
+            height: 120px;
+        }
+
+        @media only screen and (max-width: 700px) {
+            .responsive {
+                width: 49.99999%;
+                margin: 6px 0;
+            }
+        }
+
+        @media only screen and (max-width: 500px) {
+            .responsive {
+                width: 100%;
+            }
+        }
+
+        .clearfix:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        a, a:hover, a:visited {
+            color: white;
+        }
+
+        body {
+            background: black;
+        }
+
+        a:focus, a:focus > .desc{
+            background: #e8b12c;
+        }
+    </style>
+
+    {% for stream in streams %}
+        <div class="responsive">
+            <div class="gallery">
+                {% if '***' in stream.name %}
+                    <div class="desc" tabindex="-1">
+                        {{ stream.name|length > 22 ? stream.name|slice(0, 22) ~ '..' : stream.name  }}
+                    </div>
+                {% else %}
+                    <a href="{{ stream.streamLink }}">
+                        <img src="../../../{{ stream.streamIcon }}"
+                             alt="{{ stream.name }}"
+                             title="{{ stream.name }}"
+                             width="150" height="85">
+                        <div class="desc">
+                            {{ stream.name|length > 22 ? stream.name|slice(0, 22) ~ '..' : stream.name  }}
+                        </div>
+                    </a>
+                {% endif %}
+
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

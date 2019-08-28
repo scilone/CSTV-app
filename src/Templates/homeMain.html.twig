@@ -1,0 +1,71 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <div class="body-content">
+        <div class="container-fluid">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-sm-2">
+                    </div>
+                    <div class="col-sm-8">
+
+                    </div>
+                    <div class="col-sm-2">
+                    </div>
+                </div>
+                <div class="b-content home">
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <a href="../category/live" tabindex="1" class="homeLink">
+                            <div class="col-md-12 liveTV rippler rippler-default">
+                                <center><img src="../img/Live_tv.png"></center>
+                                <h3 class="text-center homeTxtCard">LIVE TV</h3>
+                                <div class="rippler-effect rippler-div" style="width: 0px; height: 0px; left: 314.516px; top: 210.406px;"></div></div>
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <a href="../category/movie" tabindex="2" class="homeLink">
+                            <div class="col-md-12 movieVOD rippler rippler-default">
+                                <center><img src="../img/on_demand.png"></center>
+                                <h3 class="text-center homeTxtCard">MOVIES</h3>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <a href="../category/serie" tabindex="3" class="homeLink">
+                            <div class="col-md-12 tvSeries rippler rippler-default">
+                                <center><img src="../img/series.png"></center>
+                                <h3 class="text-center homeTxtCard">SERIES</h3>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-md-8 col-sm-12 col-xs-12 Mybtns">
+                        <div class="col-md-4 col-sm-6 col-xs-12 hide">
+                            <a class="btn btn-default center-block rippler rippler-default">
+                                <i class="fa fa-book"></i> EPG
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <a class="btn btn-default center-block btn-lg account rippler rippler-default" id="accountModal">
+                                <i class="fa fa-info"></i> ACCOUNT
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <a class="btn btn-default center-block btn-lg account rippler rippler-default">
+                                <i class="fa fa-clock-o"></i> CATCH UP
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <a class="btn btn-default center-block btn-lg logoutBtn rippler rippler-default">
+                                <i class="fa fa-sign-out" style="padding-top: 0px;"></i> LOG OUT
+                            </a>
+                        </div>
+                    </div>
+                    <h4 class="text-center" style="color: #fff; top: 50px; float:left;width: 100%;position: relative;    text-transform: uppercase;">Expiration: </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
