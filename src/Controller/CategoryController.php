@@ -46,8 +46,8 @@ class CategoryController
 
         //Diamond
         $this->superglobales->getSession()
-            ->set(Iptv::PREFIX . 'username', '1Vjfv6!P!N')
-            ->set(Iptv::PREFIX . 'password', 'yDD38Z5ObO')
+            ->set(Iptv::PREFIX . 'username', 'ZxOM8WzoYa')
+            ->set(Iptv::PREFIX . 'password', 'D2BGjJAm@V')
             ->set(Iptv::PREFIX . 'host', 'http://netflexx.org:8000');
 
         //Gold

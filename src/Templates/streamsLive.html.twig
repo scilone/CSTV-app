@@ -76,7 +76,7 @@
                     </div>
                 {% else %}
                     <a href="{{ stream.streamLink }}">
-                        <img src="../../../{{ stream.streamIcon }}"
+                        <img src="{{ baseUrlAbsolute ~ stream.streamIcon }}"
                              alt="{{ stream.name }}"
                              title="{{ stream.name }}"
                              width="150" height="85">

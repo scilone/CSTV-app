@@ -1,0 +1,104 @@
+{% extends "base.html.twig" %}
+
+{% block extraACss %}
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+          rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+          crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+		$(document).ready( function () {
+			$('table').DataTable(
+				{
+					"pageLength": 100,
+					"order": [],
+                    "columnDefs": [
+                        { "orderable": false, "targets": 0 }
+                    ]
+				}
+			);
+
+			$('thead th:eq(1)').attr('tabindex', 1);
+			$('thead th:eq(2)').attr('tabindex', 2);
+			$('thead th:eq(3)').attr('tabindex', 3);
+		} );
+    </script>
+{% endblock %}
+
+{% block body %}
+    <style>
+        @media only screen and (min-width: 530px) {
+            .table-responsive {
+                padding: 5em;
+            }
+            #DataTables_Table_0_filter {
+                margin-top: 1em;
+            }
+        }
+
+        table {
+            padding-top: 1em;
+        }
+        td {
+            vertical-align: middle !important;
+        }
+        h1 {
+            padding: 0.5em;
+            margin-top: 0;
+            width: 100%;
+            z-index: 10;
+            text-align: center;
+            position: fixed;
+            background: white;
+        }
+        body {
+            margin: 0;
+        }
+    </style>
+    <h1>{{ catName }}</h1>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th tabindex="-1"></th>
+                    <th tabindex="1">Nom</th>
+                    <th>Date d'ajout</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for stream in streams %}
+                <tr>
+                    <td data-sort="{{ stream.name }}">
+                        <a href="{{ stream.streamLink }}">
+                            <img src="{{ baseUrlAbsolute ~ stream.streamIcon }}"
+                                 alt="{{ stream.name }}"
+                                 title="{{ stream.name }}"
+                                 width="100" height="150">
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ stream.streamLink }}">
+                            {{ stream.name }}
+                        </a>
+                    </td>
+                    <td data-sort="{{ stream.added.timestamp }}">
+                        {{ stream.added|date('d/m/Y') }}
+                    </td>
+                    <td>
+                        {{ stream.rating }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+ {% block bg %}
+ {% endblock %}

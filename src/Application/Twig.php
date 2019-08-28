@@ -12,10 +12,14 @@ class Twig
      */
     private $twig;
 
-    public function __construct()
+    public function __construct(array $globalVars)
     {
         $loader = new FilesystemLoader(__DIR__ . '/../Templates');
         $this->twig = new Environment($loader);
+
+        foreach ($globalVars as $name => $value) {
+            $this->twig->addGlobal($name, $value);
+        }
     }
 
     /**

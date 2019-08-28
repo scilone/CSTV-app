@@ -3,15 +3,15 @@
 {% block body %}
     <ul>
         {% set catLength = 1 %}
-        <a href="../streams/{{ type }}/all"><li>ALL</li></a>
+        <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all"><li>ALL</li></a>
 
     {% if type == 'movie' %}
         {% set catLength = 2 %}
-        <a href="../streams/{{ type }}/recently"><li>RECENTLY ADDED</li></a>
+        <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/recently"><li>RECENTLY ADDED</li></a>
     {% endif %}
 
     {% for category in categories %}
-        <a href="../streams/{{ type }}/{{ category.id }}/{{ category.name }}"><li>{{ category.name }}</li></a>
+        <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}/{{ category.name }}"><li>{{ category.name }}</li></a>
         {% set catLength = catLength + 1 %}
     {% endfor %}
     </ul>

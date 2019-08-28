@@ -100,7 +100,7 @@ class Iptv
                           '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
                           '/' . $data->stream_id;
 
-            $img = 'asset/img/' . base64_encode($data->stream_icon ?? '');
+            $img = '/asset/img/' . base64_encode($data->stream_icon ?? '');
 
             $name = $data->name ?? '';
             if (is_numeric($category)) {
@@ -125,7 +125,7 @@ class Iptv
         }
     }
 
-    public function getMovieStreams($category)
+    public function getMovieStreams($category): array
     {
         $list = json_decode($this->getDataWithAction('get_vod_streams'));
 
@@ -141,6 +141,7 @@ class Iptv
         }
 
         $i = 0;
+        $return = [];
         foreach ($list as $data) {
             if (is_numeric($category) && $data->category_id != $category) {
                 continue;
@@ -149,7 +150,7 @@ class Iptv
             $i++;
 
             if ($category === 'recently' && $i > 100) {
-                return;
+                return $return;
             }
 
             $streamLink = self::PLAYER_DEEPLINK .
@@ -159,14 +160,14 @@ class Iptv
                           '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
                           '/' . $data->stream_id . '.' . $data->container_extension;
 
-            $img = 'asset/img/' . base64_encode($data->stream_icon ?? '');
+            $img = '/asset/img/' . base64_encode($data->stream_icon ?? '');
 
             $name = $data->name ?? '';
             if (is_numeric($category)) {
                 $name = trim(preg_replace('#\|\w+\|#', '', $name));
             }
 
-            yield new Movie(
+            $return[] = new Movie(
                 (int) $data->num ?? 0,
                 (string) $name,
                 (string) $data->stream_type ?? '',
@@ -182,6 +183,8 @@ class Iptv
                 $streamLink
             );
         }
+
+        return $return;
     }
 
     public function getSerieStreams($category)
@@ -193,7 +196,7 @@ class Iptv
                 continue;
             }
 
-            $img = 'asset/img/' . base64_encode($data->cover ?? '');
+            $img = '/asset/img/' . base64_encode($data->cover ?? '');
 
             $backdrop = [];
             foreach ($data->backdrop_path as $value) {

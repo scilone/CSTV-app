@@ -45,8 +45,8 @@ class StreamsController
 
         //Diamond
         $this->superglobales->getSession()
-            ->set(Iptv::PREFIX . 'username', '1Vjfv6!P!N')
-            ->set(Iptv::PREFIX . 'password', 'yDD38Z5ObO')
+            ->set(Iptv::PREFIX . 'username', 'ZxOM8WzoYa')
+            ->set(Iptv::PREFIX . 'password', 'D2BGjJAm@V')
             ->set(Iptv::PREFIX . 'host', 'http://netflexx.org:8000');
 
         //Gold
@@ -57,7 +57,7 @@ class StreamsController
             ->set(Iptv::PREFIX . 'host', 'http://iptv.smartgotv.com:8080');*/
     }
 
-    public function live(string $category, string $name): void
+    public function live(string $category, string $name = ''): void
     {
         $cacheName = md5($this->superglobales->getSession()->get(Iptv::PREFIX . 'host')) . '_stream_live_' . $category;
         $cache = $this->cacheRaw->getCache($cacheName, '1 day');
@@ -83,7 +83,7 @@ class StreamsController
         echo $render;
     }
 
-    public function movie(string $category, string $name): void
+    public function movie(string $category, string $name = ''): void
     {
         $cacheName = md5($this->superglobales->getSession()->get(Iptv::PREFIX . 'host')) . '_stream_movie_' . $category;
         $cache = $this->cacheRaw->getCache($cacheName, '1 day');
@@ -95,12 +95,15 @@ class StreamsController
         }
 
         $streams = $this->iptv->getMovieStreams($category);
+        $categories = $this->iptv->getMovieCategories();
 
         $render = $this->twig->render(
             'streamsMovie.html.twig',
             [
-                'streams' => $streams,
-                'catName' => urldecode($name),
+                'streams'    => $streams,
+                'type'       => 'movie',
+                'categories' => $categories,
+                'catName'    => urldecode($name),
             ]
         );
 
@@ -109,8 +112,10 @@ class StreamsController
         echo $render;
     }
 
-    public function serie(string $category, string $name): void
+    public function serie(string $category, string $name = ''): void
     {
+        echo $this->twig->render('streamsSerie.html.twig');
+        return;
         echo '
         <a href="vlc://http://netflexx.org:8000/1Vjfv6!P!N/yDD38Z5ObO/11705">LIVE</a>
         <a href="vlc://http://netflexx.org:8000/movie/1Vjfv6!P!N/yDD38Z5ObO/184204.mkv">MOVIE</a>

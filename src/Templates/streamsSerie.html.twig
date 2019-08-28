@@ -1,5 +1,109 @@
 {% extends "base.html.twig" %}
 
-{% block body %}
+{% block extraACss %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/yahoo/pure-release/v0.6.0/pure-min.css">
+    <link rel="stylesheet" href="{{ baseUrlAbsolute }}/css/jquery.flex-images.css">
+{% endblock %}
 
+{% block body %}
+    <style>
+        #demo55 .over {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 4px 6px;
+            font-size: 13px;
+            color: #fff;
+            background: #222;
+            background: rgba(0,0,0,0.7);
+            text-align: center;
+        }
+
+        /* STARS */
+        .star {
+            font-size: 14px;
+            width: 14px;
+            display: inline-block;
+            color: gray;
+        }
+        .star:after {
+            content:'\2605';
+            color: gold;
+            position: absolute;
+            margin-left: -11px;
+            overflow: hidden;
+        }
+        .star:last-child {
+            margin-right: 0;
+        }
+        .star:before {
+            content:'\2605';
+        }
+        .star.star-1:after {
+            width: 2px;
+        }
+        .star.star-2:after {
+            width: 3px;
+        }
+        .star.star-3:after {
+            width: 4px;
+        }
+        .star.star-4:after {
+            width: 5px;
+        }
+        .star.star-5:after {
+            width: 6px;
+        }
+        .star.star-6:after {
+            width: 7px;
+        }
+        .star.star-7:after {
+            width: 8px;
+        }
+        .star.star-8:after {
+            width: 9px;
+        }
+        .star.star-9:after {
+            width: 10px;
+        }
+        .star.star-empty:after {
+            width: 0px;
+        }
+    </style>
+
+<div id="demo55" class="flex-images">
+    <a href="http://google.fr">
+    <div class="item">
+        <img src="{{ baseUrlAbsolute }}/img/blank.gif" data-src="https://cstv.fr/app/asset/img/aHR0cDovL25ldGZsZXh4Lm9yZzo4MDAwL2ltYWdlcy84Z2Q3MWhwekhJRjNnQ2ttSkJ3VjVlZ3R1M2tfc21hbGwuanBn">
+        <div class="over">
+            John Wick 3
+            <div class="stars">
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star star-5"></span>
+                <span class="star star-empty"></span>
+            </div>
+        </div>
+    </div>
+    </a>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="{{ baseUrlAbsolute }}/js/jquery.flex-images.js"></script>
+<script>
+    $('#demo55').flexImages({ rowHeight: 230, rowWidth: 150 });
+
+    const screenSize = $(document).width();
+    const imgWidth = 165; //img with + margin
+    const nbElementByRow = screenSize / imgWidth;
+    const decimalElementRow = screenSize / imgWidth - Math.floor(screenSize / imgWidth);
+    const padding = imgWidth / 2 * decimalElementRow
+
+    $('#demo55').css('padding', '0 ' + padding + 'px')
+</script>
 {% endblock %}
