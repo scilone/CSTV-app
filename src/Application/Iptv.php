@@ -194,6 +194,15 @@ class Iptv
                 continue;
             }
 
+            $name = $data->name ?? '';
+            if (isset($filter['cat'])) {
+                $name = trim(preg_replace('#\|\w+\|#', '', $name));
+            }
+
+            if (strpos($name, '***') !== false) {
+                continue;
+            }
+
             $streamLink = self::PLAYER_DEEPLINK .
                           $this->superglobales->getSession()->get(self::PREFIX . 'host') .
                           '/movie' .
@@ -202,11 +211,6 @@ class Iptv
                           '/' . $data->stream_id . '.' . $data->container_extension;
 
             $img = '/asset/img/' . base64_encode($data->stream_icon ?? '');
-
-            $name = $data->name ?? '';
-            if (isset($filter['cat'])) {
-                $name = trim(preg_replace('#\|\w+\|#', '', $name));
-            }
 
             switch ($sorted) {
                 case 1:

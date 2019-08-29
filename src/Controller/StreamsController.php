@@ -72,6 +72,8 @@ class StreamsController
 
     public function movie(string $category, int $sort = 0, string $search = ''): void
     {
+        $search = urldecode($search);
+
         $cacheName = md5(session_id()) . '_stream_movie_' . $category . '_' . $sort . md5($search);
         $cache = $this->cacheRaw->get($cacheName, '1 day');
 
@@ -99,7 +101,6 @@ class StreamsController
             });
         }
 
-
         $render = $this->twig->render(
             'streamsMovie.html.twig',
             [
@@ -109,7 +110,7 @@ class StreamsController
                 'search'     => $search,
                 'currentCat' => $category,
                 'categories' => $categories,
-                'catName'    => isset($categories[$category]) ? $categories[$category]->getName() : '',
+                'catName'    => isset($categories[$category]) ? $categories[$category]->getName() : 'All',
             ]
         );
 

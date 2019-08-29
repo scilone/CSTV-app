@@ -27,11 +27,6 @@
             color: #f1f1f1;
         }
 
-        @media screen and (max-height: 450px) {
-            .sidenav {padding-top: 15px;}
-            .sidenav a {font-size: 18px;}
-        }
-
         .sidenav ul {
             list-style-type:none;
             padding: 0;
@@ -95,20 +90,28 @@
         .star.star-empty:after, .star.star-0:after {
             width: 0px;
         }
+        .star.star-empty{
+            margin-left: -1px;
+        }
         .stars {
             text-align: center;
         }
+
+        td:nth-child(odd) {
+            width: 30%;
+            height: 3em;
+        }
     </style>
-    <div class="container" style="height: 95%;margin: 2em 10px;">
+    <div class="container" style="margin: 3em; width: auto">
         <div class="row">
-            <div class="col-sm-12 col-xs-12">
+            <div class="col-md-12 col-sm-12 col-xs-12">
                 <h1 style="text-align: center;">{{ movie.name }}</h1>
             </div>
             <div style="position: relative;">
-                <div class="sidenav col-sm-3 col-xs-3">
-                    <img src="{{ baseUrlAbsolute ~ movie.image }}" width="100" height="160" class="col-sm-12 col-xs-12">
-                    <div class="col-sm-12 col-xs-12">
-                        {% set rating5 = (6.3/2)|round(1)  %}
+                <div class="sidenav col-md-3 col-sm-3 col-xs-3">
+                    <img src="{{ baseUrlAbsolute ~ movie.image }}" width="100" height="160" class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        {% set rating5 = (movie.rating/2)|round(1)  %}
                         {% set ratingDecimal = (rating5 - rating5|round(0, 'floor')) * 10  %}
 
                         <div class="stars">
@@ -143,21 +146,48 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9">
-                    <p>Director: {{ movie.director }}</p>
-                    <p>Casting: {{ movie.cast }}</p>
-                    <p>Genre: {{ movie.genre }}</p>
-                    <p>Release date: {{ movie.releaseDate|date('d/m/Y') }}</p>
-                    <p>Duration: {{ movie.dureationFormatted }}</p>
-                    <p>format: {{ movie.video.width }} x {{ movie.video.height }}</p>
-                    <p>Resume: {{ movie.plot }}</p>
-                    <p>
-                        <iframe src="https://www.youtube.com/embed/{{ movie.youtubeTrailer }}?controls=0"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                    </p>
-
+                <div class="col-md-offset-3 col-md-9 col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9">
+                    <table>
+                        <tr>
+                            <td><b>Director:</b></td>
+                            <td>{{ movie.director }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Casting:</b></td>
+                            <td>{{ movie.cast }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Genre:</b></td>
+                            <td>{{ movie.genre }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Release date:</b></td>
+                            <td>{{ movie.releaseDate|date('d/m/Y') }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Duration:</b></td>
+                            <td>{{ movie.dureationFormatted }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Format:</b></td>
+                            <td>{{ movie.video.width }}x{{ movie.video.height }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Resume:</b></td>
+                            <td>{{ movie.plot }}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Trailer:</b></td>
+                            <td>
+                                <iframe src="https://www.youtube.com/embed/{{ movie.youtubeTrailer }}?controls=0"
+                                        width="100%"
+                                        style="height: 20em"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen></iframe>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>

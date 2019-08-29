@@ -151,11 +151,6 @@
             color: #f1f1f1;
         }
 
-        @media screen and (max-height: 450px) {
-            .sidenav {padding-top: 15px;}
-            .sidenav a {font-size: 18px;}
-        }
-
         .sidenav ul {
             list-style-type:none;
             padding: 0;
@@ -194,12 +189,12 @@
                     </a>
                 </button>
                 <button id="sortByRate" type="button" class="btn btn-secondary" tabindex="2">
-                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 4 %}3{% else %}4{% endif %}/{{ search }}">
+                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 3 %}4{% else %}3{% endif %}/{{ search }}">
                         <i class="fa fa-star"></i>
                     </a>
                 </button>
                 <button id="sortByAdded"type="button" class="btn btn-secondary" tabindex="2">
-                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 6 %}5{% else %}6{% endif %}v">
+                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 6 %}6{% else %}5{% endif %}/{{ search }}">
                         <i class="fa fa-clock-o"></i>
                     </a>
                 </button>
@@ -211,6 +206,14 @@
     </div>
     <div class="sidenav col-sm-3 col-xs-3 col-md-2">
         <ul>
+            <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all"
+               style="{% if catName == 'all' %}color:white{% endif %}">
+                <li>ALL</li>
+            </a>
+            <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all/5"
+               style="{% if catName == 'all' %}color:white{% endif %}">
+                <li>RECENTLY ADDED</li>
+            </a>
         {% for category in categories %}
             <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}"
                 style="{% if catName == category.name %}color:white{% endif %}">
@@ -220,10 +223,11 @@
         </ul>
     </div>
     <div id="flex" class="flex-images col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9 col-md-offset-2 col-md-10">
-        {% for stream in streams %}
-            <a href="{{ stream.streamLink }}"
+        {% for stream in streams|slice(0, 1000) %}
+            <a href="{{ baseUrlAbsolute }}/streams/movieInfo/{{ stream.streamid }}"
                tabindex="1"
                class="item-link"
+               data-long-press-delay="500"
                data-name="{{ stream.name|lower }}"
                data-added="{{ stream.added.timestamp }}"
                data-rate="{{ stream.rating5based }}">
@@ -313,6 +317,10 @@
             location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{{ sort }}/' + $("#inputSearch").val();
         });
 
+        $('.item-link').on('long-press', function(e) {
+			alert('thisislong');
+		});
     </script>
+    <script src="{{ baseUrlAbsolute }}/js/long-press-event.min.js"></script>
     <script async src="{{ baseUrlAbsolute }}/js/lazyload.min.js"></script>
 {% endblock %}
