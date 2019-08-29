@@ -7,11 +7,11 @@
 
 {% block body %}
     <div id="searchPopin" class="hide">
-        <div class="container" style="margin-top: 50%">
+        <div class="container" style="margin-top: 1em">
             <div class="row">
                 <div class="col-sm-8 col-sm-offset-2">
                     <div class="input-group">
-                        <input id="inputSearch" type="text" class="form-control" placeholder="Search">
+                        <input id="inputSearch" type="text" class="form-control" placeholder="Search" value="{{ search }}">
                         <span id="goSearch" class="input-group-addon"><i class="fa fa-search"></i></span>
                     </div>
                 </div>
@@ -38,6 +38,11 @@
         }
         body {
             margin: 0;
+        }
+
+        #flex {
+            padding-top: 5em;
+            padding-left: 2em;
         }
 
         #flex .over {
@@ -157,39 +162,64 @@
         }
 
         .sidenav a:focus{
-            color: #e8b12c;
+            color: #e8b12c !important;
         }
 
+        img:not([src]) {
+            visibility: hidden;
+        }
+
+        /* Fixes Firefox anomaly during image load */
+        @-moz-document url-prefix() {
+            img:-moz-loading {
+                visibility: hidden;
+            }
+        }
     </style>
 
     <div id="header">
-        <div class="pull-left">{{ catName }}</div>
-        <button id="search" type="button" class="btn btn-secondary pull-right" data-toggle="0" tabindex="3">
-            <i class="fa fa-search"></i>
-        </button>
-        <div class="btn-group pull-right" role="group">
-            <button id="sortByName" type="button" class="btn btn-secondary" data-toggle="0" tabindex="2">
-                <i class="fa fa-sort-alpha-asc"></i>
+        <div class="pull-left">
+            <button type="button" class="btn btn-secondary" tabindex="4">
+                <a href="{{ baseUrlAbsolute ~ homeUrlAbsolute }}">
+                    <i class="fa fa-home"></i>
+                </a>
             </button>
-            <button id="sortByRate" type="button" class="btn btn-secondary" data-toggle="1" tabindex="2">
-                <i class="fa fa-star"></i>
-            </button>
-            <button id="sortByAdded"type="button" class="btn btn-secondary" data-toggle="1" tabindex="2">
-                <i class="fa fa-clock-o"></i>
+            {{ catName }}
+        </div>
+        <div class="pull-right">
+            <div class="btn-group" role="group">
+                <button id="sortByName" type="button" class="btn btn-secondary" tabindex="2">
+                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 2 %}1{% else %}2{% endif %}/{{ search }}">
+                        <i class="fa fa-sort-alpha-asc"></i>
+                    </a>
+                </button>
+                <button id="sortByRate" type="button" class="btn btn-secondary" tabindex="2">
+                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 4 %}3{% else %}4{% endif %}/{{ search }}">
+                        <i class="fa fa-star"></i>
+                    </a>
+                </button>
+                <button id="sortByAdded"type="button" class="btn btn-secondary" tabindex="2">
+                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 6 %}5{% else %}6{% endif %}v">
+                        <i class="fa fa-clock-o"></i>
+                    </a>
+                </button>
+            </div>
+            <button id="search" type="button" class="btn btn-secondary" tabindex="3">
+                <i class="fa fa-search"></i>
             </button>
         </div>
     </div>
-    <div class="sidenav col-sm-3">
+    <div class="sidenav col-sm-3 col-xs-3 col-md-2">
         <ul>
         {% for category in categories %}
-            <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}/{{ category.name }}"
+            <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}"
                 style="{% if catName == category.name %}color:white{% endif %}">
                 <li>{{ category.name }}</li>
             </a>
         {% endfor %}
         </ul>
     </div>
-    <div id="flex" class="flex-images col-sm-offset-3 col-sm-9">
+    <div id="flex" class="flex-images col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9 col-md-offset-2 col-md-10">
         {% for stream in streams %}
             <a href="{{ stream.streamLink }}"
                tabindex="1"
@@ -198,7 +228,7 @@
                data-added="{{ stream.added.timestamp }}"
                data-rate="{{ stream.rating5based }}">
                 <div class="item">
-                    <img src="{{ baseUrlAbsolute ~ stream.streamIcon }}"
+                    <img {% if loop.index > 50 %}data-{% endif %}src="{{ baseUrlAbsolute ~ stream.streamIcon }}"
                          alt="{{ stream.name }}"
                          title="{{ stream.name }}">
                     <div class="over">
@@ -240,16 +270,7 @@
 
 {% block js %}
     <script>
-        const sidebarSize = $('.sidenav').width();
-        const screenSize = $(document).width() - sidebarSize;
-        const imgWidth = 100;
-        const nbElementByRow = screenSize / imgWidth;
-        const decimalElementRow = screenSize / imgWidth - Math.floor(screenSize / imgWidth);
-        const padding = imgWidth / 2 * decimalElementRow;
-
-        $('#flex').css('padding', '5em ' + padding + 'px');
-
-        $('#sortByName').click(function() {
+        /*$('#sortByName').click(function() {
             $("#flex").html(sortAlphabetically($('.item-link'), 'name', $(this).data('toggle')));
             $(this).data('toggle', $(this).data('toggle') == 1 ? 0 : 1);
         })
@@ -260,14 +281,18 @@
         $('#sortByRate').click(function() {
             $("#flex").html(sortAlphabetically($('.item-link'), 'rate', $(this).data('toggle')));
             $(this).data('toggle', $(this).data('toggle') == 1 ? 0 : 1);
-        });
+        });*/
+
+        window.lazyLoadOptions = {
+            threshold: 0
+        };
 
         $('#search').click(function () {
             $('#searchPopin').removeClass('hide');
             $('#inputSearch').focus();
         });
 
-        $('#inputSearch').on('input', function() {
+        /*$('#inputSearch').on('input', function() {
             const search = $(this).val().toLowerCase();
             $('.item-link').each(function () {
                 if ($(this).data('name').search(search) >= 0) {
@@ -276,17 +301,18 @@
                     $(this).addClass('hide');
                 }
             })
-        });
+        });*/
 
         $("#inputSearch").on('keyup', function (e) {
             if (e.keyCode === 13) {
-                $('#searchPopin').addClass('hide');
+                location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{{ sort }}/' + $("#inputSearch").val();
             }
         });
 
-        $('#goSearch, #searchPopin').click(function(){
-            $('#searchPopin').addClass('hide');
+        $('#goSearch, #searchPopin').click(function() {
+            location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{{ sort }}/' + $("#inputSearch").val();
         });
 
     </script>
+    <script async src="{{ baseUrlAbsolute }}/js/lazyload.min.js"></script>
 {% endblock %}

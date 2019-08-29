@@ -43,24 +43,12 @@ class CategoryController
         $this->iptv          = $iptv;
         $this->cacheRaw      = $cacheRaw;
         $this->superglobales = $superglobales;
-
-        //Diamond
-        $this->superglobales->getSession()
-            ->set(Iptv::PREFIX . 'username', 'ZxOM8WzoYa')
-            ->set(Iptv::PREFIX . 'password', 'D2BGjJAm@V')
-            ->set(Iptv::PREFIX . 'host', 'http://netflexx.org:8000');
-
-        //Gold
-        /*$this->superglobales->getSession()
-            ->set(Iptv::PREFIX . 'username', '45165901520581')
-            ->set(Iptv::PREFIX . 'password', '45165901520581')
-            ->set(Iptv::PREFIX . 'host', 'http://iptv.smartgotv.com:8080');*/
     }
 
     public function live(): void
     {
         $cacheName = md5($this->superglobales->getSession()->get(Iptv::PREFIX . 'host')) . '_category_live';
-        $cache = $this->cacheRaw->getCache($cacheName, '1 week');
+        $cache = $this->cacheRaw->get($cacheName, '1 week');
 
         if ($cache !== null) {
             echo $cache;
@@ -78,7 +66,7 @@ class CategoryController
             ]
         );
 
-        $this->cacheRaw->setCache($cacheName, $render);
+        //$this->cacheRaw->set($cacheName, $render);
 
         echo $render;
     }
@@ -86,7 +74,7 @@ class CategoryController
     public function movie(): void
     {
         $cacheName = md5($this->superglobales->getSession()->get(Iptv::PREFIX . 'host')) . '_category_movie';
-        $cache = $this->cacheRaw->getCache($cacheName, '1 week');
+        $cache = $this->cacheRaw->get($cacheName, '1 week');
 
         if ($cache !== null) {
             echo $cache;
@@ -104,7 +92,7 @@ class CategoryController
             ]
         );
 
-        $this->cacheRaw->setCache($cacheName, $render);
+        //$this->cacheRaw->set($cacheName, $render);
 
         echo $render;
     }
@@ -112,7 +100,7 @@ class CategoryController
     public function serie(): void
     {
         $cacheName = md5($this->superglobales->getSession()->get(Iptv::PREFIX . 'host')) . '_category_serie';
-        $cache = $this->cacheRaw->getCache($cacheName, '1 week');
+        $cache = $this->cacheRaw->get($cacheName, '1 week');
 
         if ($cache !== null) {
             echo $cache;
@@ -130,7 +118,7 @@ class CategoryController
             ]
         );
 
-        $this->cacheRaw->setCache($cacheName, $render);
+        //$this->cacheRaw->set($cacheName, $render);
 
         echo $render;
     }

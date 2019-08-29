@@ -9,11 +9,13 @@ Class Service
     const CONTROLLER_CATEGORY = 'App\Controller\CategoryController';
     const CONTROLLER_STREAM   = 'App\Controller\StreamsController';
 
-    const APPLICATION_TWIG      = 'App\Application\Twig';
-    const APPLICATION_IPTV      = 'App\Application\Iptv';
-    const APPLICATION_CACHE_RAW = 'App\Application\CacheRaw';
+    const APPLICATION_TWIG       = 'App\Application\Twig';
+    const APPLICATION_IPTV       = 'App\Application\Iptv';
+
+    const DOMAIN_IPTV_XCODE_API = 'App\Domain\Iptv\XcodeApi';
 
     const INFRASTRUCTURE_SUPERGLOBALES = 'App\Infrastructure\SuperglobalesOO';
-    const INFRASTRUCTURE_CURL = 'App\Infrastructure\CurlOO';
-    const INFRASTRUCTURE_CACHE_RAW = 'App\Infrastructure\CacheRaw';
+    const INFRASTRUCTURE_CURL          = 'App\Infrastructure\CurlOO';
+    const INFRASTRUCTURE_CACHE_RAW     = 'App\Infrastructure\CacheRaw';
+    const INFRASTRUCTURE_CACHE_ITEM    = 'App\Infrastructure\CacheItem';
 }

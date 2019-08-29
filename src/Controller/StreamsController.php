@@ -42,25 +42,12 @@ class StreamsController
         $this->iptv          = $iptv;
         $this->cacheRaw      = $cacheRaw;
         $this->superglobales = $superglobales;
-
-        //Diamond
-        $this->superglobales->getSession()
-            ->set(Iptv::PREFIX . 'username', 'ZxOM8WzoYa')
-            ->set(Iptv::PREFIX . 'password', 'D2BGjJAm@V')
-            ->set(Iptv::PREFIX . 'host', 'http://netflexx.org:8000');
-
-        //Gold
-        /*
-        $this->superglobales->getSession()
-            ->set(Iptv::PREFIX . 'username', '45165901520581')
-            ->set(Iptv::PREFIX . 'password', '45165901520581')
-            ->set(Iptv::PREFIX . 'host', 'http://iptv.smartgotv.com:8080');*/
     }
 
     public function live(string $category, string $name = ''): void
     {
         $cacheName = md5($this->superglobales->getSession()->get(Iptv::PREFIX . 'host')) . '_stream_live_' . $category;
-        $cache = $this->cacheRaw->getCache($cacheName, '1 day');
+        $cache = $this->cacheRaw->get($cacheName, '1 day');
 
         if ($cache !== null) {
             echo $cache;
@@ -78,15 +65,15 @@ class StreamsController
             ]
         );
 
-        $this->cacheRaw->setCache($cacheName, $render);
+        //$this->cacheRaw->set($cacheName, $render);
 
         echo $render;
     }
 
-    public function movie(string $category, string $name = ''): void
+    public function movie(string $category, int $sort = 0, string $search = ''): void
     {
-        $cacheName = md5($this->superglobales->getSession()->get(Iptv::PREFIX . 'host')) . '_stream_movie_' . $category;
-        $cache = $this->cacheRaw->getCache($cacheName, '1 day');
+        $cacheName = md5(session_id()) . '_stream_movie_' . $category . '_' . $sort . md5($search);
+        $cache = $this->cacheRaw->get($cacheName, '1 day');
 
         if ($cache !== null) {
             echo $cache;
@@ -94,20 +81,64 @@ class StreamsController
             return;
         }
 
-        $streams = $this->iptv->getMovieStreams($category);
+        $filter = [];
+        if (is_numeric($category)) {
+            $filter['cat'] = $category;
+        }
+
+        if ($search !== '') {
+            $filter['search'] = $search;
+        }
+
+        $streams = $this->iptv->getMovieStreams($filter, $sort);
         $categories = $this->iptv->getMovieCategories();
+
+        if ($search !== '') {
+            $streams = array_filter($streams, function ($var) use ($search) {
+                return stripos($var->getName(), $search) !== false;
+            });
+        }
+
 
         $render = $this->twig->render(
             'streamsMovie.html.twig',
             [
                 'streams'    => $streams,
                 'type'       => 'movie',
+                'sort'       => $sort,
+                'search'     => $search,
+                'currentCat' => $category,
                 'categories' => $categories,
-                'catName'    => urldecode($name),
+                'catName'    => isset($categories[$category]) ? $categories[$category]->getName() : '',
             ]
         );
 
-        $this->cacheRaw->setCache($cacheName, $render);
+        //$this->cacheRaw->set($cacheName, $render);
+
+        echo $render;
+    }
+
+    public function movieInfo(string $id): void
+    {
+        $cacheName = md5(session_id()) . '_stream_movie_info_' . $id;
+        $cache = $this->cacheRaw->get($cacheName, '1 day');
+
+        if ($cache !== null) {
+            echo $cache;
+
+            return;
+        }
+
+        $movie = $this->iptv->getMovieInfo($id);
+
+        $render = $this->twig->render(
+            'streamsMovieInfo.html.twig',
+            [
+                'movie' => $movie
+            ]
+        );
+
+        //$this->cacheRaw->set($cacheName, $render);
 
         echo $render;
     }

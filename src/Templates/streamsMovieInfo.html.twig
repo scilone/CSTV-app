@@ -1,0 +1,169 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <style>
+        .container {
+            background: rgba(0,0,0,0.7);
+        }
+
+        .sidenav {
+            position: absolute;
+            z-index: 1;
+            overflow-x: hidden;
+            padding: 5em 0;
+        }
+
+        .sidenav a {
+            font-family: roboto;
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            color: #818181;
+            display: block;
+            letter-spacing: -0.5px;
+            line-height: 1em;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {padding-top: 15px;}
+            .sidenav a {font-size: 18px;}
+        }
+
+        .sidenav ul {
+            list-style-type:none;
+            padding: 0;
+        }
+
+        .sidenav a:focus{
+            color: #e8b12c !important;
+        }
+
+        p {
+            margin: 5px 0em !important;
+        }
+
+        /* STARS */
+        .star {
+            font-size: 14px;
+            width: 14px;
+            display: inline-block;
+            color: gray;
+        }
+        .star:after {
+            content:'\2605';
+            color: gold;
+            position: absolute;
+            margin-left: -12px;
+            overflow: hidden;
+        }
+        .star:last-child {
+            margin-right: 0;
+        }
+        .star:before {
+            content:'\2605';
+        }
+        .star.star-1:after {
+            width: 3px;
+        }
+        .star.star-2:after {
+            width: 4px;
+        }
+        .star.star-3:after {
+            width: 5px;
+        }
+        .star.star-4:after {
+            width: 6px;
+        }
+        .star.star-5:after {
+            width: 7px;
+        }
+        .star.star-6:after {
+            width: 8px;
+        }
+        .star.star-7:after {
+            width: 9px;
+        }
+        .star.star-8:after {
+            width: 10px;
+        }
+        .star.star-9:after {
+            width: 11px;
+        }
+        .star.star-empty:after, .star.star-0:after {
+            width: 0px;
+        }
+        .stars {
+            text-align: center;
+        }
+    </style>
+    <div class="container" style="height: 95%;margin: 2em 10px;">
+        <div class="row">
+            <div class="col-sm-12 col-xs-12">
+                <h1 style="text-align: center;">{{ movie.name }}</h1>
+            </div>
+            <div style="position: relative;">
+                <div class="sidenav col-sm-3 col-xs-3">
+                    <img src="{{ baseUrlAbsolute ~ movie.image }}" width="100" height="160" class="col-sm-12 col-xs-12">
+                    <div class="col-sm-12 col-xs-12">
+                        {% set rating5 = (6.3/2)|round(1)  %}
+                        {% set ratingDecimal = (rating5 - rating5|round(0, 'floor')) * 10  %}
+
+                        <div class="stars">
+                            {% if rating5 < 1 %}
+                                <span class="star star-{{ ratingDecimal }}"></span>
+                                <span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span>
+                            {% elseif rating5 < 2 %}
+                                <span class="star"></span>
+                                <span class="star star-{{ ratingDecimal }}"></span>
+                                <span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span>
+                            {% elseif rating5 < 3 %}
+                                <span class="star"></span><span class="star"></span>
+                                <span class="star star-{{ ratingDecimal }}"></span>
+                                <span class="star star-empty"></span><span class="star star-empty"></span>
+                            {% elseif rating5 < 4 %}
+                                <span class="star"></span><span class="star"></span><span class="star"></span>
+                                <span class="star star-{{ ratingDecimal }}"></span>
+                                <span class="star star-empty"></span>
+                            {% else %}
+                                <span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span>
+                                {% if rating5 == 5 %}
+                                    <span class="star"></span>
+                                {% else %}
+                                    <span class="star star-{{ ratingDecimal }}"></span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <a href="{{ movie.streamLink }}">
+                            <button class="btn btn-primary" style="width: 100%;">
+                                Play
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9">
+                    <p>Director: {{ movie.director }}</p>
+                    <p>Casting: {{ movie.cast }}</p>
+                    <p>Genre: {{ movie.genre }}</p>
+                    <p>Release date: {{ movie.releaseDate|date('d/m/Y') }}</p>
+                    <p>Duration: {{ movie.dureationFormatted }}</p>
+                    <p>format: {{ movie.video.width }} x {{ movie.video.height }}</p>
+                    <p>Resume: {{ movie.plot }}</p>
+                    <p>
+                        <iframe src="https://www.youtube.com/embed/{{ movie.youtubeTrailer }}?controls=0"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bg %}
+    <img class="body-bg" src="{{ baseUrlAbsolute ~ movie.backdropPath[0] }}">
+{% endblock %}

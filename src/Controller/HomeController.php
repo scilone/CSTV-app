@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Application\Iptv;
 use App\Application\Twig;
+use App\Infrastructure\SuperglobalesOO;
 
 class HomeController
 {
@@ -11,10 +13,35 @@ class HomeController
      */
     private $twig;
 
-    public function __construct(Twig $twig)
+    /**
+     * @var SuperglobalesOO
+     */
+    private $superglobales;
+
+    /**
+     * HomeController constructor.
+     *
+     * @param Twig            $twig
+     * @param SuperglobalesOO $superglobales
+     */
+    public function __construct(Twig $twig, SuperglobalesOO $superglobales)
     {
-        $this->twig = $twig;
+        $this->twig          = $twig;
+        $this->superglobales = $superglobales;
+
+        //Diamond
+        $this->superglobales->getSession()
+            ->set(Iptv::PREFIX . 'username', 'ZxOM8WzoYa')
+            ->set(Iptv::PREFIX . 'password', 'D2BGjJAm@V')
+            ->set(Iptv::PREFIX . 'host', 'http://netflexx.org:8000');
+
+        //Gold
+        /*$this->superglobales->getSession()
+            ->set(Iptv::PREFIX . 'username', '45165901520581')
+            ->set(Iptv::PREFIX . 'password', '45165901520581')
+            ->set(Iptv::PREFIX . 'host', 'http://iptv.smartgotv.com:8080');*/
     }
+
 
     public function main(): void
     {

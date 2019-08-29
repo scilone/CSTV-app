@@ -5,20 +5,26 @@ namespace App\Application;
 use App\Domain\Iptv\DTO\Category;
 use App\Domain\Iptv\DTO\Live;
 use App\Domain\Iptv\DTO\Movie;
+use App\Domain\Iptv\DTO\MovieInfo;
 use App\Domain\Iptv\DTO\Serie;
+use App\Domain\Iptv\DTO\Video;
+use App\Domain\Iptv\XcodeApi;
+use App\Infrastructure\CacheItem;
 use App\Infrastructure\CurlOO;
 use App\Infrastructure\SuperglobalesOO;
 use DateTimeImmutable;
 
 class Iptv
 {
-    const PREFIX = 'IPTV_';
-    const PLAYER_DEEPLINK = 'vlc://';
+    public const PREFIX = 'IPTV_';
+    public const PLAYER_DEEPLINK = 'vlc://';
+
+    private const CACHE_EXPIRE = '1 week';
 
     /**
-     * @var CurlOO
+     * @var XcodeApi
      */
-    private $curl;
+    private $xcodeApi;
 
     /**
      * @var SuperglobalesOO
@@ -26,71 +32,113 @@ class Iptv
     private $superglobales;
 
     /**
-     * Iptv constructor.
-     *
-     * @param CurlOO          $curl
-     * @param SuperglobalesOO $superglobales
+     * @var CacheItem
      */
-    public function __construct(CurlOO $curl, SuperglobalesOO $superglobales)
+    private $cache;
+
+    public function __construct(XcodeApi $xcodeApi, SuperglobalesOO $superglobales, CacheItem $cache)
     {
-        $this->curl          = $curl;
+        $this->xcodeApi      = $xcodeApi;
         $this->superglobales = $superglobales;
+        $this->cache         = $cache;
     }
 
-    private function getPostData(string $action = ''): array
+    private function getFormattedCategories(array $list): array
     {
-        return [
-            'username' => $this->superglobales->getSession()->get(self::PREFIX . 'username'),
-            'password' => $this->superglobales->getSession()->get(self::PREFIX . 'password'),
-            'action'   => $action
-        ];
-    }
-
-    private function getDataWithAction(string $action)
-    {
-        $this->curl
-            ->init($this->superglobales->getSession()->get(self::PREFIX . 'host') . '/player_api.php')
-            ->setOption(CURLOPT_RETURNTRANSFER, true)
-            ->setOption(CURLOPT_POST, true)
-            ->setOption(CURLOPT_POSTFIELDS, http_build_query($this->getPostData($action)));
-
-        return $this->curl->execute();
-    }
-
-    private function getCategories($action)
-    {
-        $list = json_decode($this->getDataWithAction($action));
-
+        $categories = [];
         foreach ($list as $data) {
-            yield new Category(
+            $categories[$data->category_id] = new Category(
                 $data->category_id,
                 $data->category_name,
                 $data->parent_id
             );
         }
+
+        return $categories;
     }
 
-    public function getLiveCategories()
+    private function getCachePrefix(): string
     {
-        return $this->getCategories('get_live_categories');
+        return md5($this->superglobales->getSession()->get(self::PREFIX . 'host') .
+                   $this->superglobales->getSession()->get(self::PREFIX . 'username'));
+    }
+
+    public function getLiveCategories(): array
+    {
+        $cacheKey = $this->getCachePrefix() . '_getLiveCategories';
+        $cachedData = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
+
+        if ($cachedData !== null) {
+            return $cachedData;
+        }
+
+        $data = $this->getFormattedCategories(
+            $this->xcodeApi->getLiveCategories(
+                $this->superglobales->getSession()->get(self::PREFIX . 'host'),
+                $this->superglobales->getSession()->get(self::PREFIX . 'username'),
+                $this->superglobales->getSession()->get(self::PREFIX . 'password')
+            )
+        );
+
+        $this->cache->set($cacheKey, $data);
+
+        return $data;
     }
 
     public function getMovieCategories()
     {
-        return $this->getCategories('get_vod_categories');
+        $cacheKey = $this->getCachePrefix() . '_getMovieCategories';
+        $cachedData = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
+
+        if ($cachedData !== null) {
+            return $cachedData;
+        }
+
+        $data = $this->getFormattedCategories(
+            $this->xcodeApi->getMovieCategories(
+                $this->superglobales->getSession()->get(self::PREFIX . 'host'),
+                $this->superglobales->getSession()->get(self::PREFIX . 'username'),
+                $this->superglobales->getSession()->get(self::PREFIX . 'password')
+            )
+        );
+
+        $this->cache->set($cacheKey, $data);
+
+        return $data;
     }
 
     public function getSerieCategories()
     {
-        return $this->getCategories('get_series_categories');
+        $cacheKey = $this->getCachePrefix() . '_getSerieCategories';
+        $cachedData = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
+
+        if ($cachedData !== null) {
+            return $cachedData;
+        }
+
+        $data = $this->getFormattedCategories(
+            $this->xcodeApi->getSerieCategories(
+                $this->superglobales->getSession()->get(self::PREFIX . 'host'),
+                $this->superglobales->getSession()->get(self::PREFIX . 'username'),
+                $this->superglobales->getSession()->get(self::PREFIX . 'password')
+            )
+        );
+
+        $this->cache->set($cacheKey, $data);
+
+        return $data;
     }
 
-    public function getLiveStreams($category)
+    public function getLiveStreams(array $filter, int $sorted)
     {
-        $list = json_decode($this->getDataWithAction('get_live_streams'));
+        $list = $this->xcodeApi->getLiveStreams(
+            $this->superglobales->getSession()->get(self::PREFIX . 'host'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'username'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'password')
+        );
 
         foreach ($list as $data) {
-            if (is_numeric($category) && $data->category_id != $category) {
+            if (isset($filter['cat']) && $data->category_id != $filter['cat']) {
                 continue;
             }
 
@@ -103,7 +151,7 @@ class Iptv
             $img = '/asset/img/' . base64_encode($data->stream_icon ?? '');
 
             $name = $data->name ?? '';
-            if (is_numeric($category)) {
+            if (isset($filter['cat'])) {
                 $name = trim(preg_replace('#\|\w+\|#', '', $name));
             }
 
@@ -125,32 +173,25 @@ class Iptv
         }
     }
 
-    public function getMovieStreams($category): array
+    public function getMovieStreams(array $filter, int $sorted = 0): array
     {
-        $list = json_decode($this->getDataWithAction('get_vod_streams'));
+        $cacheKey = $this->getCachePrefix() . '_getMovieStreams_' . $sorted . '_' . http_build_query($filter);
+        $cachedData = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
 
-        if ($category === 'recently') {
-            $listTmp = [];
-
-            foreach ($list as $data) {
-                $listTmp[$data->added] = $data;
-            }
-
-            krsort($listTmp);
-            $list = $listTmp;
+        if ($cachedData !== null) {
+            return $cachedData;
         }
 
-        $i = 0;
+        $list = $this->xcodeApi->getMovieStreams(
+            $this->superglobales->getSession()->get(self::PREFIX . 'host'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'username'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'password')
+        );
+
         $return = [];
         foreach ($list as $data) {
-            if (is_numeric($category) && $data->category_id != $category) {
+            if (isset($filter['cat']) && $data->category_id != $filter['cat']) {
                 continue;
-            }
-
-            $i++;
-
-            if ($category === 'recently' && $i > 100) {
-                return $return;
             }
 
             $streamLink = self::PLAYER_DEEPLINK .
@@ -163,11 +204,29 @@ class Iptv
             $img = '/asset/img/' . base64_encode($data->stream_icon ?? '');
 
             $name = $data->name ?? '';
-            if (is_numeric($category)) {
+            if (isset($filter['cat'])) {
                 $name = trim(preg_replace('#\|\w+\|#', '', $name));
             }
 
-            $return[] = new Movie(
+            switch ($sorted) {
+                case 1:
+                case 2:
+                    $key = strtolower($name);
+                    break;
+                case 3:
+                case 4:
+                    $key = number_format($data->rating_5based ?? 0, 1);
+                    break;
+                case 5:
+                case 6:
+                    $key = $data->added;
+                    break;
+                default:
+                    $key = '';
+            }
+            $key .= $data->stream_id;
+
+            $return[$key] = new Movie(
                 (int) $data->num ?? 0,
                 (string) $name,
                 (string) $data->stream_type ?? '',
@@ -184,12 +243,28 @@ class Iptv
             );
         }
 
+        if ($sorted > 0) {
+            if ($sorted % 2 === 0) {
+                ksort($return);
+            } else {
+                krsort($return);
+            }
+        }
+
+        $return = array_values($return);
+
+        $this->cache->set($cacheKey, $return);
+
         return $return;
     }
 
     public function getSerieStreams($category)
     {
-        $list = json_decode($this->getDataWithAction('get_series'));
+        $list = $this->xcodeApi->getSerieStreams(
+            $this->superglobales->getSession()->get(self::PREFIX . 'host'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'username'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'password')
+        );
 
         foreach ($list as $data) {
             if (is_numeric($category) && $data->category_id != $category) {
@@ -200,7 +275,7 @@ class Iptv
 
             $backdrop = [];
             foreach ($data->backdrop_path as $value) {
-                $backdrop[] = 'asset/img/' . base64_encode($value);
+                $backdrop[] = '/asset/img/' . base64_encode($value);
             }
 
             yield new Serie(
@@ -222,5 +297,68 @@ class Iptv
                 (int) $data->category_id ?? 0
             );
         }
+    }
+
+    public function getMovieInfo(int $id)
+    {
+        $cacheKey = $this->getCachePrefix() . '_getMovieInfo_' . $id;
+        $cachedData = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
+
+        if ($cachedData !== null) {
+            return $cachedData;
+        }
+
+        $info = $this->xcodeApi->getMovieInfo(
+            $this->superglobales->getSession()->get(self::PREFIX . 'host'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'username'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'password'),
+            $id
+        );
+
+        $img = '/asset/img/' . base64_encode($info['info']->movie_image ?? '');
+
+        $backdrop = [];
+        foreach ($info['info']->backdrop_path as $value) {
+            $backdrop[] = '/asset/img/' . base64_encode($value);
+        }
+
+        $streamLink = self::PLAYER_DEEPLINK .
+                      $this->superglobales->getSession()->get(self::PREFIX . 'host') .
+                      '/movie' .
+                      '/' . $this->superglobales->getSession()->get(self::PREFIX . 'username') .
+                      '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
+                      '/' . $info['movie_data']->stream_id . '.' . $info['movie_data']->container_extension;
+
+        $data = new MovieInfo(
+            $img,
+            $backdrop,
+            (int) $info['info']->duration_secs ?? 0,
+            (string) $info['info']->duration ?? '',
+            new Video(
+                (string) $info['info']->video->codec_name ?? '',
+                (int) $info['info']->video->width ?? 0,
+                (int) $info['info']->video->height ?? 0
+            ),
+            (int) $info['info']->bitrate ?? 0,
+            (string) $info['info']->youtube_trailer ?? '',
+            (string) $info['info']->genre ?? '',
+            (string) $info['info']->plot ?? '',
+            (string) $info['info']->cast ?? '',
+            (float) $info['info']->rating ?? 0,
+            (string) $info['info']->director ?? '',
+            new DateTimeImmutable($info['info']->releasedate ?? 0),
+            (int) $info['movie_data']->stream_id ?? 0,
+            (string) $info['movie_data']->name ?? '',
+            DateTimeImmutable::createFromFormat('U', $info['movie_data']->added ?? 0),
+            (int) $info['movie_data']->category_id ?? 0,
+            (string) $info['movie_data']->container_extension ?? '',
+            (int) $info['movie_data']->custom_sid ?? 0,
+            (string) $info['movie_data']->direct_source ?? '',
+            $streamLink
+        );
+
+        $this->cache->set($cacheKey, $data);
+
+        return $data;
     }
 }

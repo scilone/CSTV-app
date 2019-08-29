@@ -7,23 +7,24 @@ class Loader
     const SERVICES = [
         Service::CONTROLLER_TEST => [
             Service::APPLICATION_TWIG,
-            Service::APPLICATION_CACHE_RAW,
+            Service::INFRASTRUCTURE_CACHE_RAW,
             Param::HELLO_WORLD,
             Service::INFRASTRUCTURE_SUPERGLOBALES
         ],
         Service::CONTROLLER_HOME => [
             Service::APPLICATION_TWIG,
+            Service::INFRASTRUCTURE_SUPERGLOBALES,
         ],
         Service::CONTROLLER_CATEGORY => [
             Service::APPLICATION_TWIG,
             Service::APPLICATION_IPTV,
-            Service::APPLICATION_CACHE_RAW,
+            Service::INFRASTRUCTURE_CACHE_RAW,
             Service::INFRASTRUCTURE_SUPERGLOBALES,
         ],
         Service::CONTROLLER_STREAM => [
             Service::APPLICATION_TWIG,
             Service::APPLICATION_IPTV,
-            Service::APPLICATION_CACHE_RAW,
+            Service::INFRASTRUCTURE_CACHE_RAW,
             Service::INFRASTRUCTURE_SUPERGLOBALES,
         ],
 
@@ -31,16 +32,26 @@ class Loader
             Param::TWIG_GLOBAL_VARS,
         ],
         Service::APPLICATION_IPTV => [
+            Service::DOMAIN_IPTV_XCODE_API,
+            Service::INFRASTRUCTURE_SUPERGLOBALES,
+            Service::INFRASTRUCTURE_CACHE_ITEM
+        ],
+
+        Service::DOMAIN_IPTV_XCODE_API => [
             Service::INFRASTRUCTURE_CURL,
-            Service::INFRASTRUCTURE_SUPERGLOBALES,
+            Service::INFRASTRUCTURE_CACHE_RAW
         ],
-        Service::APPLICATION_CACHE_RAW => [
-            Service::INFRASTRUCTURE_SUPERGLOBALES,
-        ],
+
 
         Service::INFRASTRUCTURE_CACHE_RAW => [
             Service::INFRASTRUCTURE_SUPERGLOBALES,
+            Param::PREFIX_CACHE
         ],
+        Service::INFRASTRUCTURE_CACHE_ITEM => [
+            Service::INFRASTRUCTURE_CACHE_RAW,
+            Service::INFRASTRUCTURE_SUPERGLOBALES,
+        ],
+
     ];
 
     const NO_LAZY_LOADING = [
