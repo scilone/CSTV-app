@@ -207,11 +207,11 @@
     <div class="sidenav col-sm-3 col-xs-3 col-md-2">
         <ul>
             <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all"
-               style="{% if catName == 'all' %}color:white{% endif %}">
+               style="{% if catName == '' and sort != 5 %}color:white{% endif %}">
                 <li>ALL</li>
             </a>
             <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all/5"
-               style="{% if catName == 'all' %}color:white{% endif %}">
+               style="{% if catName == '' and sort == 5 %}color:white{% endif %}">
                 <li>RECENTLY ADDED</li>
             </a>
         {% for category in categories %}
@@ -223,11 +223,15 @@
         </ul>
     </div>
     <div id="flex" class="flex-images col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9 col-md-offset-2 col-md-10">
-        {% for stream in streams|slice(0, 1000) %}
+        {% if catName == '' and sort == 5 %}
+            {% set sliceMax = 100 %}
+        {% else %}
+            {% set sliceMax = 500 %}
+        {% endif %}
+        {% for stream in streams|slice(0, sliceMax) %}
             <a href="{{ baseUrlAbsolute }}/streams/movieInfo/{{ stream.streamid }}"
                tabindex="1"
                class="item-link"
-               data-long-press-delay="500"
                data-name="{{ stream.name|lower }}"
                data-added="{{ stream.added.timestamp }}"
                data-rate="{{ stream.rating5based }}">

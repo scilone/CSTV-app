@@ -2,13 +2,54 @@
 
 {% block extraACss %}
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300">
-    <link rel="stylesheet" href="https://cdn.rawgit.com/yahoo/pure-release/v0.6.0/pure-min.css">
     <link rel="stylesheet" href="{{ baseUrlAbsolute }}/css/jquery.flex-images.css">
 {% endblock %}
 
 {% block body %}
+    <div id="searchPopin" class="hide">
+        <div class="container" style="margin-top: 1em">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <div class="input-group">
+                        <input id="inputSearch" type="text" class="form-control" placeholder="Search" value="{{ search }}">
+                        <span id="goSearch" class="input-group-addon"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <style>
-        #demo55 .over {
+        #searchPopin {
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            z-index: 11;
+            background: rgba(0,0,0,0.7);
+        }
+
+        #header {
+            width: 100%;
+            z-index: 10;
+            position: fixed;
+            background: white;
+            padding: 1em;
+            font-weight: bold;
+        }
+        body {
+            margin: 0;
+        }
+
+        #flex {
+            padding-top: 5em;
+            padding-left: 2em;
+        }
+
+        #flex .over {
+            line-height: 1.5em;
+            letter-spacing: -0.5px;
+            font-weight: bold;
+            font-family: roboto;
             position: absolute;
             bottom: 0;
             left: 0;
@@ -16,9 +57,21 @@
             padding: 4px 6px;
             font-size: 13px;
             color: #fff;
-            background: #222;
             background: rgba(0,0,0,0.7);
             text-align: center;
+        }
+
+        .flex-images .item img {
+            width: 100px;
+            height: 160px;
+        }
+
+        #search {
+            margin: 0 5px;
+        }
+
+        #flex a:focus > .item {
+            border: 1px solid #e8b12c;
         }
 
         /* STARS */
@@ -32,7 +85,7 @@
             content:'\2605';
             color: gold;
             position: absolute;
-            margin-left: -11px;
+            margin-left: -12px;
             overflow: hidden;
         }
         .star:last-child {
@@ -42,68 +95,236 @@
             content:'\2605';
         }
         .star.star-1:after {
-            width: 2px;
-        }
-        .star.star-2:after {
             width: 3px;
         }
-        .star.star-3:after {
+        .star.star-2:after {
             width: 4px;
         }
-        .star.star-4:after {
+        .star.star-3:after {
             width: 5px;
         }
-        .star.star-5:after {
+        .star.star-4:after {
             width: 6px;
         }
-        .star.star-6:after {
+        .star.star-5:after {
             width: 7px;
         }
-        .star.star-7:after {
+        .star.star-6:after {
             width: 8px;
         }
-        .star.star-8:after {
+        .star.star-7:after {
             width: 9px;
         }
-        .star.star-9:after {
+        .star.star-8:after {
             width: 10px;
         }
-        .star.star-empty:after {
+        .star.star-9:after {
+            width: 11px;
+        }
+        .star.star-empty:after, .star.star-0:after {
             width: 0px;
+        }
+
+
+        .sidenav {
+            height: 100%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding: 5em 0;
+        }
+
+        .sidenav a {
+            font-family: roboto;
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            color: #818181;
+            display: block;
+            letter-spacing: -0.5px;
+            line-height: 1em;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav ul {
+            list-style-type:none;
+            padding: 0;
+        }
+
+        .sidenav a:focus{
+            color: #e8b12c !important;
+        }
+
+        img:not([src]) {
+            visibility: hidden;
+        }
+
+        /* Fixes Firefox anomaly during image load */
+        @-moz-document url-prefix() {
+            img:-moz-loading {
+                visibility: hidden;
+            }
         }
     </style>
 
-<div id="demo55" class="flex-images">
-    <a href="http://google.fr">
-    <div class="item">
-        <img src="{{ baseUrlAbsolute }}/img/blank.gif" data-src="https://cstv.fr/app/asset/img/aHR0cDovL25ldGZsZXh4Lm9yZzo4MDAwL2ltYWdlcy84Z2Q3MWhwekhJRjNnQ2ttSkJ3VjVlZ3R1M2tfc21hbGwuanBn">
-        <div class="over">
-            John Wick 3
-            <div class="stars">
-                <span class="star"></span>
-                <span class="star"></span>
-                <span class="star"></span>
-                <span class="star star-5"></span>
-                <span class="star star-empty"></span>
+    <div id="header">
+        <div class="pull-left">
+            <button type="button" class="btn btn-secondary" tabindex="4">
+                <a href="{{ baseUrlAbsolute ~ homeUrlAbsolute }}">
+                    <i class="fa fa-home"></i>
+                </a>
+            </button>
+            {{ catName }}
+        </div>
+        <div class="pull-right">
+            <div class="btn-group" role="group">
+                <button id="sortByName" type="button" class="btn btn-secondary" tabindex="2">
+                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 2 %}1{% else %}2{% endif %}/{{ search }}">
+                        <i class="fa fa-sort-alpha-asc"></i>
+                    </a>
+                </button>
+                <button id="sortByRate" type="button" class="btn btn-secondary" tabindex="2">
+                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 3 %}4{% else %}3{% endif %}/{{ search }}">
+                        <i class="fa fa-star"></i>
+                    </a>
+                </button>
+                <button id="sortByAdded"type="button" class="btn btn-secondary" tabindex="2">
+                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 6 %}6{% else %}5{% endif %}/{{ search }}">
+                        <i class="fa fa-clock-o"></i>
+                    </a>
+                </button>
             </div>
+            <button id="search" type="button" class="btn btn-secondary" tabindex="3">
+                <i class="fa fa-search"></i>
+            </button>
         </div>
     </div>
-    </a>
-</div>
+    <div class="sidenav col-sm-3 col-xs-3 col-md-2">
+        <ul>
+            <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all"
+               style="{% if catName == '' and sort != 5 %}color:white{% endif %}">
+                <li>ALL</li>
+            </a>
+            <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all/5"
+               style="{% if catName == '' and sort == 5 %}color:white{% endif %}">
+                <li>RECENTLY ADDED</li>
+            </a>
+            {% for category in categories %}
+                <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}"
+                   style="{% if catName == category.name %}color:white{% endif %}">
+                    <li>{{ category.name }}</li>
+                </a>
+            {% endfor %}
+        </ul>
+    </div>
+    <div id="flex" class="flex-images col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9 col-md-offset-2 col-md-10">
+        {% if catName == '' and sort == 5 %}
+            {% set sliceMax = 100 %}
+        {% else %}
+            {% set sliceMax = 500 %}
+        {% endif %}
+        {% for stream in streams|slice(0, sliceMax) %}
+            <a href="{{ baseUrlAbsolute }}/streams/serieInfo/{{ stream.serieId }}"
+               tabindex="1"
+               class="item-link"
+               data-name="{{ stream.name|lower }}"
+               data-added="{{ stream.added.timestamp }}"
+               data-rate="{{ stream.rating5based }}">
+                <div class="item">
+                    <img {% if loop.index > 50 %}data-{% endif %}src="{{ baseUrlAbsolute ~ stream.cover }}"
+                         alt="{{ stream.name }}"
+                         title="{{ stream.name }}">
+                    <div class="over">
+                        {{ stream.name }}
+
+                        {% set ratingDecimal = (stream.rating5based - stream.rating5based|round(0, 'floor')) * 10  %}
+
+                        <div class="stars">
+                            {% if stream.rating5based < 1 %}
+                                <span class="star star-{{ ratingDecimal }}"></span>
+                                <span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span>
+                            {% elseif stream.rating5based < 2 %}
+                                <span class="star"></span>
+                                <span class="star star-{{ ratingDecimal }}"></span>
+                                <span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span>
+                            {% elseif stream.rating5based < 3 %}
+                                <span class="star"></span><span class="star"></span>
+                                <span class="star star-{{ ratingDecimal }}"></span>
+                                <span class="star star-empty"></span><span class="star star-empty"></span>
+                            {% elseif stream.rating5based < 4 %}
+                                <span class="star"></span><span class="star"></span><span class="star"></span>
+                                <span class="star star-{{ ratingDecimal }}"></span>
+                                <span class="star star-empty"></span>
+                            {% else %}
+                                <span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span>
+                                {% if stream.rating5based == 5 %}
+                                    <span class="star"></span>
+                                {% else %}
+                                    <span class="star star-{{ ratingDecimal }}"></span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block js %}
-<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-<script src="{{ baseUrlAbsolute }}/js/jquery.flex-images.js"></script>
-<script>
-    $('#demo55').flexImages({ rowHeight: 230, rowWidth: 150 });
+    <script>
+        /*$('#sortByName').click(function() {
+            $("#flex").html(sortAlphabetically($('.item-link'), 'name', $(this).data('toggle')));
+            $(this).data('toggle', $(this).data('toggle') == 1 ? 0 : 1);
+        })
+        $('#sortByAdded').click(function() {
+            $("#flex").html(sortAlphabetically($('.item-link'), 'added', $(this).data('toggle')));
+            $(this).data('toggle', $(this).data('toggle') == 1 ? 0 : 1);
+        });
+        $('#sortByRate').click(function() {
+            $("#flex").html(sortAlphabetically($('.item-link'), 'rate', $(this).data('toggle')));
+            $(this).data('toggle', $(this).data('toggle') == 1 ? 0 : 1);
+        });*/
 
-    const screenSize = $(document).width();
-    const imgWidth = 165; //img with + margin
-    const nbElementByRow = screenSize / imgWidth;
-    const decimalElementRow = screenSize / imgWidth - Math.floor(screenSize / imgWidth);
-    const padding = imgWidth / 2 * decimalElementRow
+        window.lazyLoadOptions = {
+            threshold: 0
+        };
 
-    $('#demo55').css('padding', '0 ' + padding + 'px')
-</script>
+        $('#search').click(function () {
+            $('#searchPopin').removeClass('hide');
+            $('#inputSearch').focus();
+        });
+
+        /*$('#inputSearch').on('input', function() {
+            const search = $(this).val().toLowerCase();
+            $('.item-link').each(function () {
+                if ($(this).data('name').search(search) >= 0) {
+                    $(this).removeClass('hide');
+                } else {
+                    $(this).addClass('hide');
+                }
+            })
+        });*/
+
+        $("#inputSearch").on('keyup', function (e) {
+            if (e.keyCode === 13) {
+                location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{{ sort }}/' + $("#inputSearch").val();
+            }
+        });
+
+        $('#goSearch, #searchPopin').click(function() {
+            location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{{ sort }}/' + $("#inputSearch").val();
+        });
+
+        $('.item-link').on('long-press', function(e) {
+            alert('thisislong');
+        });
+    </script>
+    <script src="{{ baseUrlAbsolute }}/js/long-press-event.min.js"></script>
+    <script async src="{{ baseUrlAbsolute }}/js/lazyload.min.js"></script>
 {% endblock %}

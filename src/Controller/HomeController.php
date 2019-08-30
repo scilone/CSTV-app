@@ -31,8 +31,8 @@ class HomeController
 
         //Diamond
         $this->superglobales->getSession()
-            ->set(Iptv::PREFIX . 'username', 'ZxOM8WzoYa')
-            ->set(Iptv::PREFIX . 'password', 'D2BGjJAm@V')
+            ->set(Iptv::PREFIX . 'username', 'eAV7mQ8oNt')
+            ->set(Iptv::PREFIX . 'password', 'AK0WeU7u2Z')
             ->set(Iptv::PREFIX . 'host', 'http://netflexx.org:8000');
 
         //Gold

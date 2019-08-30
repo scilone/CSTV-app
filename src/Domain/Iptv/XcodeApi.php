@@ -101,4 +101,9 @@ class XcodeApi
     {
         return $this->get($host, $username, $password, 'get_vod_info', ['vod_id' => $id]);
     }
+
+    public function getSerieInfo(string $host, string $username, string $password, int $id): array
+    {
+        return $this->get($host, $username, $password, 'get_series_info', ['series_id' => $id]);
+    }
 }

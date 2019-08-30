@@ -44,28 +44,23 @@ class StreamsController
         $this->superglobales = $superglobales;
     }
 
-    public function live(string $category, string $name = ''): void
+    public function live(string $category): void
     {
-        $cacheName = md5($this->superglobales->getSession()->get(Iptv::PREFIX . 'host')) . '_stream_live_' . $category;
-        $cache = $this->cacheRaw->get($cacheName, '1 day');
-
-        if ($cache !== null) {
-            echo $cache;
-
-            return;
+        $filter = [];
+        if (is_numeric($category)) {
+            $filter['cat'] = $category;
         }
 
-        $streams = $this->iptv->getLiveStreams($category);
+        $streams    = $this->iptv->getLiveStreams($filter);
+        $categories = $this->iptv->getLiveCategories();
 
         $render = $this->twig->render(
             'streamsLive.html.twig',
             [
                 'streams' => $streams,
-                'catName' => urldecode($name),
+                'catName'    => isset($categories[$category]) ? $categories[$category]->getName() : '',
             ]
         );
-
-        //$this->cacheRaw->set($cacheName, $render);
 
         echo $render;
     }
@@ -73,15 +68,6 @@ class StreamsController
     public function movie(string $category, int $sort = 0, string $search = ''): void
     {
         $search = urldecode($search);
-
-        $cacheName = md5(session_id()) . '_stream_movie_' . $category . '_' . $sort . md5($search);
-        $cache = $this->cacheRaw->get($cacheName, '1 day');
-
-        if ($cache !== null) {
-            echo $cache;
-
-            return;
-        }
 
         $filter = [];
         if (is_numeric($category)) {
@@ -110,61 +96,62 @@ class StreamsController
                 'search'     => $search,
                 'currentCat' => $category,
                 'categories' => $categories,
-                'catName'    => isset($categories[$category]) ? $categories[$category]->getName() : 'All',
+                'catName'    => isset($categories[$category]) ? $categories[$category]->getName() : '',
             ]
         );
-
-        //$this->cacheRaw->set($cacheName, $render);
 
         echo $render;
     }
 
     public function movieInfo(string $id): void
     {
-        $cacheName = md5(session_id()) . '_stream_movie_info_' . $id;
-        $cache = $this->cacheRaw->get($cacheName, '1 day');
-
-        if ($cache !== null) {
-            echo $cache;
-
-            return;
-        }
-
         $movie = $this->iptv->getMovieInfo($id);
 
+        echo $this->twig->render('streamsMovieInfo.html.twig', ['movie' => $movie]);
+    }
+
+    public function serieInfo(string $id): void
+    {
+        $serie = $this->iptv->getSerieInfo($id);
+
+        echo $this->twig->render('streamsSerieInfo.html.twig', ['serie' => $serie]);
+    }
+
+    public function serie(string $category, int $sort = 0, string $search = ''): void
+    {
+        $search = urldecode($search);
+
+        $filter = [];
+        if (is_numeric($category)) {
+            $filter['cat'] = $category;
+        }
+
+        if ($search !== '') {
+            $filter['search'] = $search;
+        }
+
+        $streams = $this->iptv->getSerieStreams($filter, $sort);
+        $categories = $this->iptv->getSerieCategories();
+
+        if ($search !== '') {
+            $streams = array_filter($streams, function ($var) use ($search) {
+                return stripos($var->getName(), $search) !== false;
+            });
+        }
+
         $render = $this->twig->render(
-            'streamsMovieInfo.html.twig',
+            'streamsSerie.html.twig',
             [
-                'movie' => $movie
+                'streams'    => $streams,
+                'type'       => 'serie',
+                'sort'       => $sort,
+                'search'     => $search,
+                'currentCat' => $category,
+                'categories' => $categories,
+                'catName'    => isset($categories[$category]) ? $categories[$category]->getName() : '',
             ]
         );
 
-        //$this->cacheRaw->set($cacheName, $render);
-
         echo $render;
-    }
-
-    public function serie(string $category, string $name = ''): void
-    {
-        echo $this->twig->render('streamsSerie.html.twig');
-        return;
-        echo '
-        <a href="vlc://http://netflexx.org:8000/1Vjfv6!P!N/yDD38Z5ObO/11705">LIVE</a>
-        <a href="vlc://http://netflexx.org:8000/movie/1Vjfv6!P!N/yDD38Z5ObO/184204.mkv">MOVIE</a>
-        <a href="vlc://http://netflexx.org:8000/series/1Vjfv6!P!N/yDD38Z5ObO/91785.mkv">SERIE</a>
-        <a href="vlc://http://netflexx.org:8000/movie/1Vjfv6!P!N/yDD38Z5ObO/184204.mkv" target="_blank">_blank</a>
-        <a href="vlc://http://netflexx.org:8000/movie/1Vjfv6!P!N/yDD38Z5ObO/184204.mkv" target="_parent">_parent</a>
-        <a href="vlc://http://netflexx.org:8000/movie/1Vjfv6!P!N/yDD38Z5ObO/184204.mkv" target="_self">_self</a>
-        <a href="vlc://http://netflexx.org:8000/movie/1Vjfv6!P!N/yDD38Z5ObO/184204.mkv" target="_top">_top</a>
-        ';
-        /*$streams = $this->iptv->getSerieStreams();
-
-        echo $this->twig->render(
-            'category.html.twig',
-            [
-                'categories' => $categories,
-                'type'       => 'movie',
-            ]
-        );*/
     }
 }
