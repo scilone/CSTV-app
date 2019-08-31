@@ -139,9 +139,14 @@
                                 {% endif %}
                             {% endif %}
                         </div>
+                        <a href="{{ vlcDeeplink ~ movie.streamLink }}">
+                            <button class="btn btn-success" style="width: 100%;">
+                                Play
+                            </button>
+                        </a>
                         <a href="{{ movie.streamLink }}">
                             <button class="btn btn-primary" style="width: 100%;">
-                                Play
+                                Download
                             </button>
                         </a>
                     </div>
@@ -181,7 +186,7 @@
                             <td>
                                 <iframe src="https://www.youtube.com/embed/{{ movie.youtubeTrailer }}?controls=0"
                                         width="100%"
-                                        style="height: 20em"
+                                        style="height: 10em"
                                         frameborder="0"
                                         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                                         allowfullscreen></iframe>

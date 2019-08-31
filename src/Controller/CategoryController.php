@@ -7,7 +7,7 @@ use App\Application\Twig;
 use App\Infrastructure\CacheRaw;
 use App\Infrastructure\SuperglobalesOO;
 
-class CategoryController
+class CategoryController extends SecurityController
 {
     /**
      * @var Twig
@@ -43,6 +43,8 @@ class CategoryController
         $this->iptv          = $iptv;
         $this->cacheRaw      = $cacheRaw;
         $this->superglobales = $superglobales;
+
+        parent::__construct($superglobales);
     }
 
     public function live(): void

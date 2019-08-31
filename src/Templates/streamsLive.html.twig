@@ -82,14 +82,14 @@
 
         @media only screen and (max-width: 700px) {
             .responsive {
-                width: 49.99999%;
+                width: 20%;
                 margin: 6px 0;
             }
         }
 
         @media only screen and (max-width: 500px) {
             .responsive {
-                width: 100%;
+                width: 33.3%;
             }
         }
 
@@ -135,7 +135,7 @@
                         {{ stream.name|length > 20 ? stream.name|slice(0, 20) ~ '..' : stream.name  }}
                     </div>
                 {% else %}
-                    <a href="{{ stream.streamLink }}" tabindex="1">
+                    <a href="{{ vlcDeeplink ~ stream.streamLink }}" tabindex="1">
                         <img src="{{ baseUrlAbsolute ~ stream.streamIcon }}"
                              alt="{{ stream.name }}"
                              title="{{ stream.name }}"
@@ -150,10 +150,10 @@
             <div class="bonus hide">
                 <ul>
                     <li>
-                        <a href="{{ stream.streamLink }}">HD</a>
+                        <a href="{{ vlcDeeplink ~ stream.streamLink }}">HD</a>
                     </li>
                     <li>
-                        <a href="{{ stream.streamLink }}">SD</a>
+                        <a href="{{ vlcDeeplink ~ stream.streamLink }}">SD</a>
                     </li>
                 </ul>
             </div>

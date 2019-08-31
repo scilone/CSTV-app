@@ -7,7 +7,7 @@ use App\Application\Twig;
 use App\Infrastructure\CacheRaw;
 use App\Infrastructure\SuperglobalesOO;
 
-class StreamsController
+class StreamsController extends SecurityController
 {
     /**
      * @var Twig
@@ -42,6 +42,8 @@ class StreamsController
         $this->iptv          = $iptv;
         $this->cacheRaw      = $cacheRaw;
         $this->superglobales = $superglobales;
+
+        parent::__construct($superglobales);
     }
 
     public function live(string $category): void

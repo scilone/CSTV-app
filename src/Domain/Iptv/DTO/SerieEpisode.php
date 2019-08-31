@@ -92,6 +92,11 @@ class SerieEpisode
     private $bitrate;
 
     /**
+     * @var string
+     */
+    private $streamLink;
+
+    /**
      * SerieEpisode constructor.
      *
      * @param int               $id
@@ -111,6 +116,7 @@ class SerieEpisode
      * @param int               $durationSecondes
      * @param string            $dureationFormatted
      * @param int               $bitrate
+     * @param string            $streamLink
      */
     public function __construct(
         int $id,
@@ -129,7 +135,8 @@ class SerieEpisode
         string $name,
         int $durationSecondes,
         string $dureationFormatted,
-        int $bitrate
+        int $bitrate,
+        string $streamLink
     ) {
         $this->id                 = $id;
         $this->episodeNum         = $episodeNum;
@@ -148,6 +155,7 @@ class SerieEpisode
         $this->durationSecondes   = $durationSecondes;
         $this->dureationFormatted = $dureationFormatted;
         $this->bitrate            = $bitrate;
+        $this->streamLink         = $streamLink;
     }
 
     /**
@@ -284,5 +292,13 @@ class SerieEpisode
     public function getBitrate(): int
     {
         return $this->bitrate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStreamLink(): string
+    {
+        return $this->streamLink;
     }
 }

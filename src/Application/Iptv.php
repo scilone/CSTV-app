@@ -7,6 +7,9 @@ use App\Domain\Iptv\DTO\Live;
 use App\Domain\Iptv\DTO\Movie;
 use App\Domain\Iptv\DTO\MovieInfo;
 use App\Domain\Iptv\DTO\Serie;
+use App\Domain\Iptv\DTO\SerieEpisode;
+use App\Domain\Iptv\DTO\SerieInfo;
+use App\Domain\Iptv\DTO\SerieSeason;
 use App\Domain\Iptv\DTO\Video;
 use App\Domain\Iptv\XcodeApi;
 use App\Infrastructure\CacheItem;
@@ -17,7 +20,6 @@ use DateTimeImmutable;
 class Iptv
 {
     public const PREFIX = 'IPTV_';
-    public const PLAYER_DEEPLINK = 'vlc://';
 
     private const CACHE_EXPIRE = '1 week';
 
@@ -150,8 +152,7 @@ class Iptv
                 continue;
             }
 
-            $streamLink = self::PLAYER_DEEPLINK .
-                          $this->superglobales->getSession()->get(self::PREFIX . 'host') .
+            $streamLink = $this->superglobales->getSession()->get(self::PREFIX . 'host') .
                           '/' . $this->superglobales->getSession()->get(self::PREFIX . 'username') .
                           '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
                           '/' . $data->stream_id;
@@ -216,8 +217,7 @@ class Iptv
                 continue;
             }
 
-            $streamLink = self::PLAYER_DEEPLINK .
-                          $this->superglobales->getSession()->get(self::PREFIX . 'host') .
+            $streamLink = $this->superglobales->getSession()->get(self::PREFIX . 'host') .
                           '/movie' .
                           '/' . $this->superglobales->getSession()->get(self::PREFIX . 'username') .
                           '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
@@ -340,7 +340,7 @@ class Iptv
             }
 
             if (strtotime($dateRelease) === false) {
-                $dateRelease = 'now';
+                $dateRelease = null;
             }
 
 
@@ -402,8 +402,7 @@ class Iptv
             $backdrop[] = '/asset/img/' . base64_encode($value);
         }
 
-        $streamLink = self::PLAYER_DEEPLINK .
-                      $this->superglobales->getSession()->get(self::PREFIX . 'host') .
+        $streamLink = $this->superglobales->getSession()->get(self::PREFIX . 'host') .
                       '/movie' .
                       '/' . $this->superglobales->getSession()->get(self::PREFIX . 'username') .
                       '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
@@ -426,7 +425,7 @@ class Iptv
             (string) $info['info']->cast ?? '',
             (float) $info['info']->rating ?? 0,
             (string) $info['info']->director ?? '',
-            new DateTimeImmutable($info['info']->releasedate ?? 0),
+            new DateTimeImmutable($info['info']->releasedate ?? null),
             (int) $info['movie_data']->stream_id ?? 0,
             (string) $info['movie_data']->name ?? '',
             DateTimeImmutable::createFromFormat('U', $info['movie_data']->added ?? 0),
@@ -445,63 +444,102 @@ class Iptv
     public function getSerieInfo(int $id)
     {
         $cacheKey   = $this->superglobales->getSession()->get(self::PREFIX . 'host') . '_getSerieInfo_' . $id;
-        $cachedData = $this->cache->get($cacheKey);
+        $cachedData = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
 
         if ($cachedData !== null) {
             return $cachedData;
         }
 
-        $info = $this->xcodeApi->getSerieInfo(
+        $data = $this->xcodeApi->getSerieInfo(
             $this->superglobales->getSession()->get(self::PREFIX . 'host'),
             $this->superglobales->getSession()->get(self::PREFIX . 'username'),
             $this->superglobales->getSession()->get(self::PREFIX . 'password'),
             $id
         );
 
-        var_dump($info);
-        exit;
+        $dataSeasons  = $data['seasons'];
+        $info     = $data['info'];
+        $dataEpisodes = $data['episodes'];
 
-        $img = '/asset/img/' . base64_encode($info['info']->movie_image ?? '');
+        $img = '/asset/img/' . base64_encode($info->cover ?? '');
 
         $backdrop = [];
-        foreach ($info['info']->backdrop_path as $value) {
+        foreach ($info->backdrop_path as $value) {
             $backdrop[] = '/asset/img/' . base64_encode($value);
         }
 
-        $streamLink = self::PLAYER_DEEPLINK .
-                      $this->superglobales->getSession()->get(self::PREFIX . 'host') .
-                      '/movie' .
-                      '/' . $this->superglobales->getSession()->get(self::PREFIX . 'username') .
-                      '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
-                      '/' . $info['movie_data']->stream_id . '.' . $info['movie_data']->container_extension;
+        $seasons = [];
+        foreach ($dataSeasons as $key => $dataSeason) {
+            $seasons[] = new SerieSeason(
+                new DateTimeImmutable($dataSeason->air_date ?? null),
+                (int) $dataSeason->episode_count ?? 0,
+                (int) $dataSeason->id ?? 0,
+                (string) $dataSeason->name ?? '',
+                (string) $dataSeason->overview ?? '',
+                (int) $dataSeason->season_number ?? 0,
+                '/asset/img/' . base64_encode($dataSeason->cover ?? ''),
+                '/asset/img/' . base64_encode($dataSeason->coverBig ?? '')
+            );
+        }
 
-        $data = new MovieInfo(
+        $episodes = [];
+        foreach ($dataEpisodes as $seasonNumber => $dataEpisode) {
+            foreach ($dataEpisode as $episode) {
+                $episodeInfo = $episode->info;
+
+                $streamLink = $this->superglobales->getSession()->get(self::PREFIX . 'host') .
+                              '/series' .
+                              '/' . $this->superglobales->getSession()->get(self::PREFIX . 'username') .
+                              '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
+                              '/' . $episode->id . '.' . $episode->container_extension;
+
+                $episodes[$seasonNumber] = new SerieEpisode(
+                    (int) $episode->id ?? 0,
+                    (int) $episode->episode_num ?? 0,
+                    (string) $episode->title ?? '',
+                    (string) $episode->container_extension ?? '',
+                    (int) $episode->custom_sid ?? 0,
+                    DateTimeImmutable::createFromFormat('U', $episode->added ?? 0),
+                    (string) $episode->season ?? '',
+                    (string) $episode->direct_source ?? '',
+                    new Video(
+                        $episodeInfo->video->codec_name,
+                        $episodeInfo->video->width,
+                        $episodeInfo->video->height
+                    ),
+                    '/asset/img/' . base64_encode($episodeInfo->movie_image ?? ''),
+                    (string) ($episodeInfo->plot ?? ''),
+                    new DateTimeImmutable($episodeInfo->releasedate ?? null),
+                    (float) ($episodeInfo->rating ?? 0),
+                    $episodeInfo->name ?? '',
+                    (int) $episodeInfo->duration_secs ?? 0,
+                    (string) $episodeInfo->duration ?? '',
+                    (int) $episodeInfo->bitrate ?? 0,
+                    $streamLink
+                );
+            }
+        }
+
+        $data = new SerieInfo(
+            (string) $info->name ?? '',
             $img,
+            (string) $info->plot ?? '',
+            (string) $info->cast ?? '',
+            (string) $info->director ?? '',
+            (string) $info->genre ?? '',
+            new DateTimeImmutable($info->releasedate ?? null),
+            DateTimeImmutable::createFromFormat('U', $info->added ?? 0),
+            (float) $info->rating ?? 0,
+            (float) $info->rating_5based ?? 0,
             $backdrop,
-            (int) $info['info']->duration_secs ?? 0,
-            (string) $info['info']->duration ?? '',
-            new Video(
-                (string) $info['info']->video->codec_name ?? '',
-                (int) $info['info']->video->width ?? 0,
-                (int) $info['info']->video->height ?? 0
-            ),
-            (int) $info['info']->bitrate ?? 0,
-            (string) $info['info']->youtube_trailer ?? '',
-            (string) $info['info']->genre ?? '',
-            (string) $info['info']->plot ?? '',
-            (string) $info['info']->cast ?? '',
-            (float) $info['info']->rating ?? 0,
-            (string) $info['info']->director ?? '',
-            new DateTimeImmutable($info['info']->releasedate ?? 0),
-            (int) $info['movie_data']->stream_id ?? 0,
-            (string) $info['movie_data']->name ?? '',
-            DateTimeImmutable::createFromFormat('U', $info['movie_data']->added ?? 0),
-            (int) $info['movie_data']->category_id ?? 0,
-            (string) $info['movie_data']->container_extension ?? '',
-            (int) $info['movie_data']->custom_sid ?? 0,
-            (string) $info['movie_data']->direct_source ?? '',
-            $streamLink
+            (string) $info->youtube_trailer ?? '',
+            (int) $info->episode_run_time ?? 0,
+            (int) $info->category_id ?? 0,
+            $seasons,
+            $episodes
         );
+
+        echo '<pre>';var_dump($data);exit;
 
         $this->cache->set($cacheKey, $data);
 

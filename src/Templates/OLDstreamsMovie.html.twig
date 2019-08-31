@@ -75,7 +75,7 @@
             {% for stream in streams %}
                 <tr>
                     <td data-sort="{{ stream.name }}">
-                        <a href="{{ stream.streamLink }}">
+                        <a href="{{ vlcDeeplink ~ stream.streamLink }}">
                             <img src="{{ baseUrlAbsolute ~ stream.streamIcon }}"
                                  alt="{{ stream.name }}"
                                  title="{{ stream.name }}"
@@ -83,7 +83,7 @@
                         </a>
                     </td>
                     <td>
-                        <a href="{{ stream.streamLink }}">
+                        <a href="{{ vlcDeeplink ~ stream.streamLink }}">
                             {{ stream.name }}
                         </a>
                     </td>
