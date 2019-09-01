@@ -24,6 +24,11 @@ class SuperglobalesOO
      */
     private $session;
 
+    /**
+     * @var SuperglobaleParameter
+     */
+    private $server;
+
     public function getQuery(): SuperglobaleParameter
     {
         if ($this->query === null) {
@@ -62,5 +67,14 @@ class SuperglobalesOO
         }
 
         return $this->session;
+    }
+
+    public function getServer(): SuperglobaleParameter
+    {
+        if ($this->server === null) {
+            $this->server = new SuperglobaleParameter(SuperglobaleParameter::TYPE_SERVER);
+        }
+
+        return $this->server;
     }
 }

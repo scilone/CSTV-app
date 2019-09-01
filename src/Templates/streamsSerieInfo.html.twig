@@ -1,0 +1,274 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <style>
+        .container {
+            background: rgba(0,0,0,0.8);
+        }
+
+        .sidenav {
+            position: absolute;
+            z-index: 1;
+            overflow-x: hidden;
+            padding: 5em 0;
+        }
+
+        .sidenav a {
+            font-family: roboto;
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            color: #818181;
+            display: block;
+            letter-spacing: -0.5px;
+            line-height: 1em;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav ul {
+            list-style-type:none;
+            padding: 0;
+        }
+
+        .sidenav a:focus{
+            color: #e8b12c !important;
+        }
+
+        p {
+            margin: 5px 0em !important;
+        }
+
+        /* STARS */
+        .star {
+            font-size: 14px;
+            width: 14px;
+            display: inline-block;
+            color: gray;
+        }
+        .star:after {
+            content:'\2605';
+            color: gold;
+            position: absolute;
+            margin-left: -12px;
+            overflow: hidden;
+        }
+        .star:last-child {
+            margin-right: 0;
+        }
+        .star:before {
+            content:'\2605';
+        }
+        .star.star-1:after {
+            width: 3px;
+        }
+        .star.star-2:after {
+            width: 4px;
+        }
+        .star.star-3:after {
+            width: 5px;
+        }
+        .star.star-4:after {
+            width: 6px;
+        }
+        .star.star-5:after {
+            width: 7px;
+        }
+        .star.star-6:after {
+            width: 8px;
+        }
+        .star.star-7:after {
+            width: 9px;
+        }
+        .star.star-8:after {
+            width: 10px;
+        }
+        .star.star-9:after {
+            width: 11px;
+        }
+        .star.star-empty:after, .star.star-0:after {
+            width: 0px;
+        }
+        .star.star-empty{
+            margin-left: -1px;
+        }
+
+        td:nth-child(odd) {
+            width: 30%;
+            height: 3em;
+        }
+
+        p {
+            font-family: roboto;
+            line-height: 17px;
+        }
+    </style>
+    <div class="container" style="margin: 3em; width: auto">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <h1 style="text-align: center;">{{ serie.name }}</h1>
+            </div>
+            <div style="position: relative;">
+                <div class="sidenav col-md-3 col-sm-3 col-xs-3">
+                    <img src="{{ baseUrlAbsolute ~ serie.cover }}" width="100" height="160" class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        {% set ratingDecimal = (serie.rating5based - serie.rating5based|round(0, 'floor')) * 10  %}
+
+                        <div class="stars">
+                            {% if serie.rating5based < 1 %}
+                                <span class="star star-{{ rating5based }}"></span>
+                                <span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span>
+                            {% elseif serie.rating5based < 2 %}
+                                <span class="star"></span>
+                                <span class="star star-{{ ratingDecimal }}"></span>
+                                <span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span>
+                            {% elseif serie.rating5based < 3 %}
+                                <span class="star"></span><span class="star"></span>
+                                <span class="star star-{{ ratingDecimal }}"></span>
+                                <span class="star star-empty"></span><span class="star star-empty"></span>
+                            {% elseif serie.rating5based < 4 %}
+                                <span class="star"></span><span class="star"></span><span class="star"></span>
+                                <span class="star star-{{ ratingDecimal }}"></span>
+                                <span class="star star-empty"></span>
+                            {% else %}
+                                <span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span>
+                                {% if serie.rating5based == 5 %}
+                                    <span class="star"></span>
+                                {% else %}
+                                    <span class="star star-{{ ratingDecimal }}"></span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <a href="{{ youtubeDeeplink }}{{ serie.youtubeTrailer }}" tabindex="1">
+                        <button class="btn btn-danger" style="width: 100%;">
+                            TRAILER
+                        </button>
+                    </a>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <b>Date :</b>
+                        {{ serie.releaseDate|date('d/m/Y') }}
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <b>Genre :</b>
+                        {{ serie.genre }}
+                    </div>
+                </div>
+                <div class="col-md-offset-3 col-md-9 col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9">
+                    <div class="col-md-2 col-sm-2 col-xs-2">
+                        <b>Director:</b>
+                    </div>
+                    <div class="col-md-10 col-sm-10 col-xs-10">
+                        {{ serie.director }}
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-2">
+                        <b>Casting:</b>
+                    </div>
+                    <div class="col-md-10 col-sm-10 col-xs-10">
+                        {{ serie.cast }}
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-2">
+                        <b>Resume:</b>
+                    </div>
+                    <div class="col-md-10 col-sm-10 col-xs-10">
+                        <p>{{ serie.plot }}</p>
+                    </div>
+                    <div class="col-md-7 col-sm-7 col-xs-7">
+                        <select class="form-control" id="seasonChoice" style="margin-top: 2em;">
+                            {% for season, episodes in serie.episodes %}
+                                <option value="{{ season }}">{{ serie.seasons[season].name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% for season, episodes in serie.episodes %}
+                        <div class="seasons season{{ season }} col-md-12 col-sm-12 col-xs-12 {% if loop.index0 != 0 %}hide{% endif %}" style="padding: 1em 0;">
+                            <div class="col-md-10 col-sm-10">
+                                Episodes: {{ serie.seasons[season].episodeCount }}
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-xs-2">
+                                {{ serie.seasons[season].airDate|date('d/m/Y') }}
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <p>
+                                    {{ serie.seasons[season].overview }}
+                                </p>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 15px; background: rgb(0,0,0,0.5); padding-top: 1em;">
+                            {% for episode in episodes %}
+                                <div class="col-md-12 col-sm-12 col-xs-12" style="padding-top: 1em;">
+                                    <div class="col-md-4 col-sm-4 col-xs-4">
+                                        <img src="{{ baseUrlAbsolute ~ episode.movieImage }}" width="100%">
+                                    </div>
+                                    <div class="col-md-5 col-sm-5 col-xs-5">
+                                        <p>{{ episode.episodeNum }}. {{ episode.name }}</p>
+                                        <p>{{ episode.dureationFormatted }}</p>
+                                        <p>{{ episode.video.width }}x{{ episode .video.height }}</p>
+                                        {% set rating5 = (episode.rating/2)|round(1)  %}
+                                        {% set ratingDecimal = (rating5 - rating5|round(0, 'floor')) * 10  %}
+                                        <div class="stars">
+                                            {% if rating5 < 1 %}
+                                                <span class="star star-{{ ratingDecimal }}"></span>
+                                                <span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span>
+                                            {% elseif rating5 < 2 %}
+                                                <span class="star"></span>
+                                                <span class="star star-{{ ratingDecimal }}"></span>
+                                                <span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span>
+                                            {% elseif rating5 < 3 %}
+                                                <span class="star"></span><span class="star"></span>
+                                                <span class="star star-{{ ratingDecimal }}"></span>
+                                                <span class="star star-empty"></span><span class="star star-empty"></span>
+                                            {% elseif rating5 < 4 %}
+                                                <span class="star"></span><span class="star"></span><span class="star"></span>
+                                                <span class="star star-{{ ratingDecimal }}"></span>
+                                                <span class="star star-empty"></span>
+                                            {% else %}
+                                                <span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span>
+                                                {% if rating5 == 5 %}
+                                                    <span class="star"></span>
+                                                {% else %}
+                                                    <span class="star star-{{ ratingDecimal }}"></span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3">
+                                        <a href="{{ vlcDeeplink }}{{ episode.streamLink }}" tabindex="1">
+                                            <button class="btn btn-primary pull-right" style="width: 80%; font-size: 10px">
+                                                Play
+                                            </button>
+                                        </a>
+                                        <a href="{{ episode.streamLink }}" tabindex="1">
+                                            <button class="btn btn-default  pull-right" style="width: 80%; margin-top: 5px; ; font-size: 10px">
+                                                Download
+                                            </button>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <p>
+                                            {{ episode.plot }}
+                                        </p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        $('#seasonChoice').change(function () {
+            $('.seasons').addClass('hide');x²
+            $('.season' + $(this).val()).removeClass('hide');
+		});
+    </script>
+{% endblock %}
+
+{% block bg %}
+    <img class="body-bg" src="{{ baseUrlAbsolute ~ serie.backdropPath[0] }}">
+{% endblock %}

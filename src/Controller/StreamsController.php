@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Application\Iptv;
 use App\Application\Twig;
+use App\Config\Param;
 use App\Infrastructure\CacheRaw;
 use App\Infrastructure\SuperglobalesOO;
 
@@ -44,6 +45,26 @@ class StreamsController extends SecurityController
         $this->superglobales = $superglobales;
 
         parent::__construct($superglobales);
+    }
+
+    public function play(string $type, string $id)
+    {
+        $url = '';
+        if ($type === 'movie') {
+            $movie = $this->iptv->getMovieInfo($id);
+            $url = Param::BASE_URL_ABSOLUTE . '/asset/mkv/' . base64_encode($movie->getStreamLink());
+        }
+
+        if ($url === '') {
+            exit;
+        }
+
+        echo $this->twig->render(
+            'streamsPlay.html.twig',
+            [
+                'url' => $url,
+            ]
+        );
     }
 
     public function live(string $category): void
@@ -115,6 +136,7 @@ class StreamsController extends SecurityController
     public function serieInfo(string $id): void
     {
         $serie = $this->iptv->getSerieInfo($id);
+        //echo '<pre>';        var_dump($serie->getEpisodes());        exit;
 
         echo $this->twig->render('streamsSerieInfo.html.twig', ['serie' => $serie]);
     }

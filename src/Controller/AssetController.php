@@ -7,7 +7,7 @@ use App\Application\Twig;
 
 class AssetController
 {
-    public function img($url)
+    public function img(string $url = '')
     {
         $strFile    = base64_decode($url);
         $strFileExt = end(explode('.', $strFile));
@@ -29,6 +29,26 @@ class AssetController
             header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $cacheEnds) . ' GMT');
 
             echo file_get_contents($strFile);
+        }
+    }
+
+    public function mkv(string $url = '')
+    {
+        $strFile    = base64_decode($url);
+        $strFileExt = end(explode('.', $strFile));
+
+        //header('Content-Type: video/x-matroska');
+
+        if ($strFile !== '') {
+            $cacheEnds = 60 * 60 * 24 * 365;
+            header("Pragma: public");
+            header("Cache-Control: maxage=" . $cacheEnds);
+            header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $cacheEnds) . ' GMT');
+
+            $ch = curl_init($strFile);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36');
+            curl_exec($ch);;
         }
     }
 }

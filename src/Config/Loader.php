@@ -29,6 +29,7 @@ class Loader
         ],
 
         Service::APPLICATION_TWIG => [
+            Service::INFRASTRUCTURE_SUPERGLOBALES,
             Param::TWIG_GLOBAL_VARS,
         ],
         Service::APPLICATION_IPTV => [

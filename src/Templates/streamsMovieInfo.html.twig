@@ -3,7 +3,7 @@
 {% block body %}
     <style>
         .container {
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
         }
 
         .sidenav {
@@ -139,9 +139,20 @@
                                 {% endif %}
                             {% endif %}
                         </div>
-                        <a href="{{ vlcDeeplink ~ movie.streamLink }}">
+
+                        <a href="intent://{{ movie.streamLink }}{{ vlcIntent }}end;" tabindex="1">
                             <button class="btn btn-success" style="width: 100%;">
-                                Play
+                                Play Intent
+                            </button>
+                        </a>
+                        <a href="{{ baseUrlAbsolute }}/streams/play/movie/{{ movie.streamId }}" tabindex="1">
+                            <button class="btn btn-default" style="width: 100%;">
+                                Play webplayer
+                            </button>
+                        </a>
+                        <a href="{{ youtubeDeeplink }}{{ movie.youtubeTrailer }}" tabindex="1">
+                            <button class="btn btn-danger" style="width: 100%;">
+                                TRAILER Deeplink
                             </button>
                         </a>
                         <a href="{{ movie.streamLink }}">

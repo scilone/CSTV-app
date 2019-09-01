@@ -443,7 +443,7 @@ class Iptv
 
     public function getSerieInfo(int $id)
     {
-        $cacheKey   = $this->superglobales->getSession()->get(self::PREFIX . 'host') . '_getSerieInfo_' . $id;
+        $cacheKey   = md5($this->superglobales->getSession()->get(self::PREFIX . 'host')) . '_getSerieInfo_' . $id;
         $cachedData = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
 
         if ($cachedData !== null) {
@@ -470,7 +470,7 @@ class Iptv
 
         $seasons = [];
         foreach ($dataSeasons as $key => $dataSeason) {
-            $seasons[] = new SerieSeason(
+            $seasons[$dataSeason->season_number] = new SerieSeason(
                 new DateTimeImmutable($dataSeason->air_date ?? null),
                 (int) $dataSeason->episode_count ?? 0,
                 (int) $dataSeason->id ?? 0,
@@ -493,7 +493,7 @@ class Iptv
                               '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
                               '/' . $episode->id . '.' . $episode->container_extension;
 
-                $episodes[$seasonNumber] = new SerieEpisode(
+                $episodes[$seasonNumber][$episode->episode_num] = new SerieEpisode(
                     (int) $episode->id ?? 0,
                     (int) $episode->episode_num ?? 0,
                     (string) $episode->title ?? '',
@@ -527,7 +527,7 @@ class Iptv
             (string) $info->cast ?? '',
             (string) $info->director ?? '',
             (string) $info->genre ?? '',
-            new DateTimeImmutable($info->releasedate ?? null),
+            new DateTimeImmutable($info->releaseDate ?? null),
             DateTimeImmutable::createFromFormat('U', $info->added ?? 0),
             (float) $info->rating ?? 0,
             (float) $info->rating_5based ?? 0,
@@ -538,8 +538,6 @@ class Iptv
             $seasons,
             $episodes
         );
-
-        echo '<pre>';var_dump($data);exit;
 
         $this->cache->set($cacheKey, $data);
 
