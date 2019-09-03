@@ -313,12 +313,12 @@
 
         $("#inputSearch").on('keyup', function (e) {
             if (e.keyCode === 13) {
-                location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{{ sort }}/' + $("#inputSearch").val();
+                location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/all/0/' + $("#inputSearch").val();
             }
         });
 
         $('#goSearch, #searchPopin').click(function() {
-            location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{{ sort }}/' + $("#inputSearch").val();
+            location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/all/0/' + $("#inputSearch").val();
         });
 
         $('.item-link').on('long-press', function(e) {

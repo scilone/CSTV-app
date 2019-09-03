@@ -108,7 +108,7 @@
                 <h1 style="text-align: center;">{{ movie.name }}</h1>
             </div>
             <div style="position: relative;">
-                <div class="sidenav col-md-3 col-sm-3 col-xs-3">
+                <div class="sidenav col-lg-1 col-md-2 col-sm-3 col-xs-3">
                     <img src="{{ baseUrlAbsolute ~ movie.image }}" width="100" height="160" class="col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         {% set rating5 = (movie.rating/2)|round(1)  %}
@@ -140,29 +140,45 @@
                             {% endif %}
                         </div>
 
+                        {% if isAndroid or isIos %}
                         <a href="{{ vlcDeeplink }}{{ movie.streamLink }}" tabindex="1">
                             <button class="btn btn-success" style="width: 100%;">
                                 Play
                             </button>
                         </a>
+                        {% endif %}
+                        {% if not isIos and not isAndroid and isChrome  %}
                         <a href="{{ baseUrlAbsolute }}/streams/play/movie/{{ movie.streamId }}" tabindex="1">
-                            <button class="btn btn-default" style="width: 100%;">
-                                Play webplayer
+                            <button class="btn btn-success" style="width: 100%;">
+                                Webplayer
                             </button>
                         </a>
-                        <a href="{{ youtubeDeeplink }}{{ movie.youtubeTrailer }}" tabindex="1">
-                            <button class="btn btn-danger" style="width: 100%;">
-                                Trailer Deeplink
-                            </button>
-                        </a>
+                        {% endif %}
+                        {% if movie.youtubeTrailer is not empty  %}
+                            {% if isAndroid or isIos %}
+                            <a href="{{ youtubeDeeplink }}{{ movie.youtubeTrailer }}" tabindex="1">
+                                <button class="btn btn-danger" style="width: 100%;">
+                                    Trailer
+                                </button>
+                            </a>
+                            {% else %}
+                            <a href="https://www.youtube.com/watch?v={{ movie.youtubeTrailer }}" tabindex="1" target="_blank">
+                                <button class="btn btn-danger" style="width: 100%;">
+                                    Trailer
+                                </button>
+                            </a>
+                            {% endif %}
+                        {% endif %}
+                        {% if not isTv %}
                         <a href="{{ movie.streamLink }}">
                             <button class="btn btn-primary" style="width: 100%;">
                                 Download
                             </button>
                         </a>
+                        {% endif %}
                     </div>
                 </div>
-                <div class="col-md-offset-3 col-md-9 col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9">
+                <div class="col-lg-offset-1 col-lg-11 col-md-offset-2 col-md-10 col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9">
                     <table>
                         <tr>
                             <td><b>Director:</b></td>
@@ -200,5 +216,7 @@
 {% endblock %}
 
 {% block bg %}
+    {% if movie.backdropPath[0] is not empty %}
     <img class="body-bg" src="{{ baseUrlAbsolute ~ movie.backdropPath[0] }}">
+    {% endif %}
 {% endblock %}

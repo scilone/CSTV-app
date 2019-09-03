@@ -159,7 +159,7 @@ class StreamsController extends SecurityController
         }
 
         if ($search !== '') {
-            $filter['search'] = $search;
+            //$filter['search'] = $search;
         }
 
         $streams = $this->iptv->getSerieStreams($filter, $sort);

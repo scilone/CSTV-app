@@ -141,11 +141,21 @@
                             {% endif %}
                         </div>
                     </div>
-                    <a href="{{ youtubeDeeplink }}{{ serie.youtubeTrailer }}" tabindex="1">
-                        <button class="btn btn-danger" style="width: 100%;">
-                            TRAILER
-                        </button>
-                    </a>
+                    {% if serie.youtubeTrailer is not empty  %}
+                        {% if isAndroid or isIos %}
+                            <a href="{{ youtubeDeeplink }}{{ serie.youtubeTrailer }}" tabindex="1">
+                                <button class="btn btn-danger" style="width: 100%;">
+                                    Trailer
+                                </button>
+                            </a>
+                        {% else %}
+                            <a href="https://www.youtube.com/watch?v={{ serie.youtubeTrailer }}" tabindex="1" target="_blank">
+                                <button class="btn btn-danger" style="width: 100%;">
+                                    Trailer
+                                </button>
+                            </a>
+                        {% endif %}
+                    {% endif %}
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <b>Date :</b>
                         {{ serie.releaseDate|date('d/m/Y') }}
@@ -237,21 +247,27 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3 col-sm-3 col-xs-3">
+                                        {% if isAndroid or isIos %}
                                         <a href="{{ vlcDeeplink }}{{ episode.streamLink }}" tabindex="1">
                                             <button class="btn btn-primary pull-right" style="width: 80%; font-size: 10px">
                                                 Play
                                             </button>
                                         </a>
+                                        {% endif %}
+                                        {% if not isIos and not isAndroid and isChrome  %}
                                         <a href="{{ baseUrlAbsolute }}/streams/play/serie/{{ serie.id }}/{{ season }}/{{ episode.episodeNum }}" tabindex="1" >
-                                            <button class="btn btn-default pull-right" style="width: 80%; margin-top: 5px; font-size: 10px">
+                                            <button class="btn btn-success pull-right" style="width: 80%; margin-top: 5px; font-size: 10px">
                                                 Webplayer
                                             </button>
                                         </a>
+                                        {% endif %}
+                                        {% if not isTv %}
                                         <a href="{{ episode.streamLink }}" tabindex="1">
                                             <button class="btn btn-default  pull-right" style="width: 80%; margin-top: 5px; ; font-size: 10px">
                                                 Download
                                             </button>
                                         </a>
+                                        {% endif %}
                                     </div>
                                     <div class="col-md-12 col-sm-12 col-xs-12">
                                         <p>

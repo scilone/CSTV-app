@@ -125,7 +125,6 @@
             width: 0px;
         }
 
-
         .sidenav {
             height: 100%;
             position: fixed;
@@ -174,8 +173,8 @@
 
     <div id="header">
         <div class="pull-left">
-            <button type="button" class="btn btn-secondary" tabindex="4">
-                <a href="{{ baseUrlAbsolute ~ homeUrlAbsolute }}">
+            <button type="button" class="btn btn-secondary" tabindex="-1">
+                <a href="{{ baseUrlAbsolute ~ homeUrlAbsolute }}" tabindex="5">
                     <i class="fa fa-home"></i>
                 </a>
             </button>
@@ -183,40 +182,45 @@
         </div>
         <div class="pull-right">
             <div class="btn-group" role="group">
-                <button id="sortByName" type="button" class="btn btn-secondary" tabindex="2">
-                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 2 %}1{% else %}2{% endif %}/{{ search }}">
+                <button id="sortByName" type="button" class="btn btn-secondary" tabindex="-1">
+                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 2 %}1{% else %}2{% endif %}/{{ search }}" tabindex="3">
                         <i class="fa fa-sort-alpha-asc"></i>
                     </a>
                 </button>
-                <button id="sortByRate" type="button" class="btn btn-secondary" tabindex="2">
-                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 3 %}4{% else %}3{% endif %}/{{ search }}">
+                <button id="sortByRate" type="button" class="btn btn-secondary" tabindex="-1">
+                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 3 %}4{% else %}3{% endif %}/{{ search }}" tabindex="3">
                         <i class="fa fa-star"></i>
                     </a>
                 </button>
-                <button id="sortByAdded"type="button" class="btn btn-secondary" tabindex="2">
-                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 5 %}6{% else %}5{% endif %}/{{ search }}">
+                <button id="sortByAdded" type="button" class="btn btn-secondary" tabindex="-1">
+                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 5 %}6{% else %}5{% endif %}/{{ search }}" tabindex="3">
                         <i class="fa fa-clock-o"></i>
                     </a>
                 </button>
             </div>
-            <button id="search" type="button" class="btn btn-secondary" tabindex="3">
-                <i class="fa fa-search"></i>
+            <button id="search" type="button" class="btn btn-secondary" tabindex="-1">
+                <a tabindex="4">
+                    <i class="fa fa-search"></i>
+                </a>
             </button>
         </div>
     </div>
     <div class="sidenav col-sm-3 col-xs-3 col-md-2">
         <ul>
             <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all"
-               style="{% if catName == '' and sort != 5 %}color:white{% endif %}">
+               style="{% if catName == '' and sort != 5 %}color:white{% endif %}"
+               tabindex="2">
                 <li>ALL</li>
             </a>
             <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all/5"
-               style="{% if catName == '' and sort == 5 %}color:white{% endif %}">
+               style="{% if catName == '' and sort == 5 %}color:white{% endif %}"
+               tabindex="2">
                 <li>RECENTLY ADDED</li>
             </a>
         {% for category in categories %}
             <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}"
-                style="{% if catName == category.name %}color:white{% endif %}">
+               style="{% if catName == category.name %}color:white{% endif %}"
+               tabindex="2">
                 <li>{{ category.name }}</li>
             </a>
         {% endfor %}
@@ -313,18 +317,13 @@
 
         $("#inputSearch").on('keyup', function (e) {
             if (e.keyCode === 13) {
-                location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{{ sort }}/' + $("#inputSearch").val();
+                location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/all/0/' + $("#inputSearch").val();
             }
         });
 
         $('#goSearch, #searchPopin').click(function() {
-            location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{{ sort }}/' + $("#inputSearch").val();
+            location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/all/0/' + $("#inputSearch").val();
         });
-
-        $('.item-link').on('long-press', function(e) {
-			alert('thisislong');
-		});
     </script>
-    <script src="{{ baseUrlAbsolute }}/js/long-press-event.min.js"></script>
     <script async src="{{ baseUrlAbsolute }}/js/lazyload.min.js"></script>
 {% endblock %}

@@ -26,12 +26,12 @@ class SecurityController
             $usernameKey = Iptv::PREFIX . 'username';
             $username = $this->getStoreData($usernameKey) !== null
                 ? $this->getStoreData($usernameKey)
-                :'PoK9vGq5ei';
+                :'XgLwe8hags';
 
             $passwordKey = Iptv::PREFIX . 'password';
             $password = $this->getStoreData($passwordKey) !== null
                 ? $this->getStoreData($passwordKey)
-                :'Bl1dcXYK1S';
+                :'Lq!p21rGtJ';
 
             $hostKey = Iptv::PREFIX . 'host';
             $host = $this->getStoreData($hostKey) !== null
