@@ -47,12 +47,20 @@ class StreamsController extends SecurityController
         parent::__construct($superglobales);
     }
 
-    public function play(string $type, string $id)
+    public function play(string $type, string $id, string $season = '', string $episode = '')
     {
         $url = '';
         if ($type === 'movie') {
             $movie = $this->iptv->getMovieInfo($id);
             $url = Param::BASE_URL_ABSOLUTE . '/asset/mkv/' . base64_encode($movie->getStreamLink());
+        } elseif ($type === 'serie') {
+            $serie = $this->iptv->getSerieInfo($id);
+
+            if (isset($serie->getEpisodes()[$season][$episode])) {
+                $url = Param::BASE_URL_ABSOLUTE .
+                       '/asset/mkv/' .
+                       base64_encode($serie->getEpisodes()[$season][$episode]->getStreamLink());
+            }
         }
 
         if ($url === '') {
@@ -136,7 +144,7 @@ class StreamsController extends SecurityController
     public function serieInfo(string $id): void
     {
         $serie = $this->iptv->getSerieInfo($id);
-        //echo '<pre>';        var_dump($serie->getEpisodes());        exit;
+        //echo '<pre>';        var_dump($serie);        exit;
 
         echo $this->twig->render('streamsSerieInfo.html.twig', ['serie' => $serie]);
     }

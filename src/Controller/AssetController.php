@@ -34,10 +34,7 @@ class AssetController
 
     public function mkv(string $url = '')
     {
-        $strFile    = base64_decode($url);
-        $strFileExt = end(explode('.', $strFile));
-
-        //header('Content-Type: video/x-matroska');
+        $strFile = base64_decode($url);
 
         if ($strFile !== '') {
             $cacheEnds = 60 * 60 * 24 * 365;
@@ -48,7 +45,7 @@ class AssetController
             $ch = curl_init($strFile);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36');
-            curl_exec($ch);;
+            curl_exec($ch);
         }
     }
 }

@@ -521,6 +521,7 @@ class Iptv
         }
 
         $data = new SerieInfo(
+            $id,
             (string) $info->name ?? '',
             $img,
             (string) $info->plot ?? '',

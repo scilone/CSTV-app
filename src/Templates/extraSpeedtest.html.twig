@@ -1,0 +1,22 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <style>
+        body {
+            background: white !important;
+        }
+    </style>
+    <button type="button" class="btn btn-secondary" tabindex="1" style="margin: 1em; position: fixed;">
+        <a href="{{ baseUrlAbsolute ~ homeUrlAbsolute }}">
+            <i class="fa fa-home"></i>
+        </a>
+    </button>
+
+    <iframe
+            width="100%"
+            height="100%"
+            src="https://fast.com/"
+            frameborder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+{% endblock %}

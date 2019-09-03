@@ -140,9 +140,9 @@
                             {% endif %}
                         </div>
 
-                        <a href="intent://{{ movie.streamLink }}{{ vlcIntent }}end;" tabindex="1">
+                        <a href="{{ vlcDeeplink }}{{ movie.streamLink }}" tabindex="1">
                             <button class="btn btn-success" style="width: 100%;">
-                                Play Intent
+                                Play
                             </button>
                         </a>
                         <a href="{{ baseUrlAbsolute }}/streams/play/movie/{{ movie.streamId }}" tabindex="1">
@@ -152,7 +152,7 @@
                         </a>
                         <a href="{{ youtubeDeeplink }}{{ movie.youtubeTrailer }}" tabindex="1">
                             <button class="btn btn-danger" style="width: 100%;">
-                                TRAILER Deeplink
+                                Trailer Deeplink
                             </button>
                         </a>
                         <a href="{{ movie.streamLink }}">
@@ -191,17 +191,6 @@
                         <tr>
                             <td><b>Resume:</b></td>
                             <td>{{ movie.plot }}</td>
-                        </tr>
-                        <tr>
-                            <td><b>Trailer:</b></td>
-                            <td>
-                                <iframe src="https://www.youtube.com/embed/{{ movie.youtubeTrailer }}?controls=0"
-                                        width="100%"
-                                        style="height: 10em"
-                                        frameborder="0"
-                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                        allowfullscreen></iframe>
-                            </td>
                         </tr>
                     </table>
                 </div>

@@ -135,11 +135,7 @@
                         {{ stream.name|length > 20 ? stream.name|slice(0, 20) ~ '..' : stream.name  }}
                     </div>
                 {% else %}
-                    {% if isAndroid %}
-                    <a href="intent://{{ stream.streamLink }}{{ vlcIntent }}end;" tabindex="1">
-                    {% else %}
                     <a href="{{ vlcDeeplink ~ stream.streamLink }}" tabindex="1">
-                    {% endif %}
                         <img src="{{ baseUrlAbsolute ~ stream.streamIcon }}"
                              alt="{{ stream.name }}"
                              title="{{ stream.name }}"

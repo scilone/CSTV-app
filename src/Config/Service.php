@@ -8,6 +8,7 @@ Class Service
     const CONTROLLER_HOME     = 'App\Controller\HomeController';
     const CONTROLLER_CATEGORY = 'App\Controller\CategoryController';
     const CONTROLLER_STREAM   = 'App\Controller\StreamsController';
+    const CONTROLLER_EXTRA    = 'App\Controller\ExtraController';
 
     const APPLICATION_TWIG       = 'App\Application\Twig';
     const APPLICATION_IPTV       = 'App\Application\Iptv';

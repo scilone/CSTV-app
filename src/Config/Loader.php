@@ -15,6 +15,9 @@ class Loader
             Service::APPLICATION_TWIG,
             Service::INFRASTRUCTURE_SUPERGLOBALES,
         ],
+        Service::CONTROLLER_EXTRA => [
+            Service::APPLICATION_TWIG,
+        ],
         Service::CONTROLLER_CATEGORY => [
             Service::APPLICATION_TWIG,
             Service::APPLICATION_IPTV,

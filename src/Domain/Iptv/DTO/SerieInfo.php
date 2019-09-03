@@ -9,6 +9,11 @@ class SerieInfo
     /**
      * @var string
      */
+    private $id;
+
+    /**
+     * @var string
+     */
     private $name;
 
     /**
@@ -89,6 +94,7 @@ class SerieInfo
     /**
      * SerieInfo constructor.
      *
+     * @param string            $id
      * @param string            $name
      * @param string            $cover
      * @param string            $plot
@@ -107,6 +113,7 @@ class SerieInfo
      * @param SerieEpisode[]    $episodes
      */
     public function __construct(
+        string $id,
         string $name,
         string $cover,
         string $plot,
@@ -124,6 +131,7 @@ class SerieInfo
         array $seasons,
         array $episodes
     ) {
+        $this->id             = $id;
         $this->name           = $name;
         $this->cover          = $cover;
         $this->plot           = $plot;
@@ -140,6 +148,14 @@ class SerieInfo
         $this->categoryId     = $categoryId;
         $this->seasons        = $seasons;
         $this->episodes       = $episodes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     /**

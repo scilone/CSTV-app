@@ -197,10 +197,14 @@
                             <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 15px; background: rgb(0,0,0,0.5); padding-top: 1em;">
                             {% for episode in episodes %}
                                 <div class="col-md-12 col-sm-12 col-xs-12" style="padding-top: 1em;">
+                                    {% if episode.movieImage != '/asset/img/' %}
                                     <div class="col-md-4 col-sm-4 col-xs-4">
                                         <img src="{{ baseUrlAbsolute ~ episode.movieImage }}" width="100%">
                                     </div>
                                     <div class="col-md-5 col-sm-5 col-xs-5">
+                                    {% else %}
+                                    <div class="col-md-9 col-sm-9 col-xs-9">
+                                    {% endif %}
                                         <p>{{ episode.episodeNum }}. {{ episode.name }}</p>
                                         <p>{{ episode.dureationFormatted }}</p>
                                         <p>{{ episode.video.width }}x{{ episode .video.height }}</p>
@@ -236,6 +240,11 @@
                                         <a href="{{ vlcDeeplink }}{{ episode.streamLink }}" tabindex="1">
                                             <button class="btn btn-primary pull-right" style="width: 80%; font-size: 10px">
                                                 Play
+                                            </button>
+                                        </a>
+                                        <a href="{{ baseUrlAbsolute }}/streams/play/serie/{{ serie.id }}/{{ season }}/{{ episode.episodeNum }}" tabindex="1" >
+                                            <button class="btn btn-default pull-right" style="width: 80%; margin-top: 5px; font-size: 10px">
+                                                Webplayer
                                             </button>
                                         </a>
                                         <a href="{{ episode.streamLink }}" tabindex="1">
