@@ -9,6 +9,7 @@ Class Service
     const CONTROLLER_CATEGORY = 'App\Controller\CategoryController';
     const CONTROLLER_STREAM   = 'App\Controller\StreamsController';
     const CONTROLLER_EXTRA    = 'App\Controller\ExtraController';
+    const CONTROLLER_ACCOUNT  = 'App\Controller\AccountController';
 
     const APPLICATION_TWIG       = 'App\Application\Twig';
     const APPLICATION_IPTV       = 'App\Application\Iptv';
@@ -19,4 +20,5 @@ Class Service
     const INFRASTRUCTURE_CURL          = 'App\Infrastructure\CurlOO';
     const INFRASTRUCTURE_CACHE_RAW     = 'App\Infrastructure\CacheRaw';
     const INFRASTRUCTURE_CACHE_ITEM    = 'App\Infrastructure\CacheItem';
+    const INFRASTRUCTURE_SODIUM        = 'App\Infrastructure\SodiumDummies';
 }

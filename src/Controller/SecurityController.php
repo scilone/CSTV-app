@@ -38,9 +38,9 @@ class SecurityController
                 ? $this->getStoreData($hostKey)
                 :'http://netflexx.org:8000';
 
-            setcookie($usernameKey, $username, time() + 3600 * 48);
-            setcookie($passwordKey, $password, time() + 3600 * 48);
-            setcookie($hostKey, $host, time() + 3600 * 48);
+            setcookie($usernameKey, $username, time() + 3600 * 48, Param::BASE_URL_RELATIVE);
+            setcookie($passwordKey, $password, time() + 3600 * 48, Param::BASE_URL_RELATIVE);
+            setcookie($hostKey, $host, time() + 3600 * 48, Param::BASE_URL_RELATIVE);
 
             $this->superglobales->getSession()
                 ->set($usernameKey, $username)

@@ -26,22 +26,22 @@ class Twig
 
         $this->twig->addGlobal(
             'isIos',
-            stripos($userAgent,'iPod') !== false
-            || stripos($userAgent,'iPad') !== false
-            || stripos($userAgent,'iPhone') !== false
+            stripos($userAgent, 'iPod') !== false
+            || stripos($userAgent, 'iPad') !== false
+            || stripos($userAgent, 'iPhone') !== false
         );
 
         $this->twig->addGlobal(
             'isTv',
-            strpos($userAgent,'TV') !== false
-            || stripos($userAgent,'Tizen') !== false
-            || stripos($userAgent,'Web0S') !== false
-            || stripos($userAgent,'BRAVIA') !== false
-            || stripos($userAgent,'MIBOX') !== false
+            strpos($userAgent, 'TV') !== false
+            || stripos($userAgent, 'Tizen') !== false
+            || stripos($userAgent, 'Web0S') !== false
+            || stripos($userAgent, 'BRAVIA') !== false
+            || stripos($userAgent, 'MIBOX') !== false
         );
 
-        $this->twig->addGlobal('isAndroid', stripos($userAgent,'Android') !== false);
-        $this->twig->addGlobal('isChrome', stripos($userAgent,'Chrome') !== false);
+        $this->twig->addGlobal('isAndroid', stripos($userAgent, 'Android') !== false);
+        $this->twig->addGlobal('isChrome', stripos($userAgent, 'Chrome') !== false);
     }
 
     /**

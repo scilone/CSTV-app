@@ -15,6 +15,11 @@ class Loader
             Service::APPLICATION_TWIG,
             Service::INFRASTRUCTURE_SUPERGLOBALES,
         ],
+        Service::CONTROLLER_ACCOUNT => [
+            Service::APPLICATION_TWIG,
+            Service::INFRASTRUCTURE_SUPERGLOBALES,
+            Service::INFRASTRUCTURE_SODIUM,
+        ],
         Service::CONTROLLER_EXTRA => [
             Service::APPLICATION_TWIG,
         ],
