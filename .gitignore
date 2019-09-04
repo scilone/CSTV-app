@@ -2,4 +2,4 @@ vendor
 cache
 .idea
 .project
-src/Config/SecretParam
+!/src/Config/SecretParam.php
