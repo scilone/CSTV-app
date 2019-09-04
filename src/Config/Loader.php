@@ -18,7 +18,7 @@ class Loader
         Service::CONTROLLER_ACCOUNT => [
             Service::APPLICATION_TWIG,
             Service::INFRASTRUCTURE_SUPERGLOBALES,
-            Service::INFRASTRUCTURE_SODIUM,
+            Service::APPLICATION_ACCOUNT,
         ],
         Service::CONTROLLER_EXTRA => [
             Service::APPLICATION_TWIG,
@@ -45,10 +45,18 @@ class Loader
             Service::INFRASTRUCTURE_SUPERGLOBALES,
             Service::INFRASTRUCTURE_CACHE_ITEM
         ],
+        Service::APPLICATION_ACCOUNT => [
+            Service::INFRASTRUCTURE_SODIUM,
+            Service::INFRASTRUCTURE_SUPERGLOBALES,
+            Service::DOMAIN_REPOSITORY_ACCOUNT
+        ],
 
         Service::DOMAIN_IPTV_XCODE_API => [
             Service::INFRASTRUCTURE_CURL,
             Service::INFRASTRUCTURE_CACHE_RAW
+        ],
+        Service::DOMAIN_REPOSITORY_ACCOUNT => [
+            Service::INFRASTRUCTURE_MYSQL
         ],
 
 
@@ -59,6 +67,12 @@ class Loader
         Service::INFRASTRUCTURE_CACHE_ITEM => [
             Service::INFRASTRUCTURE_CACHE_RAW,
             Service::INFRASTRUCTURE_SUPERGLOBALES,
+        ],
+        Service::INFRASTRUCTURE_MYSQL => [
+            SecretParam::DB_HOST,
+            SecretParam::DB_USERNAME,
+            SecretParam::DB_PASSWORD,
+            SecretParam::DB_DATABASE,
         ],
 
     ];

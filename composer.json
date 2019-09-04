@@ -21,6 +21,7 @@
       "ext-curl": "*",
       "ext-json": "*",
       "twig/twig": "^2.11",
-      "ext-sodium": "*"
+      "ext-sodium": "*",
+      "ext-mysqli": "*"
   }
 }

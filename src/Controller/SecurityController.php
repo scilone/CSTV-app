@@ -22,43 +22,36 @@ class SecurityController
     {
         $this->superglobales = $superglobales;
 
+        if ($this->superglobales->getSession()->has('userId') === false) {
+            $this->setCookieRedirect();
+
+            if ($this->superglobales->getCookie()->has('autologId')) {
+                header('Location: ' . Param::BASE_URL_ABSOLUTE . '/account/autolog');
+                exit;
+            }
+
+            header('Location: ' . Param::BASE_URL_ABSOLUTE . '/account/log');
+            exit;
+        }
+
         if ($this->superglobales->getSession()->has(Iptv::PREFIX . 'host') === false) {
-            $usernameKey = Iptv::PREFIX . 'username';
-            $username = $this->getStoreData($usernameKey) !== null
-                ? $this->getStoreData($usernameKey)
-                :'XgLwe8hags';
+            $this->setCookieRedirect();
 
-            $passwordKey = Iptv::PREFIX . 'password';
-            $password = $this->getStoreData($passwordKey) !== null
-                ? $this->getStoreData($passwordKey)
-                :'Lq!p21rGtJ';
-
-            $hostKey = Iptv::PREFIX . 'host';
-            $host = $this->getStoreData($hostKey) !== null
-                ? $this->getStoreData($hostKey)
-                :'http://netflexx.org:8000';
-
-            setcookie($usernameKey, $username, time() + 3600 * 48, Param::BASE_URL_RELATIVE);
-            setcookie($passwordKey, $password, time() + 3600 * 48, Param::BASE_URL_RELATIVE);
-            setcookie($hostKey, $host, time() + 3600 * 48, Param::BASE_URL_RELATIVE);
-
-            $this->superglobales->getSession()
-                ->set($usernameKey, $username)
-                ->set($passwordKey, $password)
-                ->set($hostKey, $host);
+            header('Location: ' . Param::BASE_URL_ABSOLUTE . '/account/info');
+            exit;
         }
     }
 
-    private function getStoreData(string $key): ?string
+    private function setCookieRedirect()
     {
-        if ($this->superglobales->getQuery()->has($key)) {
-            return $this->superglobales->getQuery()->get($key);
-        } elseif ($this->superglobales->getCookie()->has($key)) {
-            return $this->superglobales->getCookie()->get($key);
-        } elseif ($this->superglobales->getSession()->has($key)) {
-            return $this->superglobales->getSession()->get($key);
-        }
-
-        return null;
+        setcookie(
+            'redirect',
+            $this->superglobales->getServer()->get('REDIRECT_URL'),
+            time() + 3600,
+            Param:: BASE_URL_RELATIVE,
+            false,
+            true,
+            true
+        );
     }
 }

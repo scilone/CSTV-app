@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Application\Iptv;
 use App\Application\Twig;
+use App\Config\Param;
 use App\Infrastructure\SuperglobalesOO;
 
-class HomeController
+class HomeController extends SecurityController
 {
     /**
      * @var Twig
@@ -28,11 +28,26 @@ class HomeController
     {
         $this->twig          = $twig;
         $this->superglobales = $superglobales;
-    }
 
+        parent::__construct($superglobales);
+    }
 
     public function main(): void
     {
+        if ($this->superglobales->getCookie()->has('redirect')) {
+            setcookie(
+                'redirect',
+                '',
+                0,
+                Param:: BASE_URL_RELATIVE,
+                false,
+                true,
+                true
+            );
+
+            header('Location: ' . $this->superglobales->getCookie()->get('redirect'));
+        }
+
         echo $this->twig->render('homeMain.html.twig');
     }
 }
