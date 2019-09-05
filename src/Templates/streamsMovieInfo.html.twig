@@ -176,6 +176,19 @@
                             </button>
                         </a>
                         {% endif %}
+                        {% if isFavorite %}
+                        <a href="{{ baseUrlAbsolute }}/account/removefavorite/movie/{{ movie.streamId }}">
+                            <button class="btn btn-warning" style="width: 100%;">
+                                <i class=" fa fa-minus"></i> Favorite
+                            </button>
+                        </a>
+                        {% else %}
+                        <a href="{{ baseUrlAbsolute }}/account/addfavorite/movie/{{ movie.streamId }}">
+                            <button class="btn btn-warning" style="width: 100%;">
+                                <i class="fa fa-plus"></i> Favorite
+                            </button>
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="col-lg-offset-1 col-lg-11 col-md-offset-2 col-md-10 col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9">

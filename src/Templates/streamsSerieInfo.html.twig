@@ -156,6 +156,19 @@
                             </a>
                         {% endif %}
                     {% endif %}
+                    {% if isFavorite %}
+                        <a href="{{ baseUrlAbsolute }}/account/removefavorite/serie/{{ serie.id }}">
+                            <button class="btn btn-warning" style="width: 100%;">
+                                <i class=" fa fa-minus"></i> Favorite
+                            </button>
+                        </a>
+                    {% else %}
+                        <a href="{{ baseUrlAbsolute }}/account/addfavorite/serie/{{ serie.id }}">
+                            <button class="btn btn-warning" style="width: 100%;">
+                                <i class="fa fa-plus"></i> Favorite
+                            </button>
+                        </a>
+                    {% endif %}
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <b>Date :</b>
                         {{ serie.releaseDate|date('d/m/Y') }}

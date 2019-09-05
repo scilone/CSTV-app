@@ -24,7 +24,11 @@
                     </div>
 
                     <div class="col-md-4 col-sm-4 col-xs-12">
+                        {% if hasMovieFavorites %}
+                        <a href="{{ baseUrlAbsolute }}/streams/movie/favorites" tabindex="2" class="homeLink">
+                        {% else %}
                         <a href="{{ baseUrlAbsolute }}/streams/movie/all/5" tabindex="2" class="homeLink">
+                        {% endif %}
                             <div class="col-md-12 movieVOD rippler rippler-default">
                                 <center><img src="../img/on_demand.png"></center>
                                 <h3 class="text-center homeTxtCard">FILMS</h3>
@@ -33,7 +37,11 @@
                     </div>
 
                     <div class="col-md-4 col-sm-4 col-xs-12">
+                        {% if hasSerieFavorites %}
+                        <a href="{{ baseUrlAbsolute }}/streams/serie/favorites" tabindex="3" class="homeLink">
+                        {% else %}
                         <a href="{{ baseUrlAbsolute }}/streams/serie/all" tabindex="3" class="homeLink">
+                        {% endif %}
                             <div class="col-md-12 tvSeries rippler rippler-default">
                                 <center><img src="../img/series.png"></center>
                                 <h3 class="text-center homeTxtCard">SERIES</h3>
@@ -48,14 +56,15 @@
                             </a>
                         </div>
                         <div class="col-md-4 col-sm-12 col-xs-12">
-                            <a class="btn btn-default center-block btn-lg account rippler rippler-default" id="accountModal">
-                                <i class="fa fa-info"></i> ACCOUNT
+                            <a class="btn btn-default center-block btn-lg account rippler rippler-default"
+                               href="{{ baseUrlAbsolute }}/account/autolog">
+                                <i class="fa fa-info"></i> SYNC DATA
                             </a>
                         </div>
                         <div class="col-md-4 col-sm-12 col-xs-12">
                             <a class="btn btn-default center-block btn-lg account rippler rippler-default"
                                href="{{ baseUrlAbsolute }}/extra/speedtest">
-                                <i class="fa fa-clock-o"></i> CATCH UP
+                                <i class="fa fa-tachometer"></i> SPEEDTEST
                             </a>
                         </div>
                         <div class="col-md-4 col-sm-12 col-xs-12">

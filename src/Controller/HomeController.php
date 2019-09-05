@@ -48,6 +48,13 @@ class HomeController extends SecurityController
             header('Location: ' . $this->superglobales->getCookie()->get('redirect'));
         }
 
-        echo $this->twig->render('homeMain.html.twig');
+
+        echo $this->twig->render(
+            'homeMain.html.twig',
+            [
+                'hasMovieFavorites' => !empty($this->superglobales->getSession()->get('favorites')['movie']),
+                'hasSerieFavorites' => !empty($this->superglobales->getSession()->get('favorites')['serie'])
+            ]
+        );
     }
 }

@@ -138,6 +138,7 @@ class Account
         $this->superglobales->getSession()->set('nonce64', $nonce64);
         $this->superglobales->getSession()->set('username', $username);
         $this->superglobales->getSession()->set('userId', $userId);
+        $this->superglobales->getSession()->set('sessionCreated', time());
     }
 
     private function setSessionIptvData(
@@ -243,5 +244,37 @@ class Account
     private function getUserInfo(int $userId): array
     {
         return $this->repository->getFromId($userId);
+    }
+
+    public function addFavorite(string $type, int $id): void
+    {
+        $favorites = $this->superglobales->getSession()->get('favorites');
+
+        $favorites[$type][$id] = $id;
+
+        $this->repository->addDataForUser(
+            $this->superglobales->getSession()->get('userId'),
+            ['favorites' => $favorites]
+        );
+
+        $this->superglobales->getSession()->set('favorites', $favorites);
+    }
+
+    public function removeFavorite(string $type, int $id): void
+    {
+        $favorites = $this->superglobales->getSession()->get('favorites');
+
+        if (!isset($favorites[$type][$id])) {
+            return;
+        }
+
+        unset($favorites[$type][$id]);
+
+        $this->repository->addDataForUser(
+            $this->superglobales->getSession()->get('userId'),
+            ['favorites' => $favorites]
+        );
+
+        $this->superglobales->getSession()->set('favorites', $favorites);
     }
 }

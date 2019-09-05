@@ -208,12 +208,17 @@
     <div class="sidenav col-sm-3 col-xs-3 col-md-2">
         <ul>
             <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all"
-               style="{% if catName == '' and sort != 5 %}color:white{% endif %}"
+               style="{% if currentCat == 'all' and sort != 5 %}color:white{% endif %}"
                tabindex="2">
                 <li>ALL</li>
             </a>
+            <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/favorites"
+               style="{% if currentCat == 'favorites' %}color:white{% endif %}"
+               tabindex="2">
+                <li>FAVORITES</li>
+            </a>
             <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all/5"
-               style="{% if catName == '' and sort == 5 %}color:white{% endif %}"
+               style="{% if currentCat == 'all' and sort == 5 %}color:white{% endif %}"
                tabindex="2">
                 <li>RECENTLY ADDED</li>
             </a>

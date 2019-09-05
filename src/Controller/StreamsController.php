@@ -112,6 +112,13 @@ class StreamsController extends SecurityController
         $streams = $this->iptv->getMovieStreams($filter, $sort);
         $categories = $this->iptv->getMovieCategories();
 
+        if ($category === 'favorites') {
+            $favorites = $this->superglobales->getSession()->get('favorites')['movie'];
+            $streams = array_filter($streams, function ($var) use ($favorites) {
+                return isset($favorites[$var->getStreamId()]);
+            });
+        }
+
         if ($search !== '') {
             $streams = array_filter($streams, function ($var) use ($search) {
                 return stripos($var->getName(), $search) !== false;
@@ -138,15 +145,26 @@ class StreamsController extends SecurityController
     {
         $movie = $this->iptv->getMovieInfo($id);
 
-        echo $this->twig->render('streamsMovieInfo.html.twig', ['movie' => $movie]);
+        echo $this->twig->render(
+            'streamsMovieInfo.html.twig',
+            [
+                'movie'      => $movie,
+                'isFavorite' => isset($this->superglobales->getSession()->get('favorites')['movie'][$id])
+            ]
+        );
     }
 
     public function serieInfo(string $id): void
     {
         $serie = $this->iptv->getSerieInfo($id);
-        //echo '<pre>';        var_dump($serie);        exit;
 
-        echo $this->twig->render('streamsSerieInfo.html.twig', ['serie' => $serie]);
+        echo $this->twig->render(
+            'streamsSerieInfo.html.twig',
+            [
+                'serie'      => $serie,
+                'isFavorite' => isset($this->superglobales->getSession()->get('favorites')['serie'][$id])
+            ]
+        );
     }
 
     public function serie(string $category, int $sort = 0, string $search = ''): void
@@ -164,6 +182,13 @@ class StreamsController extends SecurityController
 
         $streams = $this->iptv->getSerieStreams($filter, $sort);
         $categories = $this->iptv->getSerieCategories();
+
+        if ($category === 'favorites') {
+            $favorites = $this->superglobales->getSession()->get('favorites')['serie'];
+            $streams = array_filter($streams, function ($var) use ($favorites) {
+                return isset($favorites[$var->getSerieId()]);
+            });
+        }
 
         if ($search !== '') {
             $streams = array_filter($streams, function ($var) use ($search) {
