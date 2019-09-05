@@ -178,6 +178,13 @@
                     <i class="fa fa-home"></i>
                 </a>
             </button>
+            {% if catName != '' %}
+            <button type="button" class="btn btn-secondary" tabindex="-1">
+                <a href="{{ baseUrlAbsolute }}/category/hide/movie/{{ currentCat }}" tabindex="6">
+                    <i class="fa fa-eye"></i>
+                </a>
+            </button>
+            {% endif %}
             {{ catName }}
         </div>
         <div class="pull-right">

@@ -112,6 +112,18 @@ class StreamsController extends SecurityController
         $streams = $this->iptv->getMovieStreams($filter, $sort);
         $categories = $this->iptv->getMovieCategories();
 
+        $catName = isset($categories[$category]) ? $categories[$category]->getName() : '';
+
+        $hiddenCategories = [];
+        if (isset($this->superglobales->getSession()->get('hiddenCategories')['movie'])) {
+            foreach ($categories as $keyCat => $cat) {
+                if (isset($this->superglobales->getSession()->get('hiddenCategories')['movie'][$cat->getId()])) {
+                    $hiddenCategories[] = $cat;
+                    unset($categories[$keyCat]);
+                }
+            }
+        }
+
         if ($category === 'favorites') {
             $favorites = $this->superglobales->getSession()->get('favorites')['movie'];
             $streams = array_filter($streams, function ($var) use ($favorites) {
@@ -134,7 +146,8 @@ class StreamsController extends SecurityController
                 'search'     => $search,
                 'currentCat' => $category,
                 'categories' => $categories,
-                'catName'    => isset($categories[$category]) ? $categories[$category]->getName() : '',
+                'catName'    => $catName,
+                'isHidden'   => isset($categories[$category]) ? false : true,
             ]
         );
 

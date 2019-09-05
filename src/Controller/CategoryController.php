@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Application\Account;
 use App\Application\Iptv;
 use App\Application\Twig;
 use App\Infrastructure\CacheRaw;
@@ -30,21 +31,22 @@ class CategoryController extends SecurityController
     private $superglobales;
 
     /**
-     * CategoryController constructor.
-     *
-     * @param Twig            $twig
-     * @param Iptv            $iptv
-     * @param CacheRaw        $cacheRaw
-     * @param SuperglobalesOO $superglobales
+     * @var Account
      */
-    public function __construct(Twig $twig, Iptv $iptv, CacheRaw $cacheRaw, SuperglobalesOO $superglobales)
-    {
+    private $account;
+
+    public function __construct(
+        Twig $twig,
+        Iptv $iptv,
+        CacheRaw $cacheRaw,
+        SuperglobalesOO $superglobales,
+        Account $account
+    ) {
         $this->twig          = $twig;
         $this->iptv          = $iptv;
         $this->cacheRaw      = $cacheRaw;
         $this->superglobales = $superglobales;
-
-        parent::__construct($superglobales);
+        $this->account       = $account;
     }
 
     public function live(): void
@@ -123,5 +125,12 @@ class CategoryController extends SecurityController
         //$this->cacheRaw->set($cacheName, $render);
 
         echo $render;
+    }
+
+    public function hide(string $type, int $id)
+    {
+        $this->account->hideCategory($type, $id);
+
+        echo '<script>window.history.go(-1);</script>';
     }
 }

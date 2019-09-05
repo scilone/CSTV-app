@@ -94,6 +94,14 @@ class Account
             $this->superglobales->getSession()->set('favorites', $userInfo['data']['favorites']);
         }
 
+        if (isset($userInfo['data']['hiddenCategories'])) {
+            $this->superglobales->getSession()->set('hiddenCategories', $userInfo['data']['hiddenCategories']);
+        }
+
+        if (isset($userInfo['data']['hiddenStreams'])) {
+            $this->superglobales->getSession()->set('hiddenStreams', $userInfo['data']['hiddenStreams']);
+        }
+
         $this->generateCookiesAutolog($userInfo['id'], $password);
     }
 
@@ -133,6 +141,14 @@ class Account
 
         if (isset($userInfo['data']['favorites'])) {
             $this->superglobales->getSession()->set('favorites', $userInfo['data']['favorites']);
+        }
+
+        if (isset($userInfo['data']['hiddenCategories'])) {
+            $this->superglobales->getSession()->set('hiddenCategories', $userInfo['data']['hiddenCategories']);
+        }
+
+        if (isset($userInfo['data']['hiddenStreams'])) {
+            $this->superglobales->getSession()->set('hiddenStreams', $userInfo['data']['hiddenStreams']);
         }
     }
 
@@ -252,6 +268,70 @@ class Account
     private function getUserInfo(int $userId): array
     {
         return $this->repository->getFromId($userId);
+    }
+
+    public function hideStream(string $type, int $id)
+    {
+        $hiddenStreams = $this->superglobales->getSession()->get('hiddenStreams');
+
+        $hiddenStreams[$type][$id] = $id;
+
+        $this->repository->addDataForUser(
+            $this->superglobales->getSession()->get('userId'),
+            ['hiddenStreams' => $hiddenStreams]
+        );
+
+        $this->superglobales->getSession()->set('hiddenStreams', $hiddenStreams);
+    }
+
+    public function unhideStream(string $type, int $id): void
+    {
+        $hiddenStreams = $this->superglobales->getSession()->get('hiddenStreams');
+
+        if (!isset($hiddenStreams[$type][$id])) {
+            return;
+        }
+
+        unset($hiddenStreams[$type][$id]);
+
+        $this->repository->addDataForUser(
+            $this->superglobales->getSession()->get('userId'),
+            ['hiddenStreams' => $hiddenStreams]
+        );
+
+        $this->superglobales->getSession()->set('hiddenStreams', $hiddenStreams);
+    }
+
+    public function hideCategory(string $type, int $id)
+    {
+        $hiddenCategories = $this->superglobales->getSession()->get('hiddenCategories');
+
+        $hiddenCategories[$type][$id] = $id;
+
+        $this->repository->addDataForUser(
+            $this->superglobales->getSession()->get('userId'),
+            ['hiddenCategories' => $hiddenCategories]
+        );
+
+        $this->superglobales->getSession()->set('hiddenCategories', $hiddenCategories);
+    }
+
+    public function unhideCategory(string $type, int $id): void
+    {
+        $hiddenCategories = $this->superglobales->getSession()->get('hiddenCategories');
+
+        if (!isset($hiddenCategories[$type][$id])) {
+            return;
+        }
+
+        unset($hiddenCategories[$type][$id]);
+
+        $this->repository->addDataForUser(
+            $this->superglobales->getSession()->get('userId'),
+            ['hiddenCategories' => $hiddenCategories]
+        );
+
+        $this->superglobales->getSession()->set('hiddenCategories', $hiddenCategories);
     }
 
     public function addFavorite(string $type, int $id): void
