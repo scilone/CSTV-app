@@ -90,6 +90,10 @@ class Account
             );
         }
 
+        if (isset($userInfo['data']['favorites'])) {
+            $this->superglobales->getSession()->set('favorites', $userInfo['data']['favorites']);
+        }
+
         $this->generateCookiesAutolog($userInfo['id'], $password);
     }
 
@@ -125,6 +129,10 @@ class Account
                 $userInfo['data'][Iptv::PREFIX . 'password'],
                 $userInfo['data'][Iptv::PREFIX . 'host']
             );
+        }
+
+        if (isset($userInfo['data']['favorites'])) {
+            $this->superglobales->getSession()->set('favorites', $userInfo['data']['favorites']);
         }
     }
 
