@@ -35,6 +35,7 @@ class Loader
             Service::APPLICATION_IPTV,
             Service::INFRASTRUCTURE_CACHE_RAW,
             Service::INFRASTRUCTURE_SUPERGLOBALES,
+            Service::APPLICATION_ACCOUNT,
         ],
 
         Service::APPLICATION_TWIG => [

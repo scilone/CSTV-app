@@ -179,6 +179,21 @@
                     <i class="fa fa-home"></i>
                 </a>
             </button>
+            {% if catName != '' %}
+                {% if isHidden %}
+                    <a href="{{ baseUrlAbsolute }}/category/unhide/serie/{{ currentCat }}" tabindex="6">
+                        <button type="button" class="btn btn-secondary" tabindex="-1">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </a>
+                {% else %}
+                    <a href="{{ baseUrlAbsolute }}/category/hide/serie/{{ currentCat }}" tabindex="6">
+                        <button type="button" class="btn btn-secondary" tabindex="-1">
+                            <i class="fa fa-eye-slash"></i>
+                        </button>
+                    </a>
+                {% endif %}
+            {% endif %}
             {{ catName }}
         </div>
         <div class="pull-right">
@@ -226,6 +241,19 @@
             {% for category in categories %}
                 <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}"
                    style="{% if catName == category.name %}color:white{% endif %}"
+                   tabindex="2">
+                    <li>{{ category.name }}</li>
+                </a>
+            {% endfor %}
+            <a style="opacity: 0.5;"
+               id="hiddenCats"
+               tabindex="2">
+                <li>HIDDEN</li>
+            </a>
+            {% for category in hiddenCategories %}
+                <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}"
+                   style="{% if catName == category.name %}color:white;{% endif %} opacity: 0.5; display: none;"
+                   class=" hidden-cat"
                    tabindex="2">
                     <li>{{ category.name }}</li>
                 </a>
@@ -320,6 +348,10 @@
                 }
             })
         });*/
+
+		$('#hiddenCats').click(function () {
+			$('.hidden-cat').toggle();
+		});
 
         $("#inputSearch").on('keyup', function (e) {
             if (e.keyCode === 13) {

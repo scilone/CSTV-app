@@ -102,6 +102,10 @@ class Account
             $this->superglobales->getSession()->set('hiddenStreams', $userInfo['data']['hiddenStreams']);
         }
 
+        if (isset($userInfo['data']['flaggedStreams'])) {
+            $this->superglobales->getSession()->set('flaggedStreams', $userInfo['data']['flaggedStreams']);
+        }
+
         $this->generateCookiesAutolog($userInfo['id'], $password);
     }
 
@@ -149,6 +153,10 @@ class Account
 
         if (isset($userInfo['data']['hiddenStreams'])) {
             $this->superglobales->getSession()->set('hiddenStreams', $userInfo['data']['hiddenStreams']);
+        }
+
+        if (isset($userInfo['data']['flaggedStreams'])) {
+            $this->superglobales->getSession()->set('flaggedStreams', $userInfo['data']['flaggedStreams']);
         }
     }
 
@@ -274,7 +282,7 @@ class Account
     {
         $hiddenStreams = $this->superglobales->getSession()->get('hiddenStreams');
 
-        $hiddenStreams[$type][$id] = $id;
+        $hiddenStreams[$type][$id] = 1;
 
         $this->repository->addDataForUser(
             $this->superglobales->getSession()->get('userId'),
@@ -306,7 +314,7 @@ class Account
     {
         $hiddenCategories = $this->superglobales->getSession()->get('hiddenCategories');
 
-        $hiddenCategories[$type][$id] = $id;
+        $hiddenCategories[$type][$id] = 1;
 
         $this->repository->addDataForUser(
             $this->superglobales->getSession()->get('userId'),
@@ -314,6 +322,20 @@ class Account
         );
 
         $this->superglobales->getSession()->set('hiddenCategories', $hiddenCategories);
+    }
+
+    public function flagStreamAsView(string $type, int $id): void
+    {
+        $flaggedStreams = $this->superglobales->getSession()->get('flaggedStreams');
+
+        $flaggedStreams[$type][$id] = 1;
+
+        $this->repository->addDataForUser(
+            $this->superglobales->getSession()->get('userId'),
+            ['flaggedStreams' => $flaggedStreams]
+        );
+
+        $this->superglobales->getSession()->set('flaggedStreams', $flaggedStreams);
     }
 
     public function unhideCategory(string $type, int $id): void
@@ -338,7 +360,7 @@ class Account
     {
         $favorites = $this->superglobales->getSession()->get('favorites');
 
-        $favorites[$type][$id] = $id;
+        $favorites[$type][$id] = 1;
 
         $this->repository->addDataForUser(
             $this->superglobales->getSession()->get('userId'),

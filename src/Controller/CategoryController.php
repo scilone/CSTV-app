@@ -133,4 +133,11 @@ class CategoryController extends SecurityController
 
         echo '<script>window.history.go(-1);</script>';
     }
+
+    public function unhide(string $type, int $id)
+    {
+        $this->account->unhideCategory($type, $id);
+
+        echo '<script>window.history.go(-1);</script>';
+    }
 }

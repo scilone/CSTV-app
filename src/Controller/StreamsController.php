@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Application\Account;
 use App\Application\Iptv;
 use App\Application\Twig;
 use App\Config\Param;
@@ -30,21 +31,17 @@ class StreamsController extends SecurityController
     private $superglobales;
 
     /**
-     * StreamsController constructor.
-     *
-     * @param Twig            $twig
-     * @param Iptv            $iptv
-     * @param CacheRaw        $cacheRaw
-     * @param SuperglobalesOO $superglobales
+     * @var Account
      */
-    public function __construct(Twig $twig, Iptv $iptv, CacheRaw $cacheRaw, SuperglobalesOO $superglobales)
+    private $account;
+
+    public function __construct(Twig $twig, Iptv $iptv, CacheRaw $cacheRaw, SuperglobalesOO $superglobales, Account $account)
     {
         $this->twig          = $twig;
         $this->iptv          = $iptv;
         $this->cacheRaw      = $cacheRaw;
         $this->superglobales = $superglobales;
-
-        parent::__construct($superglobales);
+        $this->account       = $account;
     }
 
     public function play(string $type, string $id, string $season = '', string $episode = '')
@@ -146,6 +143,7 @@ class StreamsController extends SecurityController
                 'search'     => $search,
                 'currentCat' => $category,
                 'categories' => $categories,
+                'hiddenCategories' => $hiddenCategories,
                 'catName'    => $catName,
                 'isHidden'   => isset($categories[$category]) ? false : true,
             ]
@@ -175,6 +173,7 @@ class StreamsController extends SecurityController
             'streamsSerieInfo.html.twig',
             [
                 'serie'      => $serie,
+                'streamView' => $this->superglobales->getSession()->get('flaggedStreams')['serie'],
                 'isFavorite' => isset($this->superglobales->getSession()->get('favorites')['serie'][$id])
             ]
         );
@@ -195,6 +194,18 @@ class StreamsController extends SecurityController
 
         $streams = $this->iptv->getSerieStreams($filter, $sort);
         $categories = $this->iptv->getSerieCategories();
+
+        $catName = isset($categories[$category]) ? $categories[$category]->getName() : '';
+
+        $hiddenCategories = [];
+        if (isset($this->superglobales->getSession()->get('hiddenCategories')['serie'])) {
+            foreach ($categories as $keyCat => $cat) {
+                if (isset($this->superglobales->getSession()->get('hiddenCategories')['serie'][$cat->getId()])) {
+                    $hiddenCategories[] = $cat;
+                    unset($categories[$keyCat]);
+                }
+            }
+        }
 
         if ($category === 'favorites') {
             $favorites = $this->superglobales->getSession()->get('favorites')['serie'];
@@ -218,10 +229,19 @@ class StreamsController extends SecurityController
                 'search'     => $search,
                 'currentCat' => $category,
                 'categories' => $categories,
-                'catName'    => isset($categories[$category]) ? $categories[$category]->getName() : '',
+                'hiddenCategories' => $hiddenCategories,
+                'catName'    => $catName,
+                'isHidden'   => isset($categories[$category]) ? false : true,
             ]
         );
 
         echo $render;
+    }
+
+    public function flagAsView(string $type, int $id, string $url)
+    {
+        $this->account->flagStreamAsView($type, $id);
+
+        header('Location: ' . base64_decode($url));
     }
 }

@@ -33,7 +33,7 @@ class AccountController
         $this->account       = $account;
     }
 
-    public function info()
+    public function iptv()
     {
         if ($this->superglobales->getPost()->has('username')) {
             $this->account->setIptvInfo(
@@ -45,7 +45,7 @@ class AccountController
             $this->redirectToHome();
         }
 
-        echo $this->twig->render('accountInfo.html.twig');
+        echo $this->twig->render('accountIptv.html.twig');
     }
 
     public function register()

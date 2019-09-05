@@ -381,7 +381,7 @@ class Iptv
 
     public function getMovieInfo(int $id)
     {
-        $cacheKey   = $this->superglobales->getSession()->get(self::PREFIX . 'host') . '_getMovieInfo_' . $id;
+        $cacheKey   = $this->getCachePrefix() . '_getMovieInfo_' . $id;
         $cachedData = $this->cache->get($cacheKey);
 
         if ($cachedData !== null) {
@@ -443,7 +443,7 @@ class Iptv
 
     public function getSerieInfo(int $id)
     {
-        $cacheKey   = md5($this->superglobales->getSession()->get(self::PREFIX . 'host')) . '_getSerieInfo_' . $id;
+        $cacheKey   = $this->getCachePrefix() . '_getSerieInfo_' . $id;
         $cachedData = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
 
         if ($cachedData !== null) {

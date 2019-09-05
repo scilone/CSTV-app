@@ -5,6 +5,7 @@ namespace App\Application;
 use App\Infrastructure\SuperglobalesOO;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use Twig\TwigFilter;
 
 class Twig
 {
@@ -13,16 +14,33 @@ class Twig
      */
     private $twig;
 
+    /**
+     * @var SuperglobalesOO
+     */
+    private $superglobales;
+
     public function __construct(SuperglobalesOO $superglobalesOO, array $globalVars)
     {
         $loader = new FilesystemLoader(__DIR__ . '/../Templates');
         $this->twig = new Environment($loader);
+        $this->superglobales = $superglobalesOO;
 
         foreach ($globalVars as $name => $value) {
             $this->twig->addGlobal($name, $value);
         }
 
-        $userAgent = $superglobalesOO->getServer()->get('HTTP_USER_AGENT');
+        $this->addGenericVars();
+        $this->addGenericFilters();
+    }
+
+    private function addGenericFilters(): void
+    {
+        $this->twig->addFilter(new TwigFilter('base64Encode', 'base64_encode'));
+    }
+
+    private function addGenericVars(): void
+    {
+        $userAgent = $this->superglobales->getServer()->get('HTTP_USER_AGENT');
 
         $this->twig->addGlobal(
             'isIos',
