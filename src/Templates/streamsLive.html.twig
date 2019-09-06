@@ -20,6 +20,21 @@
                     <i class="fa fa-home"></i>
                 </a>
             </button>
+            {% if catName != '' %}
+                {% if isHidden %}
+                    <a href="{{ baseUrlAbsolute }}/category/unhide/live/{{ currentCat }}" tabindex="6">
+                        <button type="button" class="btn btn-secondary" tabindex="-1">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </a>
+                {% else %}
+                    <a href="{{ baseUrlAbsolute }}/category/hide/live/{{ currentCat }}" tabindex="6">
+                        <button type="button" class="btn btn-secondary" tabindex="-1">
+                            <i class="fa fa-eye-slash"></i>
+                        </button>
+                    </a>
+                {% endif %}
+            {% endif %}
             {{ catName }}
         </div>
         <div class="pull-right">

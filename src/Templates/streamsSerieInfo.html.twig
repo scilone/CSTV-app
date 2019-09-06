@@ -319,5 +319,7 @@
 {% endblock %}
 
 {% block bg %}
-    <img class="body-bg" src="{{ baseUrlAbsolute ~ serie.backdropPath[0] }}">
+    {% if movie.backdropPath[0] is not empty %}
+        <img class="body-bg" src="{{ baseUrlAbsolute ~ serie.backdropPath[0] }}">
+    {% endif %}
 {% endblock %}

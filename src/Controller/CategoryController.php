@@ -62,17 +62,24 @@ class CategoryController extends SecurityController
 
         $categories = $this->iptv->getLiveCategories();
 
-        $render = $this->twig->render(
+        $hiddenCategories = [];
+        if (isset($this->superglobales->getSession()->get('hiddenCategories')['live'])) {
+            foreach ($categories as $keyCat => $cat) {
+                if (isset($this->superglobales->getSession()->get('hiddenCategories')['live'][$cat->getId()])) {
+                    $hiddenCategories[] = $cat;
+                    unset($categories[$keyCat]);
+                }
+            }
+        }
+
+        echo $this->twig->render(
             'category.html.twig',
             [
-                'categories' => $categories,
-                'type'       => 'live',
+                'categories'       => $categories,
+                'type'             => 'live',
+                'hiddenCategories' => $hiddenCategories,
             ]
         );
-
-        //$this->cacheRaw->set($cacheName, $render);
-
-        echo $render;
     }
 
     public function movie(): void

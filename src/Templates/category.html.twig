@@ -2,11 +2,20 @@
 
 {% block body %}
     <ul>
-        {% set catLength = 1 %}
+        {% set catLength = 2 %}
         <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all"><li>ALL</li></a>
 
     {% for category in categories %}
         <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}"><li>{{ category.name }}</li></a>
+        {% set catLength = catLength + 1 %}
+    {% endfor %}
+        <a id="hiddenCats"><li style="opacity: 0.4;">HIDDEN</li></a>
+    {% for category in hiddenCategories %}
+        <a style="display: none;"
+           class="hidden-cat"
+           href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}">
+            <li style="opacity: 0.4;">{{ category.name }}</li>
+        </a>
         {% set catLength = catLength + 1 %}
     {% endfor %}
     </ul>
@@ -32,8 +41,16 @@
             border: medium solid #e8b12c;
         }
 
-        a:nth-child({{ (catLength/2)|round(0, 'ceil') }}) li {
+        /*a:nth-child({{ (catLength/2)|round(0, 'ceil') }}) li {
             margin-bottom: 5em;
-        }
+        }*/
     </style>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $('#hiddenCats').click(function () {
+            $('.hidden-cat').toggle();
+        });
+    </script>
 {% endblock %}

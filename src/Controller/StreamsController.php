@@ -89,11 +89,27 @@ class StreamsController extends SecurityController
         $streams    = $this->iptv->getLiveStreams($filter);
         $categories = $this->iptv->getLiveCategories();
 
+        $catName = isset($categories[$category]) ? $categories[$category]->getName() : '';
+
+        $hiddenCategories = [];
+        if (isset($this->superglobales->getSession()->get('hiddenCategories')['live'])) {
+            foreach ($categories as $keyCat => $cat) {
+                if (isset($this->superglobales->getSession()->get('hiddenCategories')['live'][$cat->getId()])) {
+                    $hiddenCategories[] = $cat;
+                    unset($categories[$keyCat]);
+                }
+            }
+        }
+
         $render = $this->twig->render(
             'streamsLive.html.twig',
             [
-                'streams' => $streams,
-                'catName'    => isset($categories[$category]) ? $categories[$category]->getName() : '',
+                'streams'          => $streams,
+                'catName'          => $catName,
+                'type'             => 'live',
+                'currentCat'       => $category,
+                'hiddenCategories' => $hiddenCategories,
+                'isHidden'         => isset($categories[$category]) ? false : true,
             ]
         );
 
