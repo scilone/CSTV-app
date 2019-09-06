@@ -91,11 +91,13 @@ class AccountController
 
     public function logout(): void
     {
+        session_start();
+        session_unset();
         session_destroy();
 
-        setcookie(Iptv::PREFIX . 'username', '', 0, Param::BASE_URL_RELATIVE);
-        setcookie(Iptv::PREFIX . 'password', '', 0, Param::BASE_URL_RELATIVE);
-        setcookie(Iptv::PREFIX . 'host', '', 0, Param::BASE_URL_RELATIVE);
+        foreach ($this->superglobales->getCookie()->all() as $cookieName => $cookieValue) {
+            setcookie($cookieName, '', 0, Param::BASE_URL_RELATIVE);
+        }
 
         $this->redirectToHome();
     }

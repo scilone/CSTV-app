@@ -35,13 +35,20 @@ class StreamsController extends SecurityController
      */
     private $account;
 
-    public function __construct(Twig $twig, Iptv $iptv, CacheRaw $cacheRaw, SuperglobalesOO $superglobales, Account $account)
-    {
+    public function __construct(
+        Twig $twig,
+        Iptv $iptv,
+        CacheRaw $cacheRaw,
+        SuperglobalesOO $superglobales,
+        Account $account
+    ) {
         $this->twig          = $twig;
         $this->iptv          = $iptv;
         $this->cacheRaw      = $cacheRaw;
         $this->superglobales = $superglobales;
         $this->account       = $account;
+
+        parent::__construct($superglobales);
     }
 
     public function play(string $type, string $id, string $season = '', string $episode = '')

@@ -13,11 +13,6 @@ class SecurityController
      */
     private $superglobales;
 
-    /**
-     * AssetController constructor.
-     *
-     * @param SuperglobalesOO $superglobales
-     */
     public function __construct(SuperglobalesOO $superglobales)
     {
         $this->superglobales = $superglobales;
