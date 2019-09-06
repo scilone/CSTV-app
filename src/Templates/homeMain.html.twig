@@ -14,6 +14,7 @@
                     </div>
                 </div>
                 <div class="b-content home">
+                    {% if isAndroid or isIos %}
                     <div class="col-md-4 col-sm-4 col-xs-12" id="divLive">
                         <a href="{{ baseUrlAbsolute }}/category/live" tabindex="1" class="homeLink">
                             <div class="col-md-12 liveTV rippler rippler-default">
@@ -22,6 +23,7 @@
                                 <div class="rippler-effect rippler-div" style="width: 0px; height: 0px; left: 314.516px; top: 210.406px;"></div></div>
                         </a>
                     </div>
+                    {% endif %}
 
                     <div class="col-md-4 col-sm-4 col-xs-12">
                         {% if hasMovieFavorites %}

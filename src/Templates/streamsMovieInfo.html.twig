@@ -111,6 +111,10 @@
                 <div class="sidenav col-lg-1 col-md-2 col-sm-3 col-xs-3">
                     <img src="{{ baseUrlAbsolute ~ movie.image }}" width="100" height="160" class="col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-12 col-sm-12 col-xs-12">
+                        {% if streamView[movie.streamId] is defined %}
+                            <div style="height: 2px;background: #d43f3a;"></div>
+                        {% endif %}
+
                         {% set rating5 = (movie.rating/2)|round(1)  %}
                         {% set ratingDecimal = (rating5 - rating5|round(0, 'floor')) * 10  %}
 
@@ -141,14 +145,14 @@
                         </div>
 
                         {% if isAndroid or isIos %}
-                        <a href="{{ vlcDeeplink }}{{ movie.streamLink }}" tabindex="1">
+                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/movie/{{ movie.streamId }}/{{ (vlcDeeplink ~ movie.streamLink)|base64Encode }}" tabindex="1">
                             <button class="btn btn-success" style="width: 100%;">
                                 Play
                             </button>
                         </a>
                         {% endif %}
                         {% if not isIos and not isAndroid and isChrome  %}
-                        <a href="{{ baseUrlAbsolute }}/streams/play/movie/{{ movie.streamId }}" tabindex="1">
+                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/movie/{{ movie.streamId }}/{{ (baseUrlAbsolute ~ "/streams/play/movie/" ~ movie.streamId)|base64Encode }}" tabindex="1">
                             <button class="btn btn-success" style="width: 100%;">
                                 Webplayer
                             </button>

@@ -137,15 +137,16 @@ class StreamsController extends SecurityController
         $render = $this->twig->render(
             'streamsMovie.html.twig',
             [
-                'streams'    => $streams,
-                'type'       => 'movie',
-                'sort'       => $sort,
-                'search'     => $search,
-                'currentCat' => $category,
-                'categories' => $categories,
+                'streams'          => $streams,
+                'type'             => 'movie',
+                'sort'             => $sort,
+                'search'           => $search,
+                'currentCat'       => $category,
+                'categories'       => $categories,
                 'hiddenCategories' => $hiddenCategories,
-                'catName'    => $catName,
-                'isHidden'   => isset($categories[$category]) ? false : true,
+                'catName'          => $catName,
+                'isHidden'         => isset($categories[$category]) ? false : true,
+                'streamView'       => $this->superglobales->getSession()->get('flaggedStreams')['movie']
             ]
         );
 
@@ -160,6 +161,7 @@ class StreamsController extends SecurityController
             'streamsMovieInfo.html.twig',
             [
                 'movie'      => $movie,
+                'streamView' => $this->superglobales->getSession()->get('flaggedStreams')['movie'],
                 'isFavorite' => isset($this->superglobales->getSession()->get('favorites')['movie'][$id])
             ]
         );

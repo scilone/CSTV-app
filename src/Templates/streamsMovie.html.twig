@@ -272,7 +272,7 @@
                data-name="{{ stream.name|lower }}"
                data-added="{{ stream.added.timestamp }}"
                data-rate="{{ stream.rating5based }}">
-                <div class="item">
+                <div class="item" style="{% if streamView[stream.streamId] is defined %}opacity: 0.3{% endif %}">
                     <img {% if loop.index > 50 %}data-{% endif %}src="{{ baseUrlAbsolute ~ stream.streamIcon }}"
                          alt="{{ stream.name }}"
                          title="{{ stream.name }}">
@@ -339,7 +339,7 @@
 
         $('#hiddenCats').click(function () {
             $('.hidden-cat').toggle();
-		});
+        });
 
         /*$('#inputSearch').on('input', function() {
             const search = $(this).val().toLowerCase();
