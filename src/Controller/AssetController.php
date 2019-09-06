@@ -37,11 +37,6 @@ class AssetController
         $strFile = base64_decode($url);
 
         if ($strFile !== '') {
-            $cacheEnds = 60 * 60 * 24 * 365;
-            header("Pragma: public");
-            header("Cache-Control: maxage=" . $cacheEnds);
-            header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $cacheEnds) . ' GMT');
-
             $ch = curl_init($strFile);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36');

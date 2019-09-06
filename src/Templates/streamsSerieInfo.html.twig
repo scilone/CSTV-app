@@ -204,6 +204,7 @@
                             {% endfor %}
                         </select>
                     </div>
+                    {% set currentSeason = 0 %}
                     {% for season, episodes in serie.episodes %}
                         <div class="seasons season{{ season }} col-md-12 col-sm-12 col-xs-12 {% if loop.index0 != 0 %}hide{% endif %}" style="padding: 1em 0;">
                             <div class="col-md-10 col-sm-10">
@@ -224,7 +225,8 @@
                                     <div class="col-md-4 col-sm-4 col-xs-4">
                                         <img src="{{ baseUrlAbsolute ~ episode.movieImage }}" width="100%">
                                         {% if streamView[episode.id] is defined %}
-                                        <div style="height: 2px;background: #d43f3a;"></div>
+                                            {% set currentSeason = season %}
+                                            <div style="height: 2px;background: #d43f3a;"></div>
                                         {% endif %}
                                     </div>
                                     <div class="col-md-5 col-sm-5 col-xs-5">
@@ -299,6 +301,7 @@
             </div>
         </div>
     </div>
+    <input type="hidden" id="currentSeason" value="{{ currentSeason }}">
 {% endblock %}
 
 {% block js %}
@@ -306,7 +309,12 @@
         $('#seasonChoice').change(function () {
             $('.seasons').addClass('hide');
             $('.season' + $(this).val()).removeClass('hide');
-		});
+        });
+
+        if ($('#currentSeason').val() > 0) {
+            $('#seasonChoice').val($('#currentSeason').val());
+            $('#seasonChoice').change();
+        }
     </script>
 {% endblock %}
 
