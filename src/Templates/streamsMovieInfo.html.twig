@@ -41,25 +41,6 @@
         }
 
         /* STARS */
-        .star {
-            font-size: 14px;
-            width: 14px;
-            display: inline-block;
-            color: gray;
-        }
-        .star:after {
-            content:'\2605';
-            color: gold;
-            position: absolute;
-            margin-left: -12px;
-            overflow: hidden;
-        }
-        .star:last-child {
-            margin-right: 0;
-        }
-        .star:before {
-            content:'\2605';
-        }
         .star.star-1:after {
             width: 3px;
         }
@@ -87,12 +68,6 @@
         .star.star-9:after {
             width: 11px;
         }
-        .star.star-empty:after, .star.star-0:after {
-            width: 0px;
-        }
-        .star.star-empty{
-            margin-left: -1px;
-        }
         .stars {
             text-align: center;
         }
@@ -116,33 +91,7 @@
                         {% endif %}
 
                         {% set rating5 = (movie.rating/2)|round(1)  %}
-                        {% set ratingDecimal = (rating5 - rating5|round(0, 'floor')) * 10  %}
-
-                        <div class="stars">
-                            {% if rating5 < 1 %}
-                                <span class="star star-{{ ratingDecimal }}"></span>
-                                <span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span>
-                            {% elseif rating5 < 2 %}
-                                <span class="star"></span>
-                                <span class="star star-{{ ratingDecimal }}"></span>
-                                <span class="star star-empty"></span><span class="star star-empty"></span><span class="star star-empty"></span>
-                            {% elseif rating5 < 3 %}
-                                <span class="star"></span><span class="star"></span>
-                                <span class="star star-{{ ratingDecimal }}"></span>
-                                <span class="star star-empty"></span><span class="star star-empty"></span>
-                            {% elseif rating5 < 4 %}
-                                <span class="star"></span><span class="star"></span><span class="star"></span>
-                                <span class="star star-{{ ratingDecimal }}"></span>
-                                <span class="star star-empty"></span>
-                            {% else %}
-                                <span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span>
-                                {% if rating5 == 5 %}
-                                    <span class="star"></span>
-                                {% else %}
-                                    <span class="star star-{{ ratingDecimal }}"></span>
-                                {% endif %}
-                            {% endif %}
-                        </div>
+                        {% include 'Module/stars.html.twig' with {'rating': rating5} %}
 
                         {% if isAndroid or isIos %}
                         <a href="{{ baseUrlAbsolute }}/streams/flagAsView/movie/{{ movie.streamId }}/{{ (vlcDeeplink ~ movie.streamLink)|base64Encode }}" tabindex="1">

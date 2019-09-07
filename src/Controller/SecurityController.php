@@ -41,7 +41,7 @@ class SecurityController
         if ($this->superglobales->getSession()->has(Iptv::PREFIX . 'host') === false) {
             $this->setCookieRedirect();
 
-            header('Location: ' . Param::BASE_URL_ABSOLUTE . '/account/info');
+            header('Location: ' . Param::BASE_URL_ABSOLUTE . '/account/iptv');
             exit;
         }
     }

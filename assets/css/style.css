@@ -1190,3 +1190,36 @@ button.LoadMoreBtn:hover {
 .info_set span {
     font-weight: 500;
 }
+
+#overlay {
+    height: 100%;
+    background: black;
+    width: 100%;
+    position: fixed;
+    z-index: 11;
+    opacity: 0.8;
+    display: none;
+}
+
+.star.star-empty:after, .star.star-0:after {
+    width: 0px;
+}
+.star {
+    font-size: 14px;
+    width: 14px;
+    display: inline-block;
+    color: gray;
+}
+.star:after {
+    content:'\2605';
+    color: gold;
+    position: absolute;
+    margin-left: -12px;
+    overflow: hidden;
+}
+.star:last-child {
+    margin-right: 0;
+}
+.star:before {
+    content:'\2605';
+}
