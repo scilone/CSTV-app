@@ -163,11 +163,11 @@
                             <div class="col-md-2 col-sm-2 col-xs-2">
                                 {{ serie.seasons[season].airDate|date('d/m/Y') }}
                             </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12">
+                            <!--div class="col-md-12 col-sm-12 col-xs-12">
                                 <p>
                                     {{ serie.seasons[season].overview }}
                                 </p>
-                            </div>
+                            </div-->
                             <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 15px; background: rgb(0,0,0,0.5); padding-top: 1em;">
                             {% for episode in episodes %}
                                 <div class="col-md-12 col-sm-12 col-xs-12" style="padding-top: 1em;" id="episode-{{ episode.id }}">
@@ -213,11 +213,11 @@
                                         </a>
                                         {% endif %}
                                     </div>
-                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <!--div class="col-md-12 col-sm-12 col-xs-12">
                                         <p>
                                             {{ episode.plot }}
                                         </p>
-                                    </div>
+                                    </div-->
                                 </div>
                             {% endfor %}
                             </div>
@@ -244,6 +244,7 @@
         }
 
         if ($('#lastEpisode').val() > 0) {
+            $('#episode-' + $('#lastEpisode').val()).attr('tabindex', 1);
             window.location.href = "#episode-" + $('#lastEpisode').val();
         }
     </script>

@@ -47,6 +47,8 @@ class CategoryController extends SecurityController
         $this->cacheRaw      = $cacheRaw;
         $this->superglobales = $superglobales;
         $this->account       = $account;
+
+        parent::__construct($superglobales);
     }
 
     public function live(): void

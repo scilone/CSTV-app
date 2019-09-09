@@ -6,6 +6,7 @@ use App\Application\Account;
 use App\Application\Iptv;
 use App\Application\Twig;
 use App\Config\Param;
+use App\Domain\Iptv\DTO\Live;
 use App\Infrastructure\CacheRaw;
 use App\Infrastructure\SuperglobalesOO;
 
@@ -77,6 +78,51 @@ class StreamsController extends SecurityController
                 'url' => $url,
             ]
         );
+    }
+
+    public function liveInfo(string $streamName): void
+    {
+        $streamName = base64_decode($streamName);
+
+        $streams  = $this->iptv->getLiveStreamsByName($streamName);
+
+        /** @var Live $refStream */
+        $refStream = current($streams);
+
+        $shortEpg = $this->iptv->getShortEPG($refStream->getStreamId());
+        $name     = $refStream->getName();
+        $img      = $refStream->getStreamIcon();
+
+        $streamsSorted = [];
+        if (isset($streams['4K'])) {
+            $streamsSorted['4K'] = $streams['4K'];
+        }
+        if (isset($streams['FHD'])) {
+            $streamsSorted['FHD'] = $streams['FHD'];
+        }
+        if (isset($streams['HD'])) {
+            $streamsSorted['HD'] = $streams['HD'];
+        }
+        if (isset($streams['HEVC'])) {
+            $streamsSorted['HEVC'] = $streams['HEVC'];
+        }
+        if (isset($streams['SD'])) {
+            $streamsSorted['SD'] = $streams['SD'];
+        }
+        $streamsSorted += $streams;
+
+        $render = $this->twig->render(
+            'streamsLiveInfo.html.twig',
+            [
+                'streams'  => $streamsSorted,
+                'type'     => 'live',
+                'shortEpg' => $shortEpg,
+                'name'     => $name,
+                'img'      => $img,
+            ]
+        );
+
+        echo $render;
     }
 
     public function live(string $category): void

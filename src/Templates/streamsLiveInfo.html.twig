@@ -1,0 +1,128 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <style>
+        .container {
+            background: rgba(0,0,0,0.8);
+        }
+
+        .sidenav {
+            position: absolute;
+            z-index: 1;
+            overflow-x: hidden;
+            padding: 5em 0;
+        }
+
+        .sidenav a {
+            font-family: roboto;
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            color: #818181;
+            display: block;
+            letter-spacing: -0.5px;
+            line-height: 1em;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav ul {
+            list-style-type:none;
+            padding: 0;
+        }
+
+        .sidenav a:focus{
+            color: #e8b12c !important;
+        }
+
+        p {
+            margin: 5px 0em !important;
+        }
+
+        /* STARS */
+        .star.star-1:after {
+            width: 3px;
+        }
+        .star.star-2:after {
+            width: 4px;
+        }
+        .star.star-3:after {
+            width: 5px;
+        }
+        .star.star-4:after {
+            width: 6px;
+        }
+        .star.star-5:after {
+            width: 7px;
+        }
+        .star.star-6:after {
+            width: 8px;
+        }
+        .star.star-7:after {
+            width: 9px;
+        }
+        .star.star-8:after {
+            width: 10px;
+        }
+        .star.star-9:after {
+            width: 11px;
+        }
+        .stars {
+            text-align: center;
+        }
+
+        td:nth-child(odd) {
+            width: 30%;
+            height: 3em;
+        }
+    </style>
+    <div class="container" style="margin: 3em; width: auto">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <h1 style="text-align: center; margin-bottom: 1em"><img src="{{ baseUrlAbsolute ~ img }}" > {{ name }}</h1>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-1 col-md-2 col-sm-3 col-xs-3">
+                    {% for quality, stream in streams %}
+                        <a href="{{ vlcDeeplink ~ stream.streamLink }}" tabindex="1">
+                            <button class="btn btn-success" style="width: 100%; margin-bottom: 1em">
+                                Play {{ quality }}
+                            </button>
+                        </a>
+                    {% endfor %}
+
+                    {% if isFavorite %}
+                    <!--a href="{{ baseUrlAbsolute }}/account/removefavorite/movie/{{ movie.streamId }}">
+                        <button class="btn btn-warning" style="width: 100%;">
+                            <i class=" fa fa-minus"></i> Favorite
+                        </button>
+                    </a-->
+                    {% else %}
+                    <!--a href="{{ baseUrlAbsolute }}/account/addfavorite/movie/{{ movie.streamId }}">
+                        <button class="btn btn-warning" style="width: 100%;">
+                            <i class="fa fa-plus"></i> Favorite
+                        </button>
+                    </a-->
+                    {% endif %}
+                </div>
+                <div class="col-lg-11 col-md-10 col-sm-9 col-xs-9">
+                    <table>
+                        {% for epg in shortEpg %}
+                            <tr>
+                                <td><b>{{ epg.dateStart|date('H:i') }} - {{ epg.dateEnd|date('H:i') }}</b></td>
+                                <td>{{ epg.title }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="padding-bottom: 2em;">
+                                    {{ epg.description }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

@@ -3,6 +3,7 @@
 namespace App\Application;
 
 use App\Domain\Iptv\DTO\Category;
+use App\Domain\Iptv\DTO\EpgShort;
 use App\Domain\Iptv\DTO\Live;
 use App\Domain\Iptv\DTO\Movie;
 use App\Domain\Iptv\DTO\MovieInfo;
@@ -13,7 +14,6 @@ use App\Domain\Iptv\DTO\SerieSeason;
 use App\Domain\Iptv\DTO\Video;
 use App\Domain\Iptv\XcodeApi;
 use App\Infrastructure\CacheItem;
-use App\Infrastructure\CurlOO;
 use App\Infrastructure\SuperglobalesOO;
 use DateTimeImmutable;
 
@@ -133,7 +133,7 @@ class Iptv
 
     public function getLiveStreams(array $filter)
     {
-        $cacheKey    = $this->getCachePrefix() . '_getMovieStreams_' . http_build_query($filter);
+        $cacheKey    = $this->getCachePrefix() . '_getLiveStreams_' . http_build_query($filter);
         $cachedData  = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
 
         if ($cachedData !== null) {
@@ -153,6 +153,7 @@ class Iptv
             }
 
             $streamLink = $this->superglobales->getSession()->get(self::PREFIX . 'host') .
+                          '/live' .
                           '/' . $this->superglobales->getSession()->get(self::PREFIX . 'username') .
                           '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
                           '/' . $data->stream_id;
@@ -161,12 +162,83 @@ class Iptv
 
             $name = $data->name ?? '';
             if (isset($filter['cat'])) {
+                $name = str_replace(['SD','FHD', 'HD','4K','sd','hd','fhd','4k'], '', $name);
                 $name = trim(preg_replace('#\|\w+\|#', '', $name));
             }
 
-            $return[] = new Live(
+            $return[$name] = new Live(
                 (int) $data->num ?? 0,
                 (string) $name,
+                (string) $data->stream_type ?? '',
+                (int) $data->stream_id ?? 0,
+                $img,
+                (int) $data->epg_channel_id ?? 0,
+                DateTimeImmutable::createFromFormat('U', $data->added ?? 0),
+                (int) $data->category_id ?? 0,
+                (string) $data->custom_sid ?? '',
+                (int) $data->tv_archive ?? 0,
+                (string) $data->direct_source ?? '',
+                (int) $data->tv_archive_duration ?? 0,
+                $streamLink
+            );
+        }
+
+        $return = array_values($return);
+
+        $this->cache->set($cacheKey, $return);
+
+        return $return;
+    }
+
+    public function getLiveStreamsByName(string $searchedName)
+    {
+        $cacheKey    = $this->getCachePrefix() . '_getLiveStreamsByName_' . md5($searchedName);
+        $cachedData  = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
+
+        if ($cachedData !== null) {
+            return $cachedData;
+        }
+
+        $list = $this->xcodeApi->getLiveStreams(
+            $this->superglobales->getSession()->get(self::PREFIX . 'host'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'username'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'password')
+        );
+
+        $return = [];
+        foreach ($list as $data) {
+            $nameFormatted = $data->name ?? '';
+            $nameFormatted = str_replace(['SD','FHD', 'HD','4K','sd','hd','fhd','4k'], '', $nameFormatted);
+            $nameFormatted = trim(preg_replace('#\|\w+\|#', '', $nameFormatted));
+
+            if ($nameFormatted !== $searchedName) {
+                continue;
+            }
+
+            $quality = '';
+            if (stripos($data->name, 'SD') !== false) {
+                $quality = 'SD';
+            } elseif (stripos($data->name, 'FHD') !== false) {
+                $quality = 'FHD';
+            } elseif (stripos($data->name, '4K') !== false) {
+                $quality = '4K';
+            } elseif (stripos($data->name, 'HEVC') !== false) {
+                $quality = 'HEVC';
+            } elseif (stripos($data->name, 'HD') !== false) {
+                $quality = 'HD';
+            }
+
+            $streamLink = $this->superglobales->getSession()->get(self::PREFIX . 'host') .
+                          '/live' .
+                          '/' . $this->superglobales->getSession()->get(self::PREFIX . 'username') .
+                          '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
+                          '/' . $data->stream_id;
+
+            $img = '/asset/img/' . base64_encode($data->stream_icon ?? '');
+
+            $return[$quality] = new Live(
+                (int) $data->num ?? 0,
+                (string) $nameFormatted,
                 (string) $data->stream_type ?? '',
                 (int) $data->stream_id ?? 0,
                 $img,
@@ -377,6 +449,47 @@ class Iptv
         $this->cache->set($cacheKey, $return);
 
         return $return;
+    }
+
+    public function getShortEPG(int $id)
+    {
+        $cacheKey   = $this->getCachePrefix() . '_getShortEPG_' . $id;
+        $cachedData = $this->cache->get($cacheKey);
+
+        if ($cachedData !== null) {
+            return $cachedData;
+        }
+
+        $info = $this->xcodeApi->getShortEPG(
+            $this->superglobales->getSession()->get(self::PREFIX . 'host'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'username'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'password'),
+            $id
+        );
+
+        $list = [];
+        if (isset($info['epg_listings'])) {
+            $info = $info['epg_listings'];
+
+            foreach ($info as $epg) {
+                $list[] = new EpgShort(
+                    (int) $epg->id ?? 0,
+                    (int) $epg->epg_id ?? 0,
+                    (string) base64_decode($epg->title ?? ''),
+                    (string) $epg->lang ?? '',
+                    new DateTimeImmutable($epg->start ?? null),
+                    new DateTimeImmutable($epg->end ?? null),
+                    (string) base64_decode($epg->description ?? ''),
+                    (string) $epg->channel_id ?? '',
+                    (int) $epg->start_timestamp ?? 0,
+                    (int) $epg->stop_timestamp ?? 0
+                );
+            }
+        }
+
+        $this->cache->set($cacheKey, $list);
+
+        return $list;
     }
 
     public function getMovieInfo(int $id)
