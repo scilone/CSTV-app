@@ -10,6 +10,7 @@ Class Service
     const CONTROLLER_STREAM   = 'App\Controller\StreamsController';
     const CONTROLLER_EXTRA    = 'App\Controller\ExtraController';
     const CONTROLLER_ACCOUNT  = 'App\Controller\AccountController';
+    const CONTROLLER_CACHE    = 'App\Controller\CacheController';
 
     const APPLICATION_TWIG       = 'App\Application\Twig';
     const APPLICATION_IPTV       = 'App\Application\Iptv';

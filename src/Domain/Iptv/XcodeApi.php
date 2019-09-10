@@ -7,6 +7,8 @@ use App\Infrastructure\CurlOO;
 
 class XcodeApi
 {
+    private const CACHE_EXPIRE = '1 day';
+
     /**
      * @var CurlOO
      */
@@ -17,10 +19,33 @@ class XcodeApi
      */
     private $cache;
 
+    /**
+     * @var string
+     */
+    private $cacheExpire;
+
     public function __construct(CurlOO $curl, CacheRaw $cache)
     {
         $this->curl  = $curl;
         $this->cache = $cache;
+
+        $this->setCacheExpire();
+    }
+
+    private function getCacheExpire(): string
+    {
+        return $this->cacheExpire;
+    }
+
+    public function setCacheExpire(string $cacheExpire = null): XcodeApi
+    {
+        if ($cacheExpire === null) {
+            $cacheExpire = self::CACHE_EXPIRE;
+        }
+
+        $this->cacheExpire = $cacheExpire;
+
+        return $this;
     }
 
     private function getPostData(string $username, string $password, string $action = ''): array
@@ -55,7 +80,7 @@ class XcodeApi
     {
         $dataCached = $this->cache->get(
             md5($host . $username) . '_' . $action . http_build_query($extra),
-            '1 day'
+            $this->getCacheExpire()
         );
 
         if ($dataCached !== null) {

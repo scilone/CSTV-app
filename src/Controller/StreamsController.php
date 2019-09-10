@@ -162,6 +162,17 @@ class StreamsController extends SecurityController
         echo $render;
     }
 
+    private function cleanSearch(string $search)
+    {
+        $str = htmlentities($search, ENT_NOQUOTES, 'utf-8');
+        $str = preg_replace('#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str);
+        $str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str);
+        $str = preg_replace('#&[^;]+;#', '', $str);
+        $str = preg_replace('#[^\w]#', '', $str);
+
+        return $str;
+    }
+
     public function movie(string $category, int $sort = 0, string $search = ''): void
     {
         $search = urldecode($search);
@@ -169,10 +180,6 @@ class StreamsController extends SecurityController
         $filter = [];
         if (is_numeric($category)) {
             $filter['cat'] = $category;
-        }
-
-        if ($search !== '') {
-            $filter['search'] = $search;
         }
 
         $streams = $this->iptv->getMovieStreams($filter, $sort);
@@ -198,8 +205,9 @@ class StreamsController extends SecurityController
         }
 
         if ($search !== '') {
-            $streams = array_filter($streams, function ($var) use ($search) {
-                return stripos($var->getName(), $search) !== false;
+            $searchCleaned = $this->cleanSearch($search);
+            $streams = array_filter($streams, function ($var) use ($searchCleaned) {
+                return stripos($this->cleanSearch($var->getName()), $searchCleaned) !== false;
             });
         }
 
@@ -259,10 +267,6 @@ class StreamsController extends SecurityController
             $filter['cat'] = $category;
         }
 
-        if ($search !== '') {
-            //$filter['search'] = $search;
-        }
-
         $streams = $this->iptv->getSerieStreams($filter, $sort);
         $categories = $this->iptv->getSerieCategories();
 
@@ -286,8 +290,9 @@ class StreamsController extends SecurityController
         }
 
         if ($search !== '') {
-            $streams = array_filter($streams, function ($var) use ($search) {
-                return stripos($var->getName(), $search) !== false;
+            $searchCleaned = $this->cleanSearch($search);
+            $streams = array_filter($streams, function ($var) use ($searchCleaned) {
+                return stripos($this->cleanSearch($var->getName()), $searchCleaned) !== false;
             });
         }
 

@@ -153,7 +153,6 @@ class Iptv
             }
 
             $streamLink = $this->superglobales->getSession()->get(self::PREFIX . 'host') .
-                          '/live' .
                           '/' . $this->superglobales->getSession()->get(self::PREFIX . 'username') .
                           '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
                           '/' . $data->stream_id;
@@ -229,7 +228,6 @@ class Iptv
             }
 
             $streamLink = $this->superglobales->getSession()->get(self::PREFIX . 'host') .
-                          '/live' .
                           '/' . $this->superglobales->getSession()->get(self::PREFIX . 'username') .
                           '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
                           '/' . $data->stream_id;
@@ -453,12 +451,7 @@ class Iptv
 
     public function getShortEPG(int $id)
     {
-        $cacheKey   = $this->getCachePrefix() . '_getShortEPG_' . $id;
-        $cachedData = $this->cache->get($cacheKey);
-
-        if ($cachedData !== null) {
-            return $cachedData;
-        }
+        $this->xcodeApi->setCacheExpire('1 hour');
 
         $info = $this->xcodeApi->getShortEPG(
             $this->superglobales->getSession()->get(self::PREFIX . 'host'),
@@ -487,7 +480,7 @@ class Iptv
             }
         }
 
-        $this->cache->set($cacheKey, $list);
+        $this->xcodeApi->setCacheExpire();
 
         return $list;
     }
