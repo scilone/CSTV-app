@@ -135,23 +135,17 @@
 
     <div id="header">
         <div class="pull-left">
-            <a href="{{ baseUrlAbsolute ~ homeUrlAbsolute }}" tabindex="5">
-                <button type="button" class="btn btn-secondary" tabindex="-1">
-                    <i class="fa fa-home"></i>
-                </button>
+            <a href="{{ baseUrlAbsolute ~ homeUrlAbsolute }}" tabindex="5" class="btn">
+                <i class="fa fa-home"></i>
             </a>
             {% if catName != '' %}
                 {% if isHidden %}
-                <a href="{{ baseUrlAbsolute }}/category/unhide/movie/{{ currentCat }}" tabindex="6">
-                    <button type="button" class="btn btn-secondary" tabindex="-1">
-                        <i class="fa fa-eye"></i>
-                    </button>
+                <a href="{{ baseUrlAbsolute }}/category/unhide/movie/{{ currentCat }}" tabindex="6" class="btn">
+                    <i class="fa fa-eye"></i>
                 </a>
                 {% else %}
-                <a href="{{ baseUrlAbsolute }}/category/hide/movie/{{ currentCat }}" tabindex="6">
-                    <button type="button" class="btn btn-secondary" tabindex="-1">
-                        <i class="fa fa-eye-slash"></i>
-                    </button>
+                <a href="{{ baseUrlAbsolute }}/category/hide/movie/{{ currentCat }}" tabindex="6" class="btn">
+                    <i class="fa fa-eye-slash"></i>
                 </a>
                 {% endif %}
             {% endif %}
@@ -159,27 +153,19 @@
         </div>
         <div class="pull-right">
             <div class="btn-group" role="group">
-                <button id="sortByName" type="button" class="btn btn-secondary" tabindex="-1">
-                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 2 %}1{% else %}2{% endif %}/{{ search }}" tabindex="3">
-                        <i class="fa fa-sort-alpha-asc"></i>
-                    </a>
-                </button>
-                <button id="sortByRate" type="button" class="btn btn-secondary" tabindex="-1">
-                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 3 %}4{% else %}3{% endif %}/{{ search }}" tabindex="3">
-                        <i class="fa fa-star"></i>
-                    </a>
-                </button>
-                <button id="sortByAdded" type="button" class="btn btn-secondary" tabindex="-1">
-                    <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 5 %}6{% else %}5{% endif %}/{{ search }}" tabindex="3">
-                        <i class="fa fa-clock-o"></i>
-                    </a>
-                </button>
-            </div>
-            <button id="search" type="button" class="btn btn-secondary" tabindex="-1">
-                <a tabindex="4">
-                    <i class="fa fa-search"></i>
+                <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 2 %}1{% else %}2{% endif %}/{{ search }}" tabindex="3" class="btn">
+                    <i class="fa fa-sort-alpha-asc"></i>
                 </a>
-            </button>
+                <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 3 %}4{% else %}3{% endif %}/{{ search }}" tabindex="3" class="btn">
+                    <i class="fa fa-star"></i>
+                </a>
+                <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 5 %}6{% else %}5{% endif %}/{{ search }}" tabindex="3" class="btn">
+                    <i class="fa fa-clock-o"></i>
+                </a>
+            </div>
+            <a tabindex="4" class="btn" id="search">
+                <i class="fa fa-search"></i>
+            </a>
         </div>
     </div>
     <div class="sidenav col-sm-3 col-xs-3 col-md-2">

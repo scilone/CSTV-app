@@ -85,10 +85,8 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="col-lg-1 col-md-2 col-sm-3 col-xs-3">
                     {% for quality, stream in streams %}
-                        <a href="{{ vlcDeeplink ~ stream.streamLink }}" tabindex="1">
-                            <button class="btn btn-success" style="width: 100%; margin-bottom: 1em">
-                                Play {{ quality }}
-                            </button>
+                        <a href="{{ vlcDeeplink ~ stream.streamLink }}" tabindex="1" class="btn btn-success" style="width: 100%; margin-bottom: 1em">
+                            Play {{ quality }}
                         </a>
                     {% endfor %}
 

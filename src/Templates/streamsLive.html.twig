@@ -15,17 +15,26 @@
     </div>
     <div id="header">
         <div class="pull-left">
-            <button type="button" class="btn btn-secondary" tabindex="4">
-                <a href="{{ baseUrlAbsolute ~ homeUrlAbsolute }}">
-                    <i class="fa fa-home"></i>
-                </a>
-            </button>
+            <a href="{{ baseUrlAbsolute ~ homeUrlAbsolute }}" class="btn" tabindex="4">
+                <i class="fa fa-home"></i>
+            </a>
+            {% if catName != '' %}
+                {% if isHidden %}
+                    <a href="{{ baseUrlAbsolute }}/category/unhide/live/{{ currentCat }}" tabindex="6" class="btn">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                {% else %}
+                    <a href="{{ baseUrlAbsolute }}/category/hide/live/{{ currentCat }}" tabindex="6" class="btn">
+                        <i class="fa fa-eye-slash"></i>
+                    </a>
+                {% endif %}
+            {% endif %}
             {{ catName }}
         </div>
         <div class="pull-right">
-            <button id="search" type="button" class="btn btn-secondary" tabindex="3">
+            <a id="search" type="button" class="btn" tabindex="3">
                 <i class="fa fa-search"></i>
-            </button>
+            </a>
         </div>
     </div>
     <style>

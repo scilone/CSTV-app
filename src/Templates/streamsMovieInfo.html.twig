@@ -94,52 +94,38 @@
                         {% include 'Module/stars.html.twig' with {'rating': rating5} %}
 
                         {% if isAndroid or isIos %}
-                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/movie/{{ movie.streamId }}/{{ (vlcDeeplink ~ movie.streamLink)|base64Encode }}" tabindex="1">
-                            <button class="btn btn-success" style="width: 100%;">
-                                Play
-                            </button>
+                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/movie/{{ movie.streamId }}/{{ (vlcDeeplink ~ movie.streamLink)|base64Encode }}" tabindex="1" class="btn btn-success" style="width: 100%;">
+                            Play
                         </a>
                         {% endif %}
                         {% if not isIos and not isAndroid and isChrome  %}
-                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/movie/{{ movie.streamId }}/{{ (baseUrlAbsolute ~ "/streams/play/movie/" ~ movie.streamId)|base64Encode }}" tabindex="1">
-                            <button class="btn btn-success" style="width: 100%;">
-                                Webplayer
-                            </button>
+                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/movie/{{ movie.streamId }}/{{ (baseUrlAbsolute ~ "/streams/play/movie/" ~ movie.streamId)|base64Encode }}" tabindex="1" class="btn btn-success" style="width: 100%;">
+                            Webplayer
                         </a>
                         {% endif %}
                         {% if movie.youtubeTrailer is not empty  %}
                             {% if isAndroid or isIos %}
-                            <a href="{{ youtubeDeeplink }}{{ movie.youtubeTrailer }}" tabindex="1">
-                                <button class="btn btn-danger" style="width: 100%;">
+                            <a href="{{ youtubeDeeplink }}{{ movie.youtubeTrailer }}" tabindex="1" class="btn btn-danger" style="width: 100%;">>
                                     Trailer
-                                </button>
                             </a>
                             {% else %}
-                            <a href="https://www.youtube.com/watch?v={{ movie.youtubeTrailer }}" tabindex="1" target="_blank">
-                                <button class="btn btn-danger" style="width: 100%;">
-                                    Trailer
-                                </button>
+                            <a href="https://www.youtube.com/watch?v={{ movie.youtubeTrailer }}" tabindex="1" class="btn btn-danger" style="width: 100%;" target="_blank">
+                                Trailer
                             </a>
                             {% endif %}
                         {% endif %}
                         {% if not isTv %}
-                        <a href="{{ movie.streamLink }}">
-                            <button class="btn btn-primary" style="width: 100%;">
-                                Download
-                            </button>
+                        <a href="{{ movie.streamLink }}" class="btn btn-primary" style="width: 100%;">
+                            Download
                         </a>
                         {% endif %}
                         {% if isFavorite %}
-                        <a href="{{ baseUrlAbsolute }}/account/removefavorite/movie/{{ movie.streamId }}">
-                            <button class="btn btn-warning" style="width: 100%;">
-                                <i class=" fa fa-minus"></i> Favorite
-                            </button>
+                        <a href="{{ baseUrlAbsolute }}/account/removefavorite/movie/{{ movie.streamId }}" class="btn btn-warning" style="width: 100%;">
+                            <i class=" fa fa-minus"></i> Favorite
                         </a>
                         {% else %}
-                        <a href="{{ baseUrlAbsolute }}/account/addfavorite/movie/{{ movie.streamId }}">
-                            <button class="btn btn-warning" style="width: 100%;">
-                                <i class="fa fa-plus"></i> Favorite
-                            </button>
+                        <a href="{{ baseUrlAbsolute }}/account/addfavorite/movie/{{ movie.streamId }}" class="btn btn-warning" style="width: 100%;">
+                            <i class="fa fa-plus"></i> Favorite
                         </a>
                         {% endif %}
                     </div>

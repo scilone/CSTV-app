@@ -1223,3 +1223,39 @@ button.LoadMoreBtn:hover {
 .star:before {
     content:'\2605';
 }
+
+a.btn {
+    -webkit-appearance: initial;
+    background: lightgray;
+}
+a.btn:focus, a.btn:hover {
+    outline: none;
+    color: #e8b12c !important;
+}
+a.btn-danger {
+    background-color: #d9534f;
+}
+a.btn-default {
+    background-color: #fff;
+}
+a.btn-primary {
+    background-color: #337ab7;
+}
+a.btn-warning {
+    background-color: #f0ad4e;
+}
+a.btn-success {
+    background-color: #5cb85c;
+}
+a.btn-info {
+    background-color: #5bc0de;
+}
+a.btn-danger:focus, a.btn-primary:focus, a.btn-warning:focus, a.btn-success:focus, a.btn-info:focus{
+    color: white !important;
+}
+a.btn-danger:hover, a.btn-primary:hover, a.btn-warning:hover, a.btn-success:hover, a.btn-info:hover{
+    color: white !important;
+}
+a.btn-default:focus, a.btn-default:hover {
+    color: black !important;
+}

@@ -6,36 +6,6 @@
             background: rgba(0,0,0,0.8);
         }
 
-        .sidenav {
-            position: absolute;
-            z-index: 1;
-            overflow-x: hidden;
-            padding: 5em 0;
-        }
-
-        .sidenav a {
-            font-family: roboto;
-            padding: 6px 8px 6px 16px;
-            text-decoration: none;
-            color: #818181;
-            display: block;
-            letter-spacing: -0.5px;
-            line-height: 1em;
-        }
-
-        .sidenav a:hover {
-            color: #f1f1f1;
-        }
-
-        .sidenav ul {
-            list-style-type:none;
-            padding: 0;
-        }
-
-        .sidenav a:focus{
-            color: #e8b12c !important;
-        }
-
         p {
             margin: 5px 0em !important;
         }
@@ -78,13 +48,15 @@
             font-family: roboto;
             line-height: 17px;
         }
+
+
     </style>
     <div class="container" style="margin: 3em; width: auto">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <h1 style="text-align: center;">{{ serie.name }}</h1>
             </div>
-            <div style="position: relative;">
+            <div>
                 <div class="sidenav col-md-3 col-sm-3 col-xs-3">
                     <img src="{{ baseUrlAbsolute ~ serie.cover }}" width="100" height="160" class="col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -92,30 +64,22 @@
                     </div>
                     {% if serie.youtubeTrailer is not empty  %}
                         {% if isAndroid or isIos %}
-                            <a href="{{ youtubeDeeplink }}{{ serie.youtubeTrailer }}" tabindex="1">
-                                <button class="btn btn-danger" style="width: 100%;">
-                                    Trailer
-                                </button>
+                            <a href="{{ youtubeDeeplink }}{{ serie.youtubeTrailer }}" tabindex="1" class="btn btn-danger" style="width: 100%;">
+                                Trailer
                             </a>
                         {% else %}
-                            <a href="https://www.youtube.com/watch?v={{ serie.youtubeTrailer }}" tabindex="1" target="_blank">
-                                <button class="btn btn-danger" style="width: 100%;">
-                                    Trailer
-                                </button>
+                            <a href="https://www.youtube.com/watch?v={{ serie.youtubeTrailer }}" tabindex="1" target="_blank" class="btn btn-danger" style="width: 100%;">
+                                Trailer
                             </a>
                         {% endif %}
                     {% endif %}
                     {% if isFavorite %}
-                        <a href="{{ baseUrlAbsolute }}/account/removefavorite/serie/{{ serie.id }}">
-                            <button class="btn btn-warning" style="width: 100%;">
-                                <i class=" fa fa-minus"></i> Favorite
-                            </button>
+                        <a href="{{ baseUrlAbsolute }}/account/removefavorite/serie/{{ serie.id }}"class="btn btn-warning" style="width: 100%; margin-top: 5px;">
+                            <i class=" fa fa-minus"></i> Favorite
                         </a>
                     {% else %}
-                        <a href="{{ baseUrlAbsolute }}/account/addfavorite/serie/{{ serie.id }}">
-                            <button class="btn btn-warning" style="width: 100%;">
-                                <i class="fa fa-plus"></i> Favorite
-                            </button>
+                        <a href="{{ baseUrlAbsolute }}/account/addfavorite/serie/{{ serie.id }}" class="btn btn-warning" style="width: 100%; margin-top: 5px;">
+                            <i class="fa fa-plus"></i> Favorite
                         </a>
                     {% endif %}
                     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -127,7 +91,7 @@
                         {{ serie.genre }}
                     </div>
                 </div>
-                <div class="col-md-offset-3 col-md-9 col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9">
+                <div class="col-md-9 col-sm-9 col-xs-9">
                     <div class="col-md-2 col-sm-2 col-xs-2">
                         <b>Director:</b>
                     </div>
@@ -192,24 +156,18 @@
                                     </div>
                                     <div class="col-md-3 col-sm-3 col-xs-3">
                                         {% if isAndroid or isIos %}
-                                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/serie/{{ episode.id }}/{{ (vlcDeeplink ~ episode.streamLink)|base64Encode }}" tabindex="1">
-                                            <button class="btn btn-primary pull-right" style="width: 80%; font-size: 10px">
-                                                Play
-                                            </button>
+                                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/serie/{{ episode.id }}/{{ (vlcDeeplink ~ episode.streamLink)|base64Encode }}" tabindex="1" class="btn btn-primary pull-right" style="width: 80%; font-size: 10px">
+                                            Play
                                         </a>
                                         {% endif %}
                                         {% if not isIos and not isAndroid and isChrome  %}
-                                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/serie/{{ episode.id }}/{{ (baseUrlAbsolute ~ "/streams/play/serie/" ~ serie.id ~ "/" ~ season ~ "/" ~ episode.episodeNum)|base64Encode }}" tabindex="1" >
-                                            <button class="btn btn-success pull-right" style="width: 80%; margin-top: 5px; font-size: 10px">
-                                                Webplayer
-                                            </button>
+                                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/serie/{{ episode.id }}/{{ (baseUrlAbsolute ~ "/streams/play/serie/" ~ serie.id ~ "/" ~ season ~ "/" ~ episode.episodeNum)|base64Encode }}" tabindex="1" class="btn btn-success pull-right" style="width: 80%; margin-top: 5px; font-size: 10px">
+                                            Webplayer
                                         </a>
                                         {% endif %}
                                         {% if not isTv %}
-                                        <a href="{{ episode.streamLink }}" tabindex="1">
-                                            <button class="btn btn-default  pull-right" style="width: 80%; margin-top: 5px; ; font-size: 10px">
-                                                Download
-                                            </button>
+                                        <a href="{{ episode.streamLink }}" tabindex="1" class="btn btn-default pull-right" style="width: 80%; margin-top: 5px; ; font-size: 10px">
+                                            Download
                                         </a>
                                         {% endif %}
                                     </div>
