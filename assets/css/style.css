@@ -1227,6 +1227,7 @@ button.LoadMoreBtn:hover {
 a.btn {
     -webkit-appearance: initial;
     background: lightgray;
+    font-weight: bold;
 }
 a.btn:focus, a.btn:hover {
     outline: none;

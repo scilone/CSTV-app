@@ -6,36 +6,6 @@
             background: rgba(0,0,0,0.8);
         }
 
-        .sidenav {
-            position: absolute;
-            z-index: 1;
-            overflow-x: hidden;
-            padding: 5em 0;
-        }
-
-        .sidenav a {
-            font-family: roboto;
-            padding: 6px 8px 6px 16px;
-            text-decoration: none;
-            color: #818181;
-            display: block;
-            letter-spacing: -0.5px;
-            line-height: 1em;
-        }
-
-        .sidenav a:hover {
-            color: #f1f1f1;
-        }
-
-        .sidenav ul {
-            list-style-type:none;
-            padding: 0;
-        }
-
-        .sidenav a:focus{
-            color: #e8b12c !important;
-        }
-
         p {
             margin: 5px 0em !important;
         }
@@ -76,14 +46,19 @@
             width: 30%;
             height: 3em;
         }
+
+        .btn {
+            margin-bottom: 5px;
+            width: 100%;
+        }
     </style>
-    <div class="container" style="margin: 3em; width: auto">
+    <div class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <h1 style="text-align: center;">{{ movie.name }}</h1>
             </div>
             <div>
-                <div class="sidenav col-lg-2 col-md-2 col-sm-3 col-xs-3">
+                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
                     <img src="{{ baseUrlAbsolute ~ movie.image }}" width="100" height="160" class="col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         {% if streamView[movie.streamId] is defined %}
@@ -94,19 +69,19 @@
                         {% include 'Module/stars.html.twig' with {'rating': rating5} %}
 
                         {% if isAndroid or isIos %}
-                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/movie/{{ movie.streamId }}/{{ (vlcDeeplink ~ movie.streamLink)|base64Encode }}" tabindex="1" class="btn btn-success" style="width: 100%;">
+                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/movie/{{ movie.streamId }}/{{ (vlcDeeplink ~ movie.streamLink)|base64Encode }}" tabindex="1" class="btn btn-success">
                             Play
                         </a>
                         {% endif %}
                         {% if not isIos and not isAndroid and isChrome  %}
-                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/movie/{{ movie.streamId }}/{{ (baseUrlAbsolute ~ "/streams/play/movie/" ~ movie.streamId)|base64Encode }}" tabindex="1" class="btn btn-success" style="width: 100%;">
+                        <a href="{{ baseUrlAbsolute }}/streams/flagAsView/movie/{{ movie.streamId }}/{{ (baseUrlAbsolute ~ "/streams/play/movie/" ~ movie.streamId)|base64Encode }}" tabindex="1" class="btn btn-success">
                             Webplayer
                         </a>
                         {% endif %}
                         {% if movie.youtubeTrailer is not empty  %}
                             {% if isAndroid or isIos %}
-                            <a href="{{ youtubeDeeplink }}{{ movie.youtubeTrailer }}" tabindex="1" class="btn btn-danger" style="width: 100%;">>
-                                    Trailer
+                            <a href="{{ youtubeDeeplink }}{{ movie.youtubeTrailer }}" tabindex="1" class="btn btn-danger">
+                                Trailer
                             </a>
                             {% else %}
                             <a href="https://www.youtube.com/watch?v={{ movie.youtubeTrailer }}" tabindex="1" class="btn btn-danger" style="width: 100%;" target="_blank">
@@ -115,22 +90,22 @@
                             {% endif %}
                         {% endif %}
                         {% if not isTv %}
-                        <a href="{{ movie.streamLink }}" class="btn btn-primary" style="width: 100%;">
+                        <a href="{{ movie.streamLink }}" class="btn btn-primary">
                             Download
                         </a>
                         {% endif %}
                         {% if isFavorite %}
-                        <a href="{{ baseUrlAbsolute }}/account/removefavorite/movie/{{ movie.streamId }}" class="btn btn-warning" style="width: 100%;">
+                        <a href="{{ baseUrlAbsolute }}/account/removefavorite/movie/{{ movie.streamId }}" class="btn btn-warning">
                             <i class=" fa fa-minus"></i> Favorite
                         </a>
                         {% else %}
-                        <a href="{{ baseUrlAbsolute }}/account/addfavorite/movie/{{ movie.streamId }}" class="btn btn-warning" style="width: 100%;">
+                        <a href="{{ baseUrlAbsolute }}/account/addfavorite/movie/{{ movie.streamId }}" class="btn btn-warning">
                             <i class="fa fa-plus"></i> Favorite
                         </a>
                         {% endif %}
                     </div>
                 </div>
-                <div class="col-lg-offset-2 col-lg-10 col-md-offset-2 col-md-10 col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9">
+                <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
                     <table>
                         <tr>
                             <td><b>Director:</b></td>
