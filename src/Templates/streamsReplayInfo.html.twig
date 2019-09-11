@@ -1,0 +1,110 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <style>
+        .container {
+            background: rgba(0,0,0,0.8);
+        }
+
+        p {
+            margin: 5px 0em !important;
+        }
+
+        /* STARS */
+        .star.star-1:after {
+            width: 3px;
+        }
+        .star.star-2:after {
+            width: 4px;
+        }
+        .star.star-3:after {
+            width: 5px;
+        }
+        .star.star-4:after {
+            width: 6px;
+        }
+        .star.star-5:after {
+            width: 7px;
+        }
+        .star.star-6:after {
+            width: 8px;
+        }
+        .star.star-7:after {
+            width: 9px;
+        }
+        .star.star-8:after {
+            width: 10px;
+        }
+        .star.star-9:after {
+            width: 11px;
+        }
+
+        td:nth-child(odd) {
+            width: 30%;
+            height: 3em;
+        }
+
+        p {
+            font-family: roboto;
+            line-height: 17px;
+        }
+
+        .btn {
+            margin-bottom: 5px;
+            width: 100%;
+        }
+    </style>
+    <div class="container" style="margin: 3em; width: auto">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <h1 style="text-align: center;"><img src="{{ baseUrlAbsolute ~ stream.getStreamIcon }}" width="100px" >{{ stream.name }}</h1>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-4 col-sm-4 col-xs-4">
+                    <select class="form-control" id="replayChoice" style="margin-top: 2em;">
+                        {% for day in replayDays %}
+                            <option value="{{ day }}" {% if loop.last %}selected{% endif %}>{{ day }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% for day in replayDays %}
+                    <div class="replays replay-{{ day }} col-md-12 col-sm-12 col-xs-12 {% if not loop.last %}hide{% endif %}" style="padding: 1em 0;">
+                    {% for replay in replays %}
+                        {% if replay.start|date('Y-m-d') == day %}
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-12 col-sm-12 col-xs-12" style="padding: 1em 0; border-bottom: thin solid grey" id="episode-{{ episode.id }}">
+                                    <div class="col-md-9 col-sm-9 col-xs-9">
+                                        <p>{{ replay.title }}</p>
+                                        <p><b>{{ replay.start|date('H:i') }} - {{ replay.end|date('H:i') }}</b></p>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3">
+                                        {% if isAndroid or isIos %}
+                                            <a href="{{ vlcDeeplink ~ replay.streamLink }}" tabindex="1" class="btn btn-primary pull-right" style="width: 80%; font-size: 10px">
+                                                Play
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                    <!--div class="col-md-12 col-sm-12 col-xs-12">
+                                        <p>
+                                            {{ replay.description }}
+                                        </p>
+                                    </div-->
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        $('#replayChoice').change(function () {
+            $('.replays').addClass('hide');
+            $('.replay-' + $(this).val()).removeClass('hide');
+        });
+    </script>
+{% endblock %}

@@ -9,6 +9,7 @@ use App\Config\Param;
 use App\Domain\Iptv\DTO\Live;
 use App\Infrastructure\CacheRaw;
 use App\Infrastructure\SuperglobalesOO;
+use DateTime;
 
 class StreamsController extends SecurityController
 {
@@ -76,6 +77,36 @@ class StreamsController extends SecurityController
             'streamsPlay.html.twig',
             [
                 'url' => $url,
+            ]
+        );
+    }
+
+    public function replayInfo(int $streamId): void
+    {
+        $streams = $this->iptv->getLiveStreams();
+
+        /** @var Live $streams */
+        $stream = current(
+            array_filter($streams, function ($var) use ($streamId) {
+                return $var->getStreamId() == $streamId;
+            })
+        );
+
+        $dateStartArchive = new DateTime('-' . $stream->getTvArchiveDuration() . ' days');
+        $replays          = $this->iptv->getReplaysByStreamId($streamId, $dateStartArchive);
+
+        $replayDays = [];
+        while ($dateStartArchive->format('Ymd') <= date('Ymd')) {
+            $replayDays[] = $dateStartArchive->format('Y-m-d');
+            $dateStartArchive->modify('+1 day');
+        }
+
+        echo $this->twig->render(
+            'streamsReplayInfo.html.twig',
+            [
+                'stream'     => $stream,
+                'replayDays' => $replayDays,
+                'replays'    => $replays,
             ]
         );
     }

@@ -134,6 +134,19 @@ class XcodeApi
 
     public function getShortEPG(string $host, string $username, string $password, int $streamId): array
     {
-        return $this->get($host, $username, $password, 'get_short_epg', ['stream_id' => $streamId]);
+        $this->setCacheExpire('1 hour');
+        $result = $this->get($host, $username, $password, 'get_short_epg', ['stream_id' => $streamId]);
+        $this->setCacheExpire();
+
+        return $result;
+    }
+
+    public function getReplay(string $host, string $username, string $password, int $streamId): array
+    {
+        $this->setCacheExpire('1 hour');
+        $result = $this->get($host, $username, $password, 'get_simple_data_table', ['stream_id' => $streamId]);
+        $this->setCacheExpire();
+
+        return $result;
     }
 }

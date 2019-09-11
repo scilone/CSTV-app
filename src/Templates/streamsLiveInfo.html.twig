@@ -76,18 +76,33 @@
             width: 30%;
             height: 3em;
         }
+
+        .btn {
+            width: 100%;
+            margin-bottom: 1em
+        }
     </style>
     <div class="container" style="margin: 3em; width: auto">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <h1 style="text-align: center; margin-bottom: 1em"><img src="{{ baseUrlAbsolute ~ img }}" > {{ name }}</h1>
+                <h1 style="text-align: center; margin-bottom: 1em"><img src="{{ baseUrlAbsolute ~ img }}" width="100px" > {{ name }}</h1>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="col-lg-1 col-md-2 col-sm-3 col-xs-3">
                     {% for quality, stream in streams %}
-                        <a href="{{ vlcDeeplink ~ stream.streamLink }}" tabindex="1" class="btn btn-success" style="width: 100%; margin-bottom: 1em">
+                        <a href="{{ vlcDeeplink ~ stream.streamLink }}" tabindex="1" class="btn btn-success">
                             Play {{ quality }}
                         </a>
+                    {% endfor %}
+
+                    <hr/>
+
+                    {% for quality, stream in streams %}
+                        {% if stream.tvArchive == 1 %}
+                        <a href="{{ baseUrlAbsolute }}/streams/replayInfo/{{ stream.streamId }}" tabindex="2" class="btn btn-primary">
+                            Replay {{ quality }}
+                        </a>
+                        {% endif %}
                     {% endfor %}
 
                     {% if isFavorite %}

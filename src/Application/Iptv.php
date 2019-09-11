@@ -7,6 +7,7 @@ use App\Domain\Iptv\DTO\EpgShort;
 use App\Domain\Iptv\DTO\Live;
 use App\Domain\Iptv\DTO\Movie;
 use App\Domain\Iptv\DTO\MovieInfo;
+use App\Domain\Iptv\DTO\Replay;
 use App\Domain\Iptv\DTO\Serie;
 use App\Domain\Iptv\DTO\SerieEpisode;
 use App\Domain\Iptv\DTO\SerieInfo;
@@ -16,6 +17,7 @@ use App\Domain\Iptv\XcodeApi;
 use App\Infrastructure\CacheItem;
 use App\Infrastructure\SuperglobalesOO;
 use DateTimeImmutable;
+use DateTimeInterface;
 
 class Iptv
 {
@@ -131,7 +133,58 @@ class Iptv
         return $data;
     }
 
-    public function getLiveStreams(array $filter)
+    public function getReplaysByStreamId(int $streamId, DateTimeInterface $dateStart): array
+    {
+        $info = $this->xcodeApi->getReplay(
+            $this->superglobales->getSession()->get(self::PREFIX . 'host'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'username'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'password'),
+            $streamId
+        );
+
+        $replays = [];
+        if (isset($info['epg_listings'])) {
+            foreach ($info['epg_listings'] as $program) {
+                $dateStartReplay = new DateTimeImmutable($program->start ?? null);
+                $dateEndReplay   = new DateTimeImmutable($program->end ?? null);
+
+                if ($dateStartReplay < $dateStart || $dateStartReplay->getTimestamp() > time()) {
+                    continue;
+                }
+
+                $startTs = (int) $program->start_timestamp ?? 0;
+                $stopTs  = (int) $program->stop_timestamp ?? 0;
+
+                $streamLink = $this->superglobales->getSession()->get(self::PREFIX . 'host') .
+                              '/timeshift' .
+                              '/' . $this->superglobales->getSession()->get(self::PREFIX . 'username') .
+                              '/' . $this->superglobales->getSession()->get(self::PREFIX . 'password') .
+                              '/' . (($stopTs - $startTs) / 60) .
+                              '/' . $dateStartReplay->format('Y-m-d:H-i') .
+                              '/' . $streamId . '.ts';
+
+                $replays[] = new Replay(
+                    (int) $program->id ?? 0,
+                    (int) $program->epg_id ?? 0,
+                    (string) base64_decode($program->title ?? ''),
+                    (string) $program->lang ?? '',
+                    $dateStartReplay,
+                    $dateEndReplay,
+                    (string) base64_decode($program->description ?? ''),
+                    (string) $program->channel_id ?? '',
+                    $startTs,
+                    $stopTs,
+                    (int) $program->now_playing ?? 0,
+                    (int) $program->has_archive ?? 0,
+                    $streamLink
+                );
+            }
+        }
+
+        return $replays;
+    }
+
+    public function getLiveStreams(array $filter = [])
     {
         $cacheKey    = $this->getCachePrefix() . '_getLiveStreams_' . http_build_query($filter);
         $cachedData  = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
@@ -451,8 +504,6 @@ class Iptv
 
     public function getShortEPG(int $id)
     {
-        $this->xcodeApi->setCacheExpire('1 hour');
-
         $info = $this->xcodeApi->getShortEPG(
             $this->superglobales->getSession()->get(self::PREFIX . 'host'),
             $this->superglobales->getSession()->get(self::PREFIX . 'username'),
@@ -479,8 +530,6 @@ class Iptv
                 );
             }
         }
-
-        $this->xcodeApi->setCacheExpire();
 
         return $list;
     }
