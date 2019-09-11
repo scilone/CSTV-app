@@ -132,6 +132,11 @@ class XcodeApi
         return $this->get($host, $username, $password, 'get_series_info', ['series_id' => $id]);
     }
 
+    public function getAuthentication(string $host, string $username, string $password): array
+    {
+        return $this->get($host, $username, $password, '');
+    }
+
     public function getShortEPG(string $host, string $username, string $password, int $streamId): array
     {
         $this->setCacheExpire('1 hour');

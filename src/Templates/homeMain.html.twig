@@ -14,42 +14,44 @@
                     </div>
                 </div>
                 <div class="b-content home">
-                    {% if isAndroid or isIos %}
-                    <div class="col-md-4 col-sm-4 col-xs-12" id="divLive">
-                        <a href="{{ baseUrlAbsolute }}/category/live" tabindex="1" class="homeLink">
-                            <div class="col-md-12 liveTV rippler rippler-default">
-                                <center><img src="../img/Live_tv.png"></center>
-                                <h3 class="text-center homeTxtCard">LIVE</h3>
-                                <div class="rippler-effect rippler-div" style="width: 0px; height: 0px; left: 314.516px; top: 210.406px;"></div></div>
-                        </a>
-                    </div>
+                    {% if not hasExpired %}
+                        {% if isAndroid or isIos %}
+                        <div class="col-md-4 col-sm-4 col-xs-12" id="divLive">
+                            <a href="{{ baseUrlAbsolute }}/category/live" tabindex="1" class="homeLink">
+                                <div class="col-md-12 liveTV rippler rippler-default">
+                                    <center><img src="../img/Live_tv.png"></center>
+                                    <h3 class="text-center homeTxtCard">LIVE</h3>
+                                    <div class="rippler-effect rippler-div" style="width: 0px; height: 0px; left: 314.516px; top: 210.406px;"></div></div>
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            {% if hasMovieFavorites %}
+                            <a href="{{ baseUrlAbsolute }}/streams/movie/favorites" tabindex="2" class="homeLink">
+                            {% else %}
+                            <a href="{{ baseUrlAbsolute }}/streams/movie/all/5" tabindex="2" class="homeLink">
+                            {% endif %}
+                                <div class="col-md-12 movieVOD rippler rippler-default">
+                                    <center><img src="../img/on_demand.png"></center>
+                                    <h3 class="text-center homeTxtCard">FILMS</h3>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            {% if hasSerieFavorites %}
+                            <a href="{{ baseUrlAbsolute }}/streams/serie/favorites" tabindex="3" class="homeLink">
+                            {% else %}
+                            <a href="{{ baseUrlAbsolute }}/streams/serie/all" tabindex="3" class="homeLink">
+                            {% endif %}
+                                <div class="col-md-12 tvSeries rippler rippler-default">
+                                    <center><img src="../img/series.png"></center>
+                                    <h3 class="text-center homeTxtCard">SERIES</h3>
+                                </div>
+                            </a>
+                        </div>
                     {% endif %}
-
-                    <div class="col-md-4 col-sm-4 col-xs-12">
-                        {% if hasMovieFavorites %}
-                        <a href="{{ baseUrlAbsolute }}/streams/movie/favorites" tabindex="2" class="homeLink">
-                        {% else %}
-                        <a href="{{ baseUrlAbsolute }}/streams/movie/all/5" tabindex="2" class="homeLink">
-                        {% endif %}
-                            <div class="col-md-12 movieVOD rippler rippler-default">
-                                <center><img src="../img/on_demand.png"></center>
-                                <h3 class="text-center homeTxtCard">FILMS</h3>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="col-md-4 col-sm-4 col-xs-12">
-                        {% if hasSerieFavorites %}
-                        <a href="{{ baseUrlAbsolute }}/streams/serie/favorites" tabindex="3" class="homeLink">
-                        {% else %}
-                        <a href="{{ baseUrlAbsolute }}/streams/serie/all" tabindex="3" class="homeLink">
-                        {% endif %}
-                            <div class="col-md-12 tvSeries rippler rippler-default">
-                                <center><img src="../img/series.png"></center>
-                                <h3 class="text-center homeTxtCard">SERIES</h3>
-                            </div>
-                        </a>
-                    </div>
 
                     <div class="col-md-12 col-sm-12 col-xs-12 Mybtns">
                         <div class="col-md-3 col-sm-12 col-xs-12">
@@ -77,7 +79,13 @@
                             </a>
                         </div>
                     </div>
-                    <h4 class="text-center" style="color: #fff; top: 50px; float:left;width: 100%;position: relative;    text-transform: uppercase;">Expiration: </h4>
+                    <h4 class="text-center" style="color: #fff; top: 50px; float:left;width: 100%;position: relative;    text-transform: uppercase;">
+                        <a href="{{ baseUrlAbsolute }}/account/iptv">
+                            <span style="{% if hasExpired %}color:red !important;{% endif %}">
+                                    Expiration: {{ userInfo.expDate|date('d/m/Y H:i ') }}
+                            </span>
+                        </a>
+                    </h4>
                     <h4 class="text-center" style="color: #fff; top: 50px; float:left;width: 100%;position: relative;    text-transform: uppercase;">Connected as: {{ connectedAs }}</h4>
                 </div>
             </div>

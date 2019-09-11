@@ -12,6 +12,7 @@ use App\Domain\Iptv\DTO\Serie;
 use App\Domain\Iptv\DTO\SerieEpisode;
 use App\Domain\Iptv\DTO\SerieInfo;
 use App\Domain\Iptv\DTO\SerieSeason;
+use App\Domain\Iptv\DTO\UserInfo;
 use App\Domain\Iptv\DTO\Video;
 use App\Domain\Iptv\XcodeApi;
 use App\Infrastructure\CacheItem;
@@ -613,7 +614,7 @@ class Iptv
         );
 
         $dataSeasons  = $data['seasons'];
-        $info     = $data['info'];
+        $info         = $data['info'];
         $dataEpisodes = $data['episodes'];
 
         $img = '/asset/img/' . base64_encode($info->cover ?? '');
@@ -698,5 +699,30 @@ class Iptv
         $this->cache->set($cacheKey, $data);
 
         return $data;
+    }
+
+    public function getUserInfo()
+    {
+        $data = $this->xcodeApi->getAuthentication(
+            $this->superglobales->getSession()->get(self::PREFIX . 'host'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'username'),
+            $this->superglobales->getSession()->get(self::PREFIX . 'password')
+        );
+
+        $userData = $data['user_info'];
+
+        return new UserInfo(
+            (string) $userData->username ?? '',
+            (string) $userData->password ?? '',
+            (string) $userData->message ?? '',
+            (int) $userData->auth ?? 0,
+            (string) $userData->status ?? '',
+            DateTimeImmutable::createFromFormat('U', $userData->exp_date ?? 0),
+            (bool) $userData->is_trial ?? true,
+            (int) $userData->active_cons ?? 0,
+            DateTimeImmutable::createFromFormat('U', $userData->created_at ?? 0),
+            (int) $userData->max_connections ?? 0,
+            (array) $userData->allowed_output_formats ?? []
+        );
     }
 }

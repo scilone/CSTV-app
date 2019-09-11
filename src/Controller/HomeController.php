@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Application\Iptv;
 use App\Application\Twig;
 use App\Config\Param;
 use App\Infrastructure\SuperglobalesOO;
@@ -19,22 +20,33 @@ class HomeController extends SecurityController
     private $superglobales;
 
     /**
+     * @var Iptv
+     */
+    private $iptv;
+
+    /**
      * HomeController constructor.
      *
      * @param Twig            $twig
      * @param SuperglobalesOO $superglobales
+     * @param Iptv            $iptv
      */
-    public function __construct(Twig $twig, SuperglobalesOO $superglobales)
+    public function __construct(Twig $twig, SuperglobalesOO $superglobales, Iptv $iptv)
     {
         $this->twig          = $twig;
         $this->superglobales = $superglobales;
+        $this->iptv          = $iptv;
 
         parent::__construct($superglobales);
     }
 
     public function main(): void
     {
-        if ($this->superglobales->getCookie()->has('redirect')) {
+        $userInfo = $this->iptv->getUserInfo();
+
+        $userExpired = $userInfo->getExpDate()->getTimestamp() < time() || mb_strtolower($userInfo->getStatus()) === 'expired';
+
+        if ($userExpired === false && $this->superglobales->getCookie()->has('redirect')) {
             setcookie(
                 'redirect',
                 '',
@@ -48,13 +60,14 @@ class HomeController extends SecurityController
             header('Location: ' . $this->superglobales->getCookie()->get('redirect'));
         }
 
-
         echo $this->twig->render(
             'homeMain.html.twig',
             [
                 'hasMovieFavorites' => !empty($this->superglobales->getSession()->get('favorites')['movie']),
                 'hasSerieFavorites' => !empty($this->superglobales->getSession()->get('favorites')['serie']),
-                'connectedAs'       => $this->superglobales->getSession()->get('username')
+                'connectedAs'       => $this->superglobales->getSession()->get('username'),
+                'hasExpired'        => $userExpired,
+                'userInfo'          => $userInfo,
             ]
         );
     }

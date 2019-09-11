@@ -14,6 +14,7 @@ class Loader
         Service::CONTROLLER_HOME => [
             Service::APPLICATION_TWIG,
             Service::INFRASTRUCTURE_SUPERGLOBALES,
+            Service::APPLICATION_IPTV,
         ],
         Service::CONTROLLER_ACCOUNT => [
             Service::APPLICATION_TWIG,
