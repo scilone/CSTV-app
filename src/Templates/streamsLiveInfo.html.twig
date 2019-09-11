@@ -89,22 +89,27 @@
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="col-lg-1 col-md-2 col-sm-3 col-xs-3">
+                    {% set hasTvArchive = false %}
                     {% for quality, stream in streams %}
                         <a href="{{ vlcDeeplink ~ stream.streamLink }}" tabindex="1" class="btn btn-success">
                             Play {{ quality }}
                         </a>
-                    {% endfor %}
-
-                    <hr/>
-
-                    {% for quality, stream in streams %}
                         {% if stream.tvArchive == 1 %}
-                        <a href="{{ baseUrlAbsolute }}/streams/replayInfo/{{ stream.streamId }}" tabindex="2" class="btn btn-primary">
-                            Replay {{ quality }}
-                        </a>
+                            {% set hasTvArchive = true %}
                         {% endif %}
                     {% endfor %}
 
+                    {% if hasTvArchive %}
+                        <hr/>
+
+                        {% for quality, stream in streams %}
+                            {% if stream.tvArchive == 1 %}
+                            <a href="{{ baseUrlAbsolute }}/streams/replayInfo/{{ stream.streamId }}" tabindex="2" class="btn btn-primary">
+                                Replay {{ quality }}
+                            </a>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                     {% if isFavorite %}
                     <!--a href="{{ baseUrlAbsolute }}/account/removefavorite/movie/{{ movie.streamId }}">
                         <button class="btn btn-warning" style="width: 100%;">

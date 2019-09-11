@@ -32,7 +32,34 @@
             $('#searchPopin').show();
             $('#inputSearch')[0].setSelectionRange(100,100);
             $('#inputSearch').focus();
+
+
+            /*window.history.pushState('forward', null, '#search');
+            $(window).on('popstate', function() {
+                $('#overlay').hide();
+                $('#searchPopin').hide();
+                removeHash();
+            });*/
+
         });
+
+        function removeHash () {
+            /*var scrollV, scrollH, loc = window.location;
+            if ("pushState" in history)
+                history.pushState("", document.title, loc.pathname + loc.search);
+            else {
+                // Prevent scrolling by storing the page's current scroll offset
+                scrollV = document.body.scrollTop;
+                scrollH = document.body.scrollLeft;
+
+                loc.hash = "";
+
+                // Restore the scroll offset, should be flicker free
+                document.body.scrollTop = scrollV;
+                document.body.scrollLeft = scrollH;
+            }*/
+            //history.back();
+        }
 
         $("#inputSearch").on('keyup', function (e) {
             if (e.keyCode === 13) {
@@ -55,6 +82,7 @@
                 }
             })
             {% else %}
+            removeHash();
             location.href = '{{ baseUrlAbsolute }}/streams/{{ type }}/all/0/' + $("#inputSearch").val();
             {% endif %}
         }
