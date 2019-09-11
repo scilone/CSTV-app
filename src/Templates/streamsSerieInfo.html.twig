@@ -137,7 +137,7 @@
                             </div-->
                             <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 15px; background: rgb(0,0,0,0.5); padding-top: 1em;">
                             {% for episode in episodes %}
-                                <div class="col-md-12 col-sm-12 col-xs-12" style="padding-top: 1em;" id="episode-{{ episode.id }}">
+                                <div class="col-md-12 col-sm-12 col-xs-12 episode" style="padding-top: 1em;" id="episode-{{ episode.id }}">
                                     {% if episode.movieImage != '/asset/img/' %}
                                     <div class="col-md-4 col-sm-4 col-xs-4">
                                         <img src="{{ baseUrlAbsolute ~ episode.movieImage }}" width="100%">
@@ -199,14 +199,29 @@
             $('.season' + $(this).val()).removeClass('hide');
         });
 
-        if ($('#currentSeason').val() > 0) {
-            $('#seasonChoice').val($('#currentSeason').val());
-            $('#seasonChoice').change();
-        }
-
+        //if we have already see an episode
         if ($('#lastEpisode').val() > 0) {
-            $('#episode-' + $('#lastEpisode').val()).attr('tabindex', 1);
-            window.location.href = "#episode-" + $('#lastEpisode').val();
+            //if we have a next episode this season
+            if ($('#episode-' + $('#lastEpisode').val()).next().length > 0) {
+                var nextEpisode = $('#episode-' + $('#lastEpisode').val()).next();
+
+                $('#seasonChoice').val($('#currentSeason').val());
+            } else {
+                //if we have a season next the current seen
+                if ($('#seasonChoice option[value='+$('#currentSeason').val()+']').next().length > 0) {
+                    const nextSeason = $('#seasonChoice option[value='+$('#currentSeason').val()+']').next().val();
+                    $('#seasonChoice').val(nextSeason);
+                    var nextEpisode = $('.season' + nextSeason + ' .episode:eq(0)');
+                } else {
+                    var nextEpisode = $('#episode-' + $('#lastEpisode').val());
+
+                    $('#seasonChoice').val($('#currentSeason').val());
+                }
+            }
+
+            $('#seasonChoice').change();
+            nextEpisode.attr('tabindex', 1);
+            window.location.href = '#' + nextEpisode.attr('id');
         }
     </script>
 {% endblock %}

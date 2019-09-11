@@ -658,9 +658,9 @@ class Iptv
                     (string) $episode->season ?? '',
                     (string) $episode->direct_source ?? '',
                     new Video(
-                        $episodeInfo->video->codec_name,
-                        $episodeInfo->video->width,
-                        $episodeInfo->video->height
+                        $episodeInfo->video->codec_name ?? '',
+                        $episodeInfo->video->width ?? 0,
+                        $episodeInfo->video->height ?? 0
                     ),
                     '/asset/img/' . base64_encode($episodeInfo->movie_image ?? ''),
                     (string) ($episodeInfo->plot ?? ''),
