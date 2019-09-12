@@ -83,6 +83,11 @@
                                                 Play
                                             </a>
                                         {% endif %}
+                                        {% if not isTv %}
+                                            <a href="{{ baseUrlAbsolute }}/asset/downloadExternal/{{ replay.title|base64Encode }}/{{ replay.streamLink|base64Encode }}" tabindex="1" class="btn btn-default pull-right" style="width: 80%; font-size: 10px">
+                                                Download
+                                            </a>
+                                        {% endif %}
                                     </div>
                                     <!--div class="col-md-12 col-sm-12 col-xs-12">
                                         <p>

@@ -2,9 +2,6 @@
 
 namespace App\Controller;
 
-use App\Application\Iptv;
-use App\Application\Twig;
-
 class AssetController
 {
     public function img(string $url = '')
@@ -39,8 +36,22 @@ class AssetController
         if ($strFile !== '') {
             $ch = curl_init($strFile);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36');
+            curl_setopt($ch, CURLOPT_USERAGENT, 'CSTVPlayer');
             curl_exec($ch);
         }
+    }
+
+    public function downloadExternal(string $name, string $url)
+    {
+        $name = base64_decode($name);
+        $url  = base64_decode($url);
+
+        header('Content-type: video/x-matroska');
+        header('Content-Disposition: attachment; filename="' . $name . '.mkv"');
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'CSTVPlayer');
+        curl_exec($ch);
     }
 }
