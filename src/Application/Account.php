@@ -356,7 +356,7 @@ class Account
         $this->superglobales->getSession()->set('hiddenCategories', $hiddenCategories);
     }
 
-    public function addFavorite(string $type, int $id): void
+    public function addFavorite(string $type, $id): void
     {
         $favorites = $this->superglobales->getSession()->get('favorites');
 
@@ -370,7 +370,7 @@ class Account
         $this->superglobales->getSession()->set('favorites', $favorites);
     }
 
-    public function removeFavorite(string $type, int $id): void
+    public function removeFavorite(string $type, $id): void
     {
         $favorites = $this->superglobales->getSession()->get('favorites');
 

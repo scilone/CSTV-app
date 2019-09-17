@@ -102,14 +102,14 @@ class AccountController
         $this->redirectToHome();
     }
 
-    public function addfavorite(string $type, int $id)
+    public function addfavorite(string $type, $id)
     {
         $this->account->addFavorite($type, $id);
 
         echo '<script>window.history.go(-1);</script>';
     }
 
-    public function removeFavorite(string $type, int $id)
+    public function removeFavorite(string $type, $id)
     {
         $this->account->removeFavorite($type, $id);
 

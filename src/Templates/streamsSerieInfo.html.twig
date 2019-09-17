@@ -38,6 +38,9 @@
         .star.star-9:after {
             width: 11px;
         }
+        .stars {
+            text-align: center;
+        }
 
         td:nth-child(odd) {
             width: 30%;
@@ -61,7 +64,7 @@
             </div>
             <div>
                 <div class="sidenav col-md-3 col-sm-3 col-xs-3">
-                    <img src="{{ baseUrlAbsolute ~ serie.cover }}" width="100" height="160" class="col-md-12 col-sm-12 col-xs-12">
+                    <img src="{{ baseUrlAbsolute ~ serie.cover }}" class="col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         {% include 'Module/stars.html.twig' with {'rating': serie.rating5based} %}
                     </div>
@@ -137,14 +140,14 @@
                             </div-->
                             <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 15px; background: rgb(0,0,0,0.5); padding-top: 1em;">
                             {% for episode in episodes %}
-                                <div class="col-md-12 col-sm-12 col-xs-12 episode" style="padding-top: 1em;" id="episode-{{ episode.id }}">
+                                <div class="col-md-12 col-sm-12 col-xs-12 episode" style="padding-top: 1em;" id="episode-{{ episode.id }}" tabindex="-1">
                                     {% if episode.movieImage != '/asset/img/' %}
                                     <div class="col-md-4 col-sm-4 col-xs-4">
                                         <img src="{{ baseUrlAbsolute ~ episode.movieImage }}" width="100%">
                                         {% if streamView[episode.id] is defined %}
                                             {% set currentSeason = season %}
                                             {% set lastEpisode = episode.id %}
-                                            <div style="height: 2px;background: #d43f3a;"></div>
+                                            <div style="height: 3px;background: #d43f3a;"></div>
                                         {% endif %}
                                     </div>
                                     <div class="col-md-5 col-sm-5 col-xs-5">
@@ -220,7 +223,8 @@
             }
 
             $('#seasonChoice').change();
-            nextEpisode.attr('tabindex', 1);
+            //nextEpisode.attr('tabindex', 1);
+            nextEpisode.find('.btn:eq(0)').focus()
             window.location.href = '#' + nextEpisode.attr('id');
         }
     </script>

@@ -142,14 +142,25 @@ class StreamsController extends SecurityController
         }
         $streamsSorted += $streams;
 
+        if (count($streamsSorted) === 1) {
+            $stream = current($streamsSorted);
+
+            if ($stream->getTvArchive() < 1) {
+                header('Location: ' . Param::VLC_DEEPLINK . $stream->getStreamLink());
+                exit;
+            }
+        }
+
         $render = $this->twig->render(
             'streamsLiveInfo.html.twig',
             [
-                'streams'  => $streamsSorted,
-                'type'     => 'live',
-                'shortEpg' => $shortEpg,
-                'name'     => $name,
-                'img'      => $img,
+                'streams'    => $streamsSorted,
+                'type'       => 'live',
+                'shortEpg'   => $shortEpg,
+                'name'       => $name,
+                'img'        => $img,
+                'streamName' => $streamName,
+                'isFavorite' => isset($this->superglobales->getSession()->get('favorites')['live'][base64_encode($streamName)])
             ]
         );
 
@@ -161,6 +172,8 @@ class StreamsController extends SecurityController
         $filter = [];
         if (is_numeric($category)) {
             $filter['cat'] = $category;
+        } elseif ($category === 'favorites') {
+            $filter['cat'] = 'favorites';
         }
 
         $streams    = $this->iptv->getLiveStreams($filter);
@@ -176,6 +189,13 @@ class StreamsController extends SecurityController
                     unset($categories[$keyCat]);
                 }
             }
+        }
+
+        if ($category === 'favorites') {
+            $favorites = $this->superglobales->getSession()->get('favorites')['live'];
+            $streams = array_filter($streams, function ($var) use ($favorites) {
+                return isset($favorites[base64_encode($var->getName())]);
+            });
         }
 
         $render = $this->twig->render(

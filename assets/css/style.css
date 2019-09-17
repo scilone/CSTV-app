@@ -1260,3 +1260,8 @@ a.btn-danger:hover, a.btn-primary:hover, a.btn-warning:hover, a.btn-success:hove
 a.btn-default:focus, a.btn-default:hover {
     color: black !important;
 }
+
+.form-control:focus {
+    border-width: medium;
+    border-color: rgba(232,177,44, .8);
+}

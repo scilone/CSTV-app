@@ -91,7 +91,7 @@
                 <div class="col-lg-1 col-md-2 col-sm-3 col-xs-3">
                     {% set hasTvArchive = false %}
                     {% for quality, stream in streams %}
-                        <a href="{{ vlcDeeplink ~ stream.streamLink }}" tabindex="1" class="btn btn-success">
+                            <a href="{{ vlcDeeplink ~ stream.streamLink }}" tabindex="1" class="btn btn-success">
                             Play {{ quality }}
                         </a>
                         {% if stream.tvArchive == 1 %}
@@ -110,18 +110,20 @@
                             {% endif %}
                         {% endfor %}
                     {% endif %}
+
+                    <hr/>
                     {% if isFavorite %}
-                    <!--a href="{{ baseUrlAbsolute }}/account/removefavorite/movie/{{ movie.streamId }}">
+                    <a href="{{ baseUrlAbsolute }}/account/removefavorite/live/{{ streamName|base64Encode }}">
                         <button class="btn btn-warning" style="width: 100%;">
                             <i class=" fa fa-minus"></i> Favorite
                         </button>
-                    </a-->
+                    </a>
                     {% else %}
-                    <!--a href="{{ baseUrlAbsolute }}/account/addfavorite/movie/{{ movie.streamId }}">
+                    <a href="{{ baseUrlAbsolute }}/account/addfavorite/live/{{ streamName|base64Encode }}">
                         <button class="btn btn-warning" style="width: 100%;">
                             <i class="fa fa-plus"></i> Favorite
                         </button>
-                    </a-->
+                    </a>
                     {% endif %}
                 </div>
                 <div class="col-lg-11 col-md-10 col-sm-9 col-xs-9">

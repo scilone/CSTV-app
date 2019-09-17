@@ -14,7 +14,7 @@
 
             {% block css %}
             <link href="{{ baseUrlAbsolute }}/css/bootstrap.css" rel="stylesheet">
-            <link href="{{ baseUrlAbsolute }}/css/style.css" rel="stylesheet">
+            <link href="{{ baseUrlAbsolute }}/css/style.css?201909171705" rel="stylesheet">
             <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
                   rel="stylesheet"
                   crossorigin="anonymous">
@@ -25,6 +25,21 @@
     {% endblock %}
     </head>
     <body>
+        <style>
+            {% if isTv %}
+            a.btn-danger, a.btn-default, a.btn-primary, a.btn-warning, a.btn-success, a.btn-info {
+                color: #333;
+                background-color: #fff;
+                border-color: #ccc;
+            }
+
+            .form-control:focus {
+                border-width: 3px;
+                border-color: rgba(232,177,44, .8);
+            }
+            {% endif %}
+        </style>
+
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
             crossorigin="anonymous"></script>
 

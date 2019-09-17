@@ -202,7 +202,7 @@ class Iptv
 
         $return = [];
         foreach ($list as $data) {
-            if (isset($filter['cat']) && $data->category_id != $filter['cat']) {
+            if (isset($filter['cat']) && $filter['cat'] !== 'favorites' && $data->category_id != $filter['cat']) {
                 continue;
             }
 

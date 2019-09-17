@@ -4,6 +4,7 @@
     <ul>
         {% set catLength = 2 %}
         <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all"><li>ALL</li></a>
+        <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/favorites"><li>FAVORITES</li></a>
 
     {% for category in categories %}
         <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}"><li>{{ category.name }}</li></a>
