@@ -85,11 +85,21 @@ class XcodeApi
 
         if ($dataCached !== null) {
             $data = $dataCached;
-        } else {
-            $data = $this->getDataWithAction($host, $username, $password, $action, $extra);
+
+            return (array) json_decode($data);
         }
 
-        return (array) json_decode($data);
+        $data = $this->getDataWithAction($host, $username, $password, $action, $extra);
+        $dataDecoded = (array) json_decode($data);
+
+        if (isset($dataDecoded['error']) === false) {
+            $this->cache->set(
+                md5($host . $username) . '_' . $action . http_build_query($extra),
+                $data
+            );
+        }
+
+        return $dataDecoded;
     }
 
     public function getLiveCategories(string $host, string $username, string $password): array
