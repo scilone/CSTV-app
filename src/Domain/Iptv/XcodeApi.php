@@ -89,10 +89,17 @@ class XcodeApi
             return (array) json_decode($data);
         }
 
-        $data = $this->getDataWithAction($host, $username, $password, $action, $extra);
-        $dataDecoded = (array) json_decode($data);
+        $error = false;
+        $i = 0;
+        do {
+            $data        = $this->getDataWithAction($host, $username, $password, $action, $extra);
+            $dataDecoded = (array) json_decode($data);
+            $error       = isset($dataDecoded['error']);
 
-        if (isset($dataDecoded['error']) === false) {
+            $i++;
+        } while ($error && $i < 10);
+
+        if ($error === false) {
             $this->cache->set(
                 md5($host . $username) . '_' . $action . http_build_query($extra),
                 $data
