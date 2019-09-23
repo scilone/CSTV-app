@@ -45,7 +45,14 @@ class AccountController
             $this->redirectToHome();
         }
 
-        echo $this->twig->render('accountIptv.html.twig');
+        echo $this->twig->render(
+            'accountIptv.html.twig',
+            [
+                'username' => $this->superglobales->getSession()->get(Iptv::PREFIX . 'username'),
+                'password' => $this->superglobales->getSession()->get(Iptv::PREFIX . 'password'),
+                'host'     => $this->superglobales->getSession()->get(Iptv::PREFIX . 'host'),
+            ]
+        );
     }
 
     public function register()
