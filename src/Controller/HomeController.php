@@ -44,7 +44,7 @@ class HomeController extends SecurityController
     {
         $userInfo = $this->iptv->getUserInfo();
 
-        $userExpired = $userInfo->getExpDate()->getTimestamp() < time() || mb_strtolower($userInfo->getStatus()) === 'expired';
+        $userExpired = mb_strtolower($userInfo->getStatus()) === 'expired';
 
         if ($userExpired === false && $this->superglobales->getCookie()->has('redirect')) {
             setcookie(
