@@ -63,6 +63,7 @@ class HomeController extends SecurityController
         echo $this->twig->render(
             'homeMain.html.twig',
             [
+                'hasLiveFavorites' => !empty($this->superglobales->getSession()->get('favorites')['live']),
                 'hasMovieFavorites' => !empty($this->superglobales->getSession()->get('favorites')['movie']),
                 'hasSerieFavorites' => !empty($this->superglobales->getSession()->get('favorites')['serie']),
                 'connectedAs'       => $this->superglobales->getSession()->get('username'),
