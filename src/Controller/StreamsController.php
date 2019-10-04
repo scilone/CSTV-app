@@ -167,7 +167,7 @@ class StreamsController extends SecurityController
         echo $render;
     }
 
-    public function live(string $category): void
+    public function liveOld(string $category): void
     {
         $filter = [];
         if (is_numeric($category)) {
@@ -199,7 +199,7 @@ class StreamsController extends SecurityController
         }
 
         $render = $this->twig->render(
-            'streamsLive.html.twig',
+            'streamsLiveOld.html.twig',
             [
                 'streams'          => $streams,
                 'catName'          => $catName,
@@ -207,6 +207,64 @@ class StreamsController extends SecurityController
                 'currentCat'       => $category,
                 'hiddenCategories' => $hiddenCategories,
                 'isHidden'         => isset($categories[$category]) ? false : true,
+            ]
+        );
+
+        echo $render;
+    }
+
+    public function live(string $category, int $sort = 0, string $search = ''): void
+    {
+        $search = urldecode($search);
+
+        $filter = [];
+        if (is_numeric($category)) {
+            $filter['cat'] = $category;
+        } elseif ($category === 'favorites') {
+            $filter['cat'] = 'favorites';
+        }
+
+        $streams    = $this->iptv->getLiveStreams($filter, $sort);
+        $categories = $this->iptv->getLiveCategories();
+
+        $catName = isset($categories[$category]) ? $categories[$category]->getName() : '';
+
+        $hiddenCategories = [];
+        if (isset($this->superglobales->getSession()->get('hiddenCategories')['live'])) {
+            foreach ($categories as $keyCat => $cat) {
+                if (isset($this->superglobales->getSession()->get('hiddenCategories')['live'][$cat->getId()])) {
+                    $hiddenCategories[] = $cat;
+                    unset($categories[$keyCat]);
+                }
+            }
+        }
+
+        if ($category === 'favorites') {
+            $favorites = $this->superglobales->getSession()->get('favorites')['live'];
+            $streams = array_filter($streams, function ($var) use ($favorites) {
+                return isset($favorites[base64_encode($var->getName())]);
+            });
+        }
+
+        if ($search !== '') {
+            $searchCleaned = $this->cleanSearch($search);
+            $streams = array_filter($streams, function ($var) use ($searchCleaned) {
+                return stripos($this->cleanSearch($var->getName()), $searchCleaned) !== false;
+            });
+        }
+
+        $render = $this->twig->render(
+            'streamsLive.html.twig',
+            [
+                'streams'          => $streams,
+                'type'             => 'live',
+                'sort'             => $sort,
+                'search'           => $search,
+                'currentCat'       => $category,
+                'categories'       => $categories,
+                'hiddenCategories' => $hiddenCategories,
+                'catName'          => $catName,
+                'isHidden'         => isset($categories[$category]) ? false : true
             ]
         );
 

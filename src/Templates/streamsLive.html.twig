@@ -1,21 +1,141 @@
 {% extends "base.html.twig" %}
 
+{% block extraACss %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300">
+    <link rel="stylesheet" href="{{ baseUrlAbsolute }}/css/jquery.flex-images.css">
+{% endblock %}
+
 {% block body %}
-    <div id="searchPopin" class="hide">
-        <div class="container" style="margin-top: 1em">
-            <div class="row">
-                <div class="col-sm-8 col-sm-offset-2">
-                    <div class="input-group">
-                        <input id="inputSearch" type="text" class="form-control" placeholder="Search" value="{{ search }}">
-                        <span id="goSearch" class="input-group-addon"><i class="fa fa-search"></i></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'Module/search.html.twig' %}
+    <style>
+        #header {
+            width: 100%;
+            z-index: 10;
+            position: fixed;
+            background: white;
+            padding: 1em;
+            font-weight: bold;
+        }
+        body {
+            margin: 0;
+        }
+
+        #flex {
+            padding-top: 5em;
+            padding-left: 2em;
+        }
+
+        #flex .over {
+            line-height: 1.5em;
+            letter-spacing: -0.5px;
+            font-weight: bold;
+            font-family: roboto;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 4px 6px;
+            font-size: 13px;
+            color: #fff;
+            background: rgba(0,0,0,0.7);
+            text-align: center;
+        }
+
+        .flex-images .item img {
+            width: 100px;
+            height: 160px;
+        }
+
+        #search {
+            margin: 0 5px;
+        }
+
+        #flex a:focus > .item {
+            border: 1px solid #e8b12c;
+        }
+
+        #flex a:focus > .item > .over {
+            color: #e8b12c !important;
+        }
+
+        /* STARS */
+        .star.star-1:after {
+            width: 3px;
+        }
+        .star.star-2:after {
+            width: 4px;
+        }
+        .star.star-3:after {
+            width: 5px;
+        }
+        .star.star-4:after {
+            width: 6px;
+        }
+        .star.star-5:after {
+            width: 7px;
+        }
+        .star.star-6:after {
+            width: 8px;
+        }
+        .star.star-7:after {
+            width: 9px;
+        }
+        .star.star-8:after {
+            width: 10px;
+        }
+        .star.star-9:after {
+            width: 11px;
+        }
+
+        .sidenav {
+            height: 100%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding: 5em 0;
+        }
+
+        .sidenav a {
+            font-family: roboto;
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            color: #818181;
+            display: block;
+            letter-spacing: -0.5px;
+            line-height: 1em;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav ul {
+            list-style-type:none;
+            padding: 0;
+        }
+
+        .sidenav a:focus{
+            color: #e8b12c !important;
+        }
+
+        img:not([src]) {
+            visibility: hidden;
+        }
+
+        /* Fixes Firefox anomaly during image load */
+        @-moz-document url-prefix() {
+            img:-moz-loading {
+                visibility: hidden;
+            }
+        }
+    </style>
+
     <div id="header">
         <div class="pull-left">
-            <a href="{{ baseUrlAbsolute ~ homeUrlAbsolute }}" class="btn" tabindex="4">
+            <a href="{{ baseUrlAbsolute ~ homeUrlAbsolute }}" tabindex="5" class="btn">
                 <i class="fa fa-home"></i>
             </a>
             {% if catName != '' %}
@@ -32,179 +152,81 @@
             {{ catName }}
         </div>
         <div class="pull-right">
-            <a id="search" type="button" class="btn" tabindex="3">
+            <div class="btn-group" role="group">
+                <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ currentCat }}/{% if sort == 2 %}1{% else %}2{% endif %}/{{ search }}" tabindex="3" class="btn">
+                    <i class="fa fa-sort-alpha-asc"></i>
+                </a>
+            </div>
+            <a tabindex="4" class="btn" id="search">
                 <i class="fa fa-search"></i>
             </a>
         </div>
     </div>
-    <style>
-        #header {
-            width: 100%;
-            z-index: 10;
-            position: fixed;
-            background: white;
-            padding: 1em;
-            font-weight: bold;
-        }
-
-        #searchPopin {
-            text-align: center;
-            width: 100%;
-            height: 100%;
-            position: fixed;
-            z-index: 11;
-            background: rgba(0,0,0,0.7);
-        }
-        div.gallery {
-            border: 1px solid #ccc;
-        }
-
-        div.gallery:hover {
-            border: 1px solid #777;
-        }
-
-        div.gallery img {
-            width: 100%;
-            min-width: 100px;
-            min-height: 56px;
-        }
-
-        div.desc {
-            padding: 5px;
-            text-align: center;
-            font-size: 10px;
-            font-weight: bold;
-            letter-spacing: -1px;
-            color: white;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        .responsive {
-            margin: 0 1%;
-            float: left;
-            width: 14.5%;
-            color: white;
-            height: 120px;
-        }
-
-        @media only screen and (max-width: 700px) {
-            .responsive {
-                width: 20%;
-                margin: 6px 0;
-            }
-        }
-
-        @media only screen and (max-width: 500px) {
-            .responsive {
-                width: 33.3%;
-            }
-        }
-
-        .clearfix:after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-
-        a, a:hover, a:visited {
-            color: white;
-        }
-
-        body {
-            background: black;
-        }
-
-        a:focus, a:focus > .desc{
-            color: #e8b12c;
-        }
-
-        #list {
-            padding: 5em 5px;
-        }
-
-        .bonus {
-            border: thin solid black;
-            position: relative;
-            background: white;
-            color: black;
-        }
-
-        .bonus a {
-            color: black !important;
-        }
-    </style>
-    <div id="list">
-    {% for stream in streams %}
-        <div class="responsive" data-name="{{ stream.name|lower }}">
-            <div class="gallery">
-                {% if '***' in stream.name %}
-                    <div class="desc" tabindex="-1" tabindex="-1">
-                        {{ stream.name|length > 20 ? stream.name|slice(0, 20) ~ '..' : stream.name  }}
-                    </div>
-                {% else %}
-                    <a href="{{ baseUrlAbsolute }}/streams/liveInfo/{{ stream.name|base64Encode }}" tabindex="1">
-                    <!--a href="{{ vlcDeeplink ~ stream.streamLink }}" tabindex="1"-->
-                        <img src="{{ baseUrlAbsolute ~ stream.streamIcon }}"
-                             alt="{{ stream.name }}"
-                             title="{{ stream.name }}"
-                             width="100" height="56">
-                        <div class="desc">
-                            {{ stream.name|length > 18 ? stream.name|slice(0, 18) ~ '..' : stream.name  }}
-                        </div>
-                    </a>
-                {% endif %}
-            </div>
-            <div class="bonus hide">
-                <ul>
-                    <li>
-                        <a href="{{ vlcDeeplink ~ stream.streamLink }}">HD</a>
-                    </li>
-                    <li>
-                        <a href="{{ vlcDeeplink ~ stream.streamLink }}">SD</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    {% endfor %}
+    <div class="sidenav col-sm-3 col-xs-3 col-md-2">
+        <ul>
+            <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all"
+               style="{% if currentCat == 'all' and sort != 5 %}color:white{% endif %}"
+               tabindex="2">
+                <li>ALL</li>
+            </a>
+            <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/favorites"
+               style="{% if currentCat == 'favorites' %}color:white{% endif %}"
+               tabindex="2">
+                <li>FAVORITES</li>
+            </a>
+            {% for category in categories %}
+                <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}"
+                   style="{% if catName == category.name %}color:white{% endif %}"
+                   tabindex="2">
+                    <li>{{ category.name }}</li>
+                </a>
+            {% endfor %}
+            <a style="opacity: 0.5;"
+               id="hiddenCats"
+               tabindex="2">
+                <li>HIDDEN</li>
+            </a>
+            {% for category in hiddenCategories %}
+                <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}"
+                   style="{% if catName == category.name %}color:white;{% endif %} opacity: 0.5; display: none;"
+                   class=" hidden-cat"
+                   tabindex="2">
+                    <li>{{ category.name }}</li>
+                </a>
+            {% endfor %}
+        </ul>
     </div>
+    <div id="flex" class="flex-images col-sm-offset-3 col-sm-9 col-xs-offset-3 col-xs-9 col-md-offset-2 col-md-10">
+        {% if catName == '' and sort == 5 %}
+            {% set sliceMax = 100 %}
+        {% else %}
+            {% set sliceMax = 500 %}
+        {% endif %}
+        {% for stream in streams|slice(0, sliceMax) %}
+            <a href="{{ baseUrlAbsolute }}/streams/liveInfo/{{ stream.name|base64Encode }}"
+               tabindex="1"
+               class="item-link"
+               data-name="{{ stream.name|lower }}"
+               data-added="{{ stream.added.timestamp }}"
+               data-rate="{{ stream.rating5based }}">
+                <div class="item" style="{% if streamView[stream.streamId] is defined %}opacity: 0.3{% endif %}">
+                    <img {% if loop.index > 50 %}data-{% endif %}src="{{ baseUrlAbsolute ~ stream.streamIcon }}"
+                         alt="{{ stream.name }}"
+                         title="{{ stream.name }}">
+                    <div class="over">
+                        {{ stream.name }}
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+    {% include 'Module/lazyload.html.twig' %}
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript">
-        $('#search').click(function () {
-            $('#searchPopin').removeClass('hide');
-            $('#inputSearch').focus();
-        });
-
-        $('#inputSearch').on('input', function() {
-            const search = $(this).val().toLowerCase();
-            $('.responsive').each(function () {
-                if ($(this).data('name').search(search) >= 0) {
-                    $(this).removeClass('hide');
-                } else {
-                    $(this).addClass('hide');
-                }
-            })
-        });
-
-        $("#inputSearch").on('keyup', function (e) {
-            if (e.keyCode === 13) {
-                $('#searchPopin').addClass('hide');
-            }
-        });
-
-        $('#goSearch, #searchPopin').click(function() {
-            $('#searchPopin').addClass('hide');
-        });
-
-        $('.responsive').on('long-press', function(e) {
-            $('.bonus').addClass('hide');
-            $(this).find('.bonus').removeClass('hide');
-            $(this).find('.bonus a:eq(0)').focus();
+    <script>
+        $('#hiddenCats').click(function () {
+            $('.hidden-cat').toggle();
         });
     </script>
-    <script src="{{ baseUrlAbsolute }}/js/long-press-event.min.js"></script>
 {% endblock %}

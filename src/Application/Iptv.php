@@ -185,10 +185,11 @@ class Iptv
         return $replays;
     }
 
-    public function getLiveStreams(array $filter = [])
+    public function getLiveStreams(array $filter = [], int $sorted = 0)
     {
-        $cacheKey    = $this->getCachePrefix() . '_getLiveStreams_' . http_build_query($filter);
-        $cachedData  = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
+        $cacheKey    = $this->getCachePrefix() . '_getLiveStreams_' . $sorted . '_' . http_build_query($filter);
+        $cacheExpire = !isset($filter['cat']) && $sorted === 5 ? '1 day' : self::CACHE_EXPIRE;
+        $cachedData  = $this->cache->get($cacheKey, $cacheExpire);
 
         if ($cachedData !== null) {
             return $cachedData;
@@ -236,9 +237,13 @@ class Iptv
             );
         }
 
-        $return = array_values($return);
-
-        $this->cache->set($cacheKey, $return);
+        if ($sorted > 0) {
+            if ($sorted % 2 === 0) {
+                ksort($return);
+            } else {
+                krsort($return);
+            }
+        }
 
         return $return;
     }
