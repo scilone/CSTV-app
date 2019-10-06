@@ -339,7 +339,7 @@ class Iptv
 
             $name = $data->name ?? '';
             if (isset($filter['cat'])) {
-                $name = trim(preg_replace('#\|\w+\|#', '', $name));
+                $name = trim(preg_replace('#\|[\w\|]+\|#', '', $name));
             }
 
             if (strpos($name, '***') !== false) {
