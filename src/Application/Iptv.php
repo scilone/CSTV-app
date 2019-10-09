@@ -730,4 +730,36 @@ class Iptv
             (array) $userData->allowed_output_formats ?? []
         );
     }
+
+    public function getNbStreamByCat(string $type): array
+    {
+        $cacheKey   = $this->getCachePrefix() . '_getNbStreamByCat_' . $type;
+        $cachedData = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
+
+        if ($cachedData !== null) {
+            return $cachedData;
+        }
+
+        switch ($type) {
+            case 'movie':
+                $streams    = $this->getMovieStreams([]);
+                break;
+            case 'live':
+                $streams    = $this->getLiveStreams([]);
+                break;
+            default:
+                $streams    = $this->getSerieStreams([]);
+        }
+
+        $categoriesNb = [];
+        foreach ($streams as $stream) {
+            $categoriesNb[$stream->getCategoryId()]++;
+        }
+
+        $categoriesNb['all'] = count($streams);
+
+        $this->cache->set($cacheKey, $categoriesNb);
+
+        return $categoriesNb;
+    }
 }

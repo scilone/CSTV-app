@@ -162,36 +162,46 @@
             <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all"
                style="{% if currentCat == 'all' and sort != 5 %}color:white{% endif %}"
                tabindex="2">
-                <li>ALL</li>
+                <li>ALL ({{ nbStreamsByCat["all"] }})</li>
             </a>
             <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/favorites"
                style="{% if currentCat == 'favorites' %}color:white{% endif %}"
                tabindex="2">
-                <li>FAVORITES</li>
+                <li>FAVORITES ({{ nbStreamsByCat["favorites"] }})</li>
             </a>
             <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/all/5"
                style="{% if currentCat == 'all' and sort == 5 %}color:white{% endif %}"
                tabindex="2">
-                <li>RECENTLY ADDED</li>
+                <li>RECENTLY ADDED (100)</li>
             </a>
             {% for category in categories %}
                 <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}"
                    style="{% if catName == category.name %}color:white{% endif %}"
                    tabindex="2">
-                    <li>{{ category.name }}</li>
+                    <li>
+                        {{ category.name }}
+                        {% if nbStreamsByCat[category.id] is defined %}
+                            ({{ nbStreamsByCat[category.id] }})
+                        {% endif %}
+                    </li>
                 </a>
             {% endfor %}
             <a style="opacity: 0.5;"
                id="hiddenCats"
                tabindex="2">
-                <li>HIDDEN</li>
+                <li>HIDDEN ({{ nbStreamsByCat["hidden"] }})</li>
             </a>
             {% for category in hiddenCategories %}
                 <a href="{{ baseUrlAbsolute }}/streams/{{ type }}/{{ category.id }}"
                    style="{% if catName == category.name %}color:white;{% endif %} opacity: 0.5; display: none;"
                    class=" hidden-cat"
                    tabindex="2">
-                    <li>{{ category.name }}</li>
+                    <li>
+                        {{ category.name }}
+                        {% if nbStreamsByCat[category.id] is defined %}
+                            ({{ nbStreamsByCat[category.id] }})
+                        {% endif %}
+                    </li>
                 </a>
             {% endfor %}
         </ul>

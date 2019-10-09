@@ -224,20 +224,27 @@ class StreamsController extends SecurityController
             $filter['cat'] = 'favorites';
         }
 
-        $streams    = $this->iptv->getLiveStreams($filter, $sort);
-        $categories = $this->iptv->getLiveCategories();
+        $streams        = $this->iptv->getLiveStreams($filter, $sort);
+        $categories     = $this->iptv->getLiveCategories();
+
+        $nbStreamsByCat = $this->iptv->getNbStreamByCat('live');
+        $nbStreamsByCat += ['favorites' => count($this->superglobales->getSession()->get('favorites')['live'] ?? [])];
 
         $catName = isset($categories[$category]) ? $categories[$category]->getName() : '';
 
         $hiddenCategories = [];
+        $hiddenStreams = 0;
         if (isset($this->superglobales->getSession()->get('hiddenCategories')['live'])) {
             foreach ($categories as $keyCat => $cat) {
                 if (isset($this->superglobales->getSession()->get('hiddenCategories')['live'][$cat->getId()])) {
+                    $hiddenStreams += $nbStreamsByCat[$cat->getId()];
                     $hiddenCategories[] = $cat;
                     unset($categories[$keyCat]);
                 }
             }
         }
+
+        $nbStreamsByCat += ['hidden' => $hiddenStreams];
 
         if ($category === 'favorites') {
             $favorites = $this->superglobales->getSession()->get('favorites')['live'];
@@ -264,6 +271,7 @@ class StreamsController extends SecurityController
                 'categories'       => $categories,
                 'hiddenCategories' => $hiddenCategories,
                 'catName'          => $catName,
+                'nbStreamsByCat'   => $nbStreamsByCat,
                 'isHidden'         => isset($categories[$category]) ? false : true
             ]
         );
@@ -291,20 +299,27 @@ class StreamsController extends SecurityController
             $filter['cat'] = $category;
         }
 
-        $streams = $this->iptv->getMovieStreams($filter, $sort);
-        $categories = $this->iptv->getMovieCategories();
+        $streams        = $this->iptv->getMovieStreams($filter, $sort);
+        $categories     = $this->iptv->getMovieCategories();
+
+        $nbStreamsByCat = $this->iptv->getNbStreamByCat('movie');
+        $nbStreamsByCat += ['favorites' => count($this->superglobales->getSession()->get('favorites')['movie'] ?? [])];
 
         $catName = isset($categories[$category]) ? $categories[$category]->getName() : '';
 
         $hiddenCategories = [];
+        $hiddenStreams    = 0;
         if (isset($this->superglobales->getSession()->get('hiddenCategories')['movie'])) {
             foreach ($categories as $keyCat => $cat) {
                 if (isset($this->superglobales->getSession()->get('hiddenCategories')['movie'][$cat->getId()])) {
+                    $hiddenStreams += $nbStreamsByCat[$cat->getId()];
                     $hiddenCategories[] = $cat;
                     unset($categories[$keyCat]);
                 }
             }
         }
+
+        $nbStreamsByCat += ['hidden' => $hiddenStreams];
 
         if ($category === 'favorites') {
             $favorites = $this->superglobales->getSession()->get('favorites')['movie'];
@@ -332,6 +347,7 @@ class StreamsController extends SecurityController
                 'hiddenCategories' => $hiddenCategories,
                 'catName'          => $catName,
                 'isHidden'         => isset($categories[$category]) ? false : true,
+                'nbStreamsByCat'   => $nbStreamsByCat,
                 'streamView'       => $this->superglobales->getSession()->get('flaggedStreams')['movie']
             ]
         );
@@ -376,20 +392,27 @@ class StreamsController extends SecurityController
             $filter['cat'] = $category;
         }
 
-        $streams = $this->iptv->getSerieStreams($filter, $sort);
-        $categories = $this->iptv->getSerieCategories();
+        $streams        = $this->iptv->getSerieStreams($filter, $sort);
+        $categories     = $this->iptv->getSerieCategories();
+
+        $nbStreamsByCat = $this->iptv->getNbStreamByCat('serie');
+        $nbStreamsByCat += ['favorites' => count($this->superglobales->getSession()->get('favorites')['serie'] ?? [])];
 
         $catName = isset($categories[$category]) ? $categories[$category]->getName() : '';
 
+        $hiddenStreams = 0;
         $hiddenCategories = [];
         if (isset($this->superglobales->getSession()->get('hiddenCategories')['serie'])) {
             foreach ($categories as $keyCat => $cat) {
                 if (isset($this->superglobales->getSession()->get('hiddenCategories')['serie'][$cat->getId()])) {
+                    $hiddenStreams += $nbStreamsByCat[$cat->getId()];
                     $hiddenCategories[] = $cat;
                     unset($categories[$keyCat]);
                 }
             }
         }
+
+        $nbStreamsByCat += ['hidden' => $hiddenStreams];
 
         if ($category === 'favorites') {
             $favorites = $this->superglobales->getSession()->get('favorites')['serie'];
@@ -408,15 +431,16 @@ class StreamsController extends SecurityController
         $render = $this->twig->render(
             'streamsSerie.html.twig',
             [
-                'streams'    => $streams,
-                'type'       => 'serie',
-                'sort'       => $sort,
-                'search'     => $search,
-                'currentCat' => $category,
-                'categories' => $categories,
+                'streams'          => $streams,
+                'type'             => 'serie',
+                'sort'             => $sort,
+                'search'           => $search,
+                'currentCat'       => $category,
+                'categories'       => $categories,
                 'hiddenCategories' => $hiddenCategories,
-                'catName'    => $catName,
-                'isHidden'   => isset($categories[$category]) ? false : true,
+                'catName'          => $catName,
+                'nbStreamsByCat'   => $nbStreamsByCat,
+                'isHidden'         => isset($categories[$category]) ? false : true,
             ]
         );
 
