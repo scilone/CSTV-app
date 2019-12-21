@@ -113,16 +113,12 @@
 
                     <hr/>
                     {% if isFavorite %}
-                    <a href="{{ baseUrlAbsolute }}/account/removefavorite/live/{{ streamName|base64Encode }}">
-                        <button class="btn btn-warning" style="width: 100%;">
-                            <i class=" fa fa-minus"></i> Favorite
-                        </button>
+                    <a href="{{ baseUrlAbsolute }}/account/removefavorite/live/{{ streamName|base64Encode }}" class="btn btn-warning">
+                        <i class=" fa fa-minus"></i> Favorite
                     </a>
                     {% else %}
-                    <a href="{{ baseUrlAbsolute }}/account/addfavorite/live/{{ streamName|base64Encode }}">
-                        <button class="btn btn-warning" style="width: 100%;">
-                            <i class="fa fa-plus"></i> Favorite
-                        </button>
+                    <a href="{{ baseUrlAbsolute }}/account/addfavorite/live/{{ streamName|base64Encode }}" class="btn btn-warning">
+                        <i class="fa fa-plus"></i> Favorite
                     </a>
                     {% endif %}
                 </div>

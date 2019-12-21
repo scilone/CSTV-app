@@ -217,7 +217,7 @@ class Iptv
             $name = $data->name ?? '';
             if (isset($filter['cat'])) {
                 $name = str_replace(['SD','FHD', 'HD','4K','sd','hd','fhd','4k'], '', $name);
-                $name = trim(preg_replace('#\|\w+\|#', '', $name));
+                $name = trim($name);
             }
 
             $return[$name] = new Live(
@@ -248,8 +248,15 @@ class Iptv
         return $return;
     }
 
+    private function stripQuality(string $string): string
+    {
+        return str_replace(['SD','FHD', 'HD','4K','sd','hd','fhd','4k'], '', $string);
+    }
+
     public function getLiveStreamsByName(string $searchedName)
     {
+        $searchedName = trim($this->stripQuality($searchedName));
+
         $cacheKey    = $this->getCachePrefix() . '_getLiveStreamsByName_' . md5($searchedName);
         $cachedData  = $this->cache->get($cacheKey, self::CACHE_EXPIRE);
 
@@ -266,8 +273,8 @@ class Iptv
         $return = [];
         foreach ($list as $data) {
             $nameFormatted = $data->name ?? '';
-            $nameFormatted = str_replace(['SD','FHD', 'HD','4K','sd','hd','fhd','4k'], '', $nameFormatted);
-            $nameFormatted = trim(preg_replace('#\|\w+\|#', '', $nameFormatted));
+            $nameFormatted = $this->stripQuality($nameFormatted);
+            $nameFormatted = trim($nameFormatted);
 
             if ($nameFormatted !== $searchedName) {
                 continue;

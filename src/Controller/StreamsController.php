@@ -115,7 +115,7 @@ class StreamsController extends SecurityController
     {
         $streamName = base64_decode($streamName);
 
-        $streams  = $this->iptv->getLiveStreamsByName($streamName);
+        $streams = $this->iptv->getLiveStreamsByName($streamName);
 
         /** @var Live $refStream */
         $refStream = current($streams);

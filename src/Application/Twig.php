@@ -36,6 +36,14 @@ class Twig
     private function addGenericFilters(): void
     {
         $this->twig->addFilter(new TwigFilter('base64Encode', 'base64_encode'));
+        $this->twig->addFilter(
+            new TwigFilter(
+                'stripLang',
+                function ($string) {
+                    return preg_replace('#\|\w+\|#', '', $string);
+                }
+            )
+        );
     }
 
     private function addGenericVars(): void
